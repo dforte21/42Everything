@@ -1,0 +1,5 @@
+Credentials cache: API:FD6DE032-9D23-4628-8819-74ED2EEA6C42
+        Principal: dforte@42ROMA.IT
+
+  Issued                Expires               Principal
+Nov 24 09:45:11 2021  Nov 24 19:45:11 2021  krbtgt/42ROMA.IT@42ROMA.IT

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 15:45:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/01 20:42:52 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/04 13:06:27 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,24 @@ char	*get_line(char *save, int fd)
 	int		count;
 	size_t	i;
 	char	*buffer;
-	char	*tmp;
 
 	i = 0;
+	count = 1;
 	if (!save)
 		save = ft_calloc(1, 1);
-	buffer = ft_calloc(1, BUFFER_SIZE + 1);
-	count = read(fd, buffer, BUFFER_SIZE);
-	if (count < 0 || (save[0] == 0 && count == 0))
-	{
-		free(save);
-		return (NULL);
-	}
-	save = ft_strjoin(save, buffer);
 	while (ft_strchr(save, '\n') == -1 && count > 0)
 	{
-		tmp = ft_substr(save, 0, ft_strlen(save));
-		free(save);
+		buffer = ft_calloc(1, BUFFER_SIZE + 1);
 		count = read(fd, buffer, BUFFER_SIZE);
-		buffer[count] = 0;
-		save = ft_strjoin(tmp, buffer);
+		if (count < 0 || (count == 0 && save[0] == 0))
+		{
+			free(save);
+			free(buffer);
+			return (NULL);
+		}
+		save = ft_strjoin(save, buffer);
+		free(buffer);
 	}
-	free(buffer);
 	return (save);
 }
 
@@ -71,7 +67,7 @@ char	*ft_save(char *save, char *str)
 	j = 0;
 	while (str[i] != 0)
 		i++;
-	if (save[0] == 0)
+	if (save[i] == 0)
 	{
 		free(save);
 		return (NULL);

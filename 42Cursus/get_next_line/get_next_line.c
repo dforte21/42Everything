@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 15:45:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/04 13:06:27 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/04 13:12:16 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 char	*get_next_line(int fd)
 {
-	static char	*save[256];
+	static char	*save[1024];
 	char		*str;
 	size_t		i;
 
 	i = 0;
-	if (fd < 0 || fd > 256)
+	if (fd < 0 || fd > 1024)
 		return (NULL);
 	save[fd] = get_line(save[fd], fd);
 	if (!save[fd])

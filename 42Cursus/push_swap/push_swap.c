@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/07 16:53:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/08 15:00:56 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,19 @@
 
 void	print_stack(t_stacks stacks, int ac)
 {
-	for(int i = 0; i < ac - 1; i++)
-		ft_printf("%d ", stacks.sa[i]);
 	ft_printf("\n");
 	for(int i = 0; i < ac - 1; i++)
 		ft_printf("%d ", stacks.sb[i]);
 	ft_printf("\n");
 	for(int i = 0; i < ac - 1; i++)
+		ft_printf("%d ", stacks.bsb[i]);
+	ft_printf("\n");
+	for(int i = 0; i < ac - 1; i++)
 		ft_printf("%d ", stacks.position[i]);
+	ft_printf("\n");
+	for(int i = 0; i < ac - 1; i++)
+		ft_printf("%d ", stacks.bsa[i]);
+	ft_printf("\n\n");
 }
 
 int main(int ac, char **av)
@@ -51,6 +56,8 @@ void	free_all(t_stacks *stacks, int *tmp)
 {
 	free(stacks->sa);
 	free(stacks->sb);
+	free(stacks->bsa);
+	free(stacks->bsb);
 	free(stacks->position);
 	free(tmp);
 }

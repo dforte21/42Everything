@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/08 15:00:30 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/08 16:42:56 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ typedef struct	s_stacks
 	int		*position;
 }				t_stacks;
 
-int		main(int ac, char **av);
 int		init_stacks(t_stacks *stacks, int ac, char **av);
 int		check_av(char *av);
+int		find_loc(t_stacks *stack, int num, int arg);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
 void	free_all(t_stacks *stacks, int *tmp);
@@ -41,5 +41,9 @@ void	ft_rrb(t_stacks *stack, int args, int i);
 void	ft_ss(t_stacks *stack);
 void	ft_rr(t_stacks *stack, int args, int i);
 void	ft_rrr(t_stacks *stack, int args, int i);
+void	process_start(t_stacks *stack, int ac);
+void	fsort(t_stacks *stack, int arg);
+void	asort(t_stacks *stack, int arg);
+void	print_stack(t_stacks stacks, int ac);
 
 #endif

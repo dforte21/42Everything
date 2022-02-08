@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/08 15:00:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/08 16:51:02 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,23 @@ int main(int ac, char **av)
 		i++;
 	}
 	get_position(stacks.sa, stacks.position, ac - 1, tmp);
+	process_start(&stacks, ac - 1);
 	print_stack(stacks, ac);
 	free_all(&stacks, tmp);
+}
+
+void	process_start(t_stacks *stack, int ac)
+{
+	int	i;
+
+	i = 0;
+	fsort(stack, ac);
+	asort(stack, ac);
+	while (i < ac / 2)
+	{
+		ft_pa(stack, ac, 0);
+		i++;
+	}
 }
 
 void	free_all(t_stacks *stacks, int *tmp)

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/08 16:42:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/09 16:35:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PUSH_SWAP_H
 # include "libft/libft.h"
 # include <stdbool.h>
+#include<sys/wait.h>
 
 typedef struct	s_stacks
 {
@@ -27,6 +28,10 @@ typedef struct	s_stacks
 int		init_stacks(t_stacks *stacks, int ac, char **av);
 int		check_av(char *av);
 int		find_loc(t_stacks *stack, int num, int arg);
+int		check_sa(t_stacks *stack, int arg);
+int		stackcmp(t_stacks stacks, int arg);
+int		check_stack(t_stacks stack, int arg);
+int		c_sa(t_stacks *stack, int arg);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
 void	free_all(t_stacks *stacks, int *tmp);

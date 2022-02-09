@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   first_sort.c                                       :+:      :+:    :+:   */
+/*   sort.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/08 16:47:58 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/09 16:46:04 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,14 @@ void	fsort(t_stacks *stack, int arg)
 
 void	asort(t_stacks *stack, int arg)
 {
-	int	num;
-	int	i;
-	int	j;
-
-	num = (arg / 2) + 1;
-	i = 0;
-	while (num <= arg)
+	while (!check_sa(stack, arg))
 	{
-		while (stack->position[i] != num)
-		{
-			j = find_loc(stack, num, arg);
-			if (i == 0 && j == 1)
-			{
-				ft_sa(stack);
-				break;
-			}
-			if (j > i)
-				ft_ra(stack, arg, 0);
-			if (j < i)
-				ft_rra(stack, arg, 1);
-		}
-		i++;
-		num++;
+		if (stack->position[0] > stack->position[1] && !c_sa(stack, arg))
+			ft_sa(stack);
+		else
+			ft_ra(stack, arg, 0);
+		print_stack(*stack, arg + 1);
+		sleep(2);
 	}
 }
 
@@ -75,4 +60,52 @@ int	find_loc(t_stacks *stack, int num, int arg)
 		i++;
 	}
 	return (i);
+}
+
+int	check_sa(t_stacks *stack, int arg)
+{
+	int	i;
+	int	num;
+
+	i = 0;
+	num = (arg / 2) + 1;
+	while (num <= arg)
+	{
+		if (stack->position[i] != num)
+			return (0);
+		i++;
+		num++;
+	}
+	return (1);
+}
+
+int	c_sa(t_stacks *stack, int arg)
+{
+	int	i;
+	int	j;
+
+	i = find_loc(stack, 1, arg);
+	while (i < arg - 1)
+	{
+		if (stack->position[i] > stack->position[i + 1])
+			return (0);
+		i++;
+	}
+	j = find_loc(stack, 1, arg);
+	if (j != 0)
+	{
+		if (stack->position[i] > stack->position[0])
+			return (0);
+		if (j > 1)
+		{
+			i = 0;
+			while (i < j)
+			{
+				if (stack->position[i] > stack->position[i + 1])
+					return (0);
+				i++;
+			}
+		}
+	}
+	return (1);
 }

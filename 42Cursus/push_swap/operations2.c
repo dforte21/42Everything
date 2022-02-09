@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 13:49:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/08 14:56:31 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/09 11:33:24 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	ft_ra(t_stacks *stack, int args, int i)
 		tmp = tmp2;
 		i--;
 	}
+	ft_printf("ra\n");
 }
 
 void	ft_rb(t_stacks *stack, int args, int i)
@@ -50,6 +51,7 @@ void	ft_rb(t_stacks *stack, int args, int i)
 		tmp = tmp2;
 		i--;
 	}
+	ft_printf("rb\n");
 }
 
 void	ft_rra(t_stacks *stack, int args, int i)
@@ -66,6 +68,7 @@ void	ft_rra(t_stacks *stack, int args, int i)
 		tmp = tmp2;
 	}
 	stack->position[0] = tmp;
+	ft_printf("rra\n");
 }
 
 void	ft_rrb(t_stacks *stack, int args, int i)
@@ -82,4 +85,5 @@ void	ft_rrb(t_stacks *stack, int args, int i)
 		tmp = tmp2;
 	}
 	stack->sb[0] = tmp;
+	ft_printf("rrb\n");
 }

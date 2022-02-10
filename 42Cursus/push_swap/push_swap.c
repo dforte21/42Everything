@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/10 17:41:11 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/10 18:30:51 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,6 @@ void	process_start(t_stacks *stack, int ac)
 	}
 }
 
-void	free_all(t_stacks *stacks, int *tmp)
-{
-	free(stacks->sa);
-	free(stacks->sb);
-	free(stacks->bsa);
-	free(stacks->bsb);
-	free(stacks->position);
-	if (tmp)
-		free(tmp);
-}
-
 int	stackcmp(t_stacks stacks, int arg)
 {
 	int	i;
@@ -75,26 +64,6 @@ int	stackcmp(t_stacks stacks, int arg)
 	{
 		if (stacks.position[i] != i + 1)
 			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	check_stack(t_stacks stack, int arg)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < arg - 1)
-	{
-		j = i + 1;
-		while (j < arg)
-		{
-			if (stack.sa[i] == stack.sa[j])
-				return (0);
-			j++;
-		}
 		i++;
 	}
 	return (1);

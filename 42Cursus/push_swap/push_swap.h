@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/10 17:35:49 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/10 18:43:44 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int		stackcmp(t_stacks stacks, int arg);
 int		check_stack(t_stacks stack, int arg);
 int		c_sa(t_stacks *stack, int arg);
 int		c_reversesa(t_stacks *stack, int arg);
+int		ft_read(int ac, t_stacks stacks);
+int		exec_act(int ac, t_stacks stacks, char *buffer);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
 void	free_all(t_stacks *stacks, int *tmp);

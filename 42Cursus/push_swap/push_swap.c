@@ -6,37 +6,20 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/09 16:19:50 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/10 17:41:11 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	print_stack(t_stacks stacks, int ac)
-{
-	ft_printf("\n");
-	for(int i = 0; i < ac - 1; i++)
-		ft_printf("%d ", stacks.sb[i]);
-	ft_printf("\n");
-	for(int i = 0; i < ac - 1; i++)
-		ft_printf("%d ", stacks.bsb[i]);
-	ft_printf("\n");
-	for(int i = 0; i < ac - 1; i++)
-		ft_printf("%d ", stacks.position[i]);
-	ft_printf("\n");
-	for(int i = 0; i < ac - 1; i++)
-		ft_printf("%d ", stacks.bsa[i]);
-	ft_printf("\n\n");
-}
-
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_stacks	stacks;
 	int			*tmp;
 	int			i;
 
 	i = 0;
-	if(!init_stacks(&stacks, ac, av) || !check_stack(stacks, ac - 1))
+	if (!init_stacks(&stacks, ac, av) || !check_stack(stacks, ac - 1))
 	{
 		write(STDERR_FILENO, "Error\n", 6);
 		free_all(&stacks, NULL);
@@ -88,7 +71,7 @@ int	stackcmp(t_stacks stacks, int arg)
 	int	i;
 
 	i = 0;
-	while (i <  arg)
+	while (i < arg - 1)
 	{
 		if (stacks.position[i] != i + 1)
 			return (0);
@@ -103,7 +86,7 @@ int	check_stack(t_stacks stack, int arg)
 	int	j;
 
 	i = 0;
-	while (i <  arg - 1)
+	while (i < arg - 1)
 	{
 		j = i + 1;
 		while (j < arg)

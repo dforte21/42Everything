@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 13:49:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/09 11:33:24 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/10 17:40:09 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_ra(t_stacks *stack, int args, int i)
 {
 	int	tmp;
 	int	tmp2;
-	
+
 	while (stack->bsa[i] != false && i < args)
 		i++;
 	i--;
@@ -37,7 +37,7 @@ void	ft_rb(t_stacks *stack, int args, int i)
 {
 	int	tmp;
 	int	tmp2;
-	
+
 	while (stack->bsb[i] != false && i < args)
 		i++;
 	i--;
@@ -58,7 +58,7 @@ void	ft_rra(t_stacks *stack, int args, int i)
 {
 	int	tmp;
 	int	tmp2;
-	
+
 	tmp = stack->position[0];
 	while (i < args && stack->bsa[i] != false)
 	{
@@ -75,7 +75,7 @@ void	ft_rrb(t_stacks *stack, int args, int i)
 {
 	int	tmp;
 	int	tmp2;
-	
+
 	tmp = stack->sb[0];
 	while (i < args && stack->bsb[i] != false)
 	{

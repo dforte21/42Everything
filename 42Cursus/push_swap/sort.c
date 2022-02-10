@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/09 16:46:04 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/10 17:41:55 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,11 @@ void	asort(t_stacks *stack, int arg)
 {
 	while (!check_sa(stack, arg))
 	{
-		if (stack->position[0] > stack->position[1] && !c_sa(stack, arg))
+		if (stack->position[0] > stack->position[1]
+			&& !c_sa(stack, arg) && !c_reversesa(stack, arg))
 			ft_sa(stack);
 		else
 			ft_ra(stack, arg, 0);
-		print_stack(*stack, arg + 1);
-		sleep(2);
 	}
 }
 
@@ -84,28 +83,21 @@ int	c_sa(t_stacks *stack, int arg)
 	int	i;
 	int	j;
 
-	i = find_loc(stack, 1, arg);
-	while (i < arg - 1)
+	i = find_loc(stack, ((arg / 2) + 1), arg);
+	j = 0;
+	while (j < i - 1)
+	{
+		if (stack->position[j] > stack->position[j + 1])
+			return (0);
+		j++;
+	}
+	while (i < arg / 2)
 	{
 		if (stack->position[i] > stack->position[i + 1])
 			return (0);
 		i++;
 	}
-	j = find_loc(stack, 1, arg);
-	if (j != 0)
-	{
-		if (stack->position[i] > stack->position[0])
-			return (0);
-		if (j > 1)
-		{
-			i = 0;
-			while (i < j)
-			{
-				if (stack->position[i] > stack->position[i + 1])
-					return (0);
-				i++;
-			}
-		}
-	}
+	if (stack->position[i] > stack->position[0])
+		return (0);
 	return (1);
 }

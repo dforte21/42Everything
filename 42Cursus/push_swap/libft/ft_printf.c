@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 21:08:17 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/05 15:02:40 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/11 14:02:15 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	print_arg(char *spc, va_list arg, int *count, int ch)
 	}
 }
 
-int	arg_print(const char *print, int *count, va_list args, size_t index)
+int	a_print(const char *print, int *count, va_list args, size_t index)
 {
 	int		ch;
 	size_t	i;
@@ -72,7 +72,7 @@ int	ft_printf(const char *print, ...)
 			count++;
 		}
 		if (print[i] == 37)
-			i = arg_print(&print[i], &count, args, i);
+			i = a_print(&print[i], &count, args, i);
 	}
 	return (count);
 	va_end(args);

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 15:40:05 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/05 15:08:38 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/11 14:05:48 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 # include <fcntl.h>
 # include <stdarg.h>
 
-typedef unsigned int	t_uint;
+typedef unsigned int			t_uint;
+typedef unsigned long long int	t_ulint;
 
 typedef struct s_list
 {
@@ -53,9 +54,9 @@ int			ft_strncmp(char *s1, char *s2, size_t n);
 int			ft_lstsize(t_list *lst);
 int			ft_printf(const char *print, ...);
 int			checkch(char c);
-int			arg_print(const char *print, int *count, va_list args, size_t index);
+int			a_print(const char *print, int *count, va_list args, size_t index);
 int			c_minus(t_uint *i, char *spc);
-int			pget_len(unsigned long long int nbr, int size, int is_neg);
+int			pget_len(t_ulint nbr, int size, int is_neg);
 int			nlen(int nb);
 int			u_nlen(t_uint nb);
 char		*ft_strchr(const char *str, int c);
@@ -68,8 +69,8 @@ char		*ft_strtrim(char const *s1, char const *set);
 char		**ft_split(char const *s, char c);
 char		*ft_itoa(int n);
 char		*ft_strmapi(char const *s, char (*f)(unsigned int, char));
-char		*ft_p_rc(unsigned long long int nbr, char *base, char *res, int is_neg);
-char		*ft_putnbr_base(unsigned long long int nbr, char *base, int is_neg);
+char		*ft_p_rc(t_ulint nbr, char *base, char *res, int is_neg);
+char		*ft_putnbr_base(t_ulint nbr, char *base, int is_neg);
 char		*ft_uitoa(t_uint n);
 char		*get_hnumber(int nb, char *base, t_flags flag);
 char		*get_paddr(long int addr, char *base, t_flags flag);

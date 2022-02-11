@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 10:42:20 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/05 15:08:32 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/11 14:04:51 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	pget_len(unsigned long long int nbr, int size, int is_neg)
+int	pget_len(t_ulint nbr, int size, int is_neg)
 {
 	int	i;
 
@@ -29,7 +29,7 @@ int	pget_len(unsigned long long int nbr, int size, int is_neg)
 	return (i);
 }
 
-char	*ft_p_rc(unsigned long long int nbr, char *base, char *res, int is_neg)
+char	*ft_p_rc(t_ulint nbr, char *base, char *res, int is_neg)
 {
 	int		i;
 	int		size;
@@ -54,7 +54,7 @@ char	*ft_p_rc(unsigned long long int nbr, char *base, char *res, int is_neg)
 	return (res);
 }
 
-char	*ft_putnbr_base(unsigned long long int nbr, char *base, int is_neg)
+char	*ft_putnbr_base(t_ulint nbr, char *base, int is_neg)
 {
 	long int	nb;
 	char		*res;

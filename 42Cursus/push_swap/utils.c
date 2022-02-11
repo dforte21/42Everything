@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/10 18:30:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/11 13:41:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,38 @@ int	check_stack(t_stacks stack, int arg)
 		i++;
 	}
 	return (1);
+}
+
+int	order_check(t_stacks *stack, int ac)
+{
+	int	i;
+
+	i = 0;
+	while (i < ac - 1)
+	{
+		if (stack->position[i] > stack->position[i + 1])
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	border_check(t_stacks *stack, int ac)
+{
+	int	i;
+
+	i = 0;
+	while (i < ac - 1)
+	{
+		if (stack->sa[i] > stack->sa[i + 1])
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	error_message(t_stacks *stack, int *tmp)
+{
+	write(STDERR_FILENO, "Error\n", 6);
+	free_all(stack, tmp);
 }

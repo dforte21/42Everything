@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/11 14:01:25 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/14 19:07:49 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PUSH_SWAP_H
 # include "libft/libft.h"
 # include <stdbool.h>
+#include<sys/wait.h>
 
 typedef struct s_stacks
 {
@@ -27,22 +28,25 @@ typedef struct s_stacks
 // push_swap functions
 int		init_stacks(t_stacks *stacks, int ac, char **av);
 int		check_av(char *av);
-int		find_loc(t_stacks *stack, int num, int arg);
-int		check_sa(t_stacks *stack, int arg);
 int		stackcmp(t_stacks stacks, int arg);
 int		check_stack(t_stacks stack, int arg);
-int		c_sa(t_stacks *stack, int arg);
-int		c_reversesa(t_stacks *stack, int arg);
 int		sb_check(t_stacks *stack, int ac);
 int		order_check(t_stacks *stack, int ac);
+int		find_holdf(t_stacks *stack, int n, int ac);
+int		find_holds(t_stacks *stack, int n, int ac);
+int		find_maxn(t_stacks *stack, int ac);
+void	backtob(t_stacks *stack, int ac, int i);
+void	reset_bstack(t_stacks *stack, int ac, int n);
+void	check_bstack(t_stacks *stack, int ac);
+void	pushtodown(t_stacks *stack, int ac, int j, int i);
+void	pushtotop(t_stacks *stack, int ac, int i, int j);
 void	error_message(t_stacks *stack, int *tmp);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
 void	free_all(t_stacks *stacks, int *tmp);
 void	process_start(t_stacks *stack, int ac);
-void	fsort(t_stacks *stack, int arg);
-void	asort(t_stacks *stack, int arg);
 void	allocate_struct(t_stacks *stack, int ac);
+void	sorting_start(t_stacks *stack, int ac, int chunks, int *count);
 void	ft_pa(t_stacks *stack, int args, int i);
 void	ft_pb(t_stacks *stack, int args, int i);
 void	ft_sa(t_stacks *stack);

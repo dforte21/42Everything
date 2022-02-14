@@ -6,109 +6,112 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/11 13:55:12 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/14 19:15:21 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	fsort(t_stacks *stack, int arg)
-{
-	int	num;
-	int	i;
-
-	num = 1;
-	while (num <= arg / 2)
-	{
-		while (stack->position[0] != num)
-		{
-			i = find_loc(stack, num, arg);
-			if (i == 1)
-				ft_sa(stack);
-			if (i == 2)
-				ft_ra(stack, arg, 0);
-			if (i > 2)
-				ft_rra(stack, arg, 1);
-		}
-		if (order_check(stack, arg) && sb_check(stack, arg))
-			return ;
-		if (!order_check(stack, arg) || !sb_check(stack, arg))
-			ft_pb(stack, arg, 0);
-		num++;
-	}
-}
-
-void	asort(t_stacks *stack, int arg)
-{
-	int	i;
-
-	while (!check_sa(stack, arg))
-	{
-		if (stack->position[0] > stack->position[1]
-			&& !c_sa(stack, arg) && !c_reversesa(stack, arg))
-			ft_sa(stack);
-		else
-		{
-			i = find_loc(stack, arg / 2 + 1, arg);
-			if (i > arg / 2)
-				ft_rra(stack, arg, 1);
-			else
-				ft_ra(stack, arg, 0);
-		}
-	}
-}
-
-int	find_loc(t_stacks *stack, int num, int arg)
-{
-	int	i;
-
-	i = 0;
-	while (i < arg)
-	{
-		if (stack->position[i] == num)
-			return (i);
-		i++;
-	}
-	return (i);
-}
-
-int	check_sa(t_stacks *stack, int arg)
-{
-	int	i;
-	int	num;
-
-	i = 0;
-	num = (arg / 2) + 1;
-	while (num <= arg)
-	{
-		if (stack->position[i] != num)
-			return (0);
-		i++;
-		num++;
-	}
-	return (1);
-}
-
-int	c_sa(t_stacks *stack, int arg)
+void	sorting_start(t_stacks *stack, int ac, int chunks, int *count)
 {
 	int	i;
 	int	j;
+	int	k;
 
-	i = find_loc(stack, ((arg / 2) + 1), arg);
-	j = 0;
-	while (j < i - 1)
+	i = 1;
+	while (i <= chunks)
 	{
-		if (stack->position[j] > stack->position[j + 1])
-			return (0);
-		j++;
-	}
-	while (i < arg / 2)
-	{
-		if (stack->position[i] > stack->position[i + 1])
-			return (0);
+		while (find_holdf(stack, i, ac) != -1 || find_holds(stack, i, ac) != -1)
+		{
+			j = find_holdf(stack, i, ac);
+			k = find_holds(stack, i, ac);
+			pushtotop(stack, ac , j, k);
+			check_bstack(stack, ac);
+			ft_pb(stack, ac, 0);
+			reset_bstack(stack, ac, i);
+			*count += 1;
+		}
 		i++;
 	}
-	if (stack->position[i] > stack->position[0])
-		return (0);
-	return (1);
+}
+
+void	check_bstack(t_stacks *stack, int ac)
+{
+	int	i;
+	int	j;
+	int	num;
+
+	if (stack->bsb[0] == false)
+		return ;
+	j = -1;
+	i = 0;
+	num = -2147483648;
+	while (stack->bsb[i] != false && i < ac)
+	{
+		if (stack->sb[i] > num && stack->sb[i] < stack->position[0])
+		{
+			num = stack->sb[i];
+			j = i;
+		}
+		i++;
+	}
+	i--;
+	if (i > 1)
+		pushtodown(stack, ac, j, i);
+}
+
+void	pushtotop(t_stacks *stack, int ac, int i, int j)
+{
+	j = ac - j;
+	if ((i < j && i > -1))
+	{
+		while (i > 0)
+		{
+			ft_ra(stack, ac, 0);
+			if (order_check(stack, ac))
+				return ;
+			i--;
+		}
+	}
+	else
+	{
+		while (j > 0)
+		{
+			ft_rra(stack, ac, 1);
+			if (order_check(stack, ac))
+				return ;
+			j--;
+		}
+	}
+}
+
+int	find_holdf(t_stacks *stack, int n, int ac)
+{
+	int	i;
+
+	i = 0;
+	while (i < ac / 2)
+	{
+		if (stack->position[i] <= (20 * n) && stack->position[i] > (20 * (n - 1)))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int	find_holds(t_stacks *stack, int n, int ac)
+{
+	int	i;
+
+	i = 0;
+	while (stack->position[i + 1] != false && i < ac)
+		i++;
+	i--;
+	while (i >= ac / 2)
+	{
+		if (stack->position[i] <= (20 * n) && stack->position[i] > (20 * (n - 1)))
+			return (i);
+		i--;
+	}
+	return (-1);
 }

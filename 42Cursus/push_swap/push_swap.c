@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/11 13:55:54 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/14 19:17:56 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,14 @@ int	main(int ac, char **av)
 void	process_start(t_stacks *stack, int ac)
 {
 	int	i;
+	int	chunks;
 
 	i = 0;
-	fsort(stack, ac);
-	if (order_check(stack, ac) && sb_check(stack, ac))
-		return ;
-	asort(stack, ac);
-	while (i < ac / 2)
-	{
-		ft_pa(stack, ac, 0);
-		i++;
-	}
+	chunks = ac / 20;
+	if (ac % 20 != 0)
+		chunks++;
+	sorting_start(stack, ac, chunks, &i);
+	backtob(stack, ac, i);
 }
 
 int	stackcmp(t_stacks stacks, int arg)

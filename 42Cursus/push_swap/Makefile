@@ -22,7 +22,6 @@ clean:
 fclean:
 			make fclean -C libft
 			rm -f $(NAME)
-			rm -f $(BNAME)
 
 re:			fclean all
 

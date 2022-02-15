@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/14 14:42:44 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/15 14:58:27 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ int	order_check(t_stacks *stack, int ac)
 	int	i;
 
 	i = 0;
-	while (i < ac - 2 && stack->bsa[i + 1] != false)
+	while (i < ac - 1 && stack->bsa[i + 1] != false)
 	{
-		if (stack->position[i] > stack->position[i + 1])
+		if (stack->position[i] < stack->position[i + 1])
 			return (0);
 		i++;
 	}

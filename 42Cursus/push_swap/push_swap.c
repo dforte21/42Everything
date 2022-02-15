@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/14 19:17:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/15 14:53:12 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ int	main(int ac, char **av)
 	}
 	get_position(stacks.sa, stacks.position, ac - 1, tmp);
 	if (stackcmp(stacks, ac - 1))
-	{
-		error_message(&stacks, tmp);
 		return (0);
-	}
 	process_start(&stacks, ac - 1);
+	//ft_printf("\n\n");
+	//for(int j = 0; j < ac - 1; j++)
+	//	ft_printf("%d ", stacks.position[j]);
 	free_all(&stacks, tmp);
 }
 
@@ -50,6 +50,11 @@ void	process_start(t_stacks *stack, int ac)
 	if (ac % 20 != 0)
 		chunks++;
 	sorting_start(stack, ac, chunks, &i);
+	if (stack->bsb[0] == false)
+	{
+		sort_a(stack, ac);
+		return ;
+	}
 	backtob(stack, ac, i);
 }
 

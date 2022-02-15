@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/14 19:07:49 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/15 14:54:30 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,9 @@ int		sb_check(t_stacks *stack, int ac);
 int		order_check(t_stacks *stack, int ac);
 int		find_holdf(t_stacks *stack, int n, int ac);
 int		find_holds(t_stacks *stack, int n, int ac);
-int		find_maxn(t_stacks *stack, int ac);
 void	backtob(t_stacks *stack, int ac, int i);
 void	reset_bstack(t_stacks *stack, int ac, int n);
 void	check_bstack(t_stacks *stack, int ac);
-void	pushtodown(t_stacks *stack, int ac, int j, int i);
 void	pushtotop(t_stacks *stack, int ac, int i, int j);
 void	error_message(t_stacks *stack, int *tmp);
 void	get_position(int sa[], int *position, int args, int *tmp);
@@ -47,6 +45,7 @@ void	free_all(t_stacks *stacks, int *tmp);
 void	process_start(t_stacks *stack, int ac);
 void	allocate_struct(t_stacks *stack, int ac);
 void	sorting_start(t_stacks *stack, int ac, int chunks, int *count);
+void	sort_a(t_stacks *stack, int ac);
 void	ft_pa(t_stacks *stack, int args, int i);
 void	ft_pb(t_stacks *stack, int args, int i);
 void	ft_sa(t_stacks *stack);

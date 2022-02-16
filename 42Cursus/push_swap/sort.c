@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/15 14:54:18 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/16 11:36:25 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ void	sorting_start(t_stacks *stack, int ac, int chunks, int *count)
 			j = find_holdf(stack, i, ac);
 			k = find_holds(stack, i, ac);
 			pushtotop(stack, ac , j, k);
-			if (order_check(stack, ac))
-				return ;
 			ft_pb(stack, ac, 0);
 			*count += 1;
 		}
@@ -47,8 +45,6 @@ void	pushtotop(t_stacks *stack, int ac, int i, int j)
 		while (i > 0)
 		{
 			ft_ra(stack, ac, 0);
-			if (order_check(stack, ac))
-				return ;
 			i--;
 		}
 	}
@@ -57,8 +53,6 @@ void	pushtotop(t_stacks *stack, int ac, int i, int j)
 		while (j <= max)
 		{
 			ft_rra(stack, ac, 1);
-			if (order_check(stack, ac))
-				return ;
 			j++;
 		}
 	}

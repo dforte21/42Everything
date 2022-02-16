@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 16:10:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/15 14:43:09 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/16 11:32:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,12 @@ void	backtob(t_stacks *stack, int ac, int i)
 			if (i > num / 2)
 				ft_rrb(stack, ac, 1);
 			else
-				ft_rb(stack, ac, 0);
+			{
+				if (i == 1)
+					ft_sb(stack);
+				else
+					ft_rb(stack, ac, 0);
+			}
 		}
 		ft_pa(stack, ac, 0);
 		num--;

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/15 14:54:30 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/17 15:53:54 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,27 @@ int		check_av(char *av);
 int		stackcmp(t_stacks stacks, int arg);
 int		check_stack(t_stacks stack, int arg);
 int		sb_check(t_stacks *stack, int ac);
-int		order_check(t_stacks *stack, int ac);
-int		find_holdf(t_stacks *stack, int n, int ac);
-int		find_holds(t_stacks *stack, int n, int ac);
-void	backtob(t_stacks *stack, int ac, int i);
-void	reset_bstack(t_stacks *stack, int ac, int n);
-void	check_bstack(t_stacks *stack, int ac);
-void	pushtotop(t_stacks *stack, int ac, int i, int j);
+int		crescent_check(t_stacks *stack, int ac);
+int		decresc_check(t_stacks *stack, int ac);
+int		find_num(int *stack, int ac, int num);
+int		find_aend(t_stacks *stack, int ac);
+int		checkminmax(t_stacks *stack, int ac, int checker);
+int		hold_first(t_stacks *stack, int a_end, int k);
+int		hold_second(t_stacks *stack, int a_end, int k);
+int		find_bend(t_stacks *stack, int ac);
+int		find_next(t_stacks *stack, int ac);
+void	pushtotopb(t_stacks *stack, int ac, int k);
+void	pushtotopa(t_stacks *stack, int ac, int k);
+void	backtob(t_stacks *stack, int ac);
+void	big_sort(t_stacks *stack, int ac, int *count, int chunks);
+void	crescent_sort(t_stacks *stack, int ac, int a_end);
+void	quick_sort(t_stacks *stack, int ac);
 void	error_message(t_stacks *stack, int *tmp);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
 void	free_all(t_stacks *stacks, int *tmp);
 void	process_start(t_stacks *stack, int ac);
 void	allocate_struct(t_stacks *stack, int ac);
-void	sorting_start(t_stacks *stack, int ac, int chunks, int *count);
-void	sort_a(t_stacks *stack, int ac);
 void	ft_pa(t_stacks *stack, int args, int i);
 void	ft_pb(t_stacks *stack, int args, int i);
 void	ft_sa(t_stacks *stack);

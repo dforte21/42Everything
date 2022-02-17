@@ -1,6 +1,6 @@
 NAME = push_swap
 BNAME = checker
-SRC = push_swap.c operations.c operations2.c operations3.c sort.c sort2.c struct.c utils.c
+SRC = push_swap.c operations.c operations2.c operations3.c sort.c sort2.c sort3.c struct.c utils.c
 BSRC = bonus_checker.c bonus_operations.c bonus_operations2.c bonus_operations3.c utils.c struct.c
 FLAGS = -Wall -Wextra -Werror
 LIBFT = libft/libft.a

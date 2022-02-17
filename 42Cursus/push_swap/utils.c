@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/15 14:58:27 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/17 15:22:33 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,6 @@ int	check_stack(t_stacks stack, int arg)
 	return (1);
 }
 
-int	order_check(t_stacks *stack, int ac)
-{
-	int	i;
-
-	i = 0;
-	while (i < ac - 1 && stack->bsa[i + 1] != false)
-	{
-		if (stack->position[i] < stack->position[i + 1])
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	border_check(t_stacks *stack, int ac)
 {
 	int	i;
@@ -75,4 +61,18 @@ void	error_message(t_stacks *stack, int *tmp)
 {
 	write(STDERR_FILENO, "Error\n", 6);
 	free_all(stack, tmp);
+}
+
+int	find_num(int *stack, int ac, int num)
+{
+	int i;
+
+	i = 0;
+	while (i <  ac)
+	{
+		if (stack[i] == num)
+			return (i);
+		i++;
+	}
+	return (-1);
 }

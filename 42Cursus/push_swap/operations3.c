@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 14:58:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/09 11:33:37 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/18 14:50:39 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@ void	ft_ss(t_stacks *stack)
 	ft_printf("ss\n");
 }
 
-void	ft_rr(t_stacks *stack, int args, int i)
+void	ft_rr(t_stacks *stack)
 {
-	ft_ra(stack, args, i);
-	ft_rb(stack, args, i);
+	ft_ra(stack, stack->alen);
+	ft_rb(stack, stack->blen);
 	ft_printf("rr\n");
 }
 
-void	ft_rrr(t_stacks *stack, int args, int i)
+void	ft_rrr(t_stacks *stack)
 {
-	ft_rra(stack, args, i);
-	ft_rrb(stack, args, i);
+	ft_rra(stack, stack->alen);
+	ft_rrb(stack, stack->blen);
 	ft_printf("rrr\n");
 }

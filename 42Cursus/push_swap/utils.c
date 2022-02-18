@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/17 15:22:33 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/18 14:27:01 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	free_all(t_stacks *stacks, int *tmp)
 {
 	free(stacks->sa);
 	free(stacks->sb);
-	free(stacks->bsa);
-	free(stacks->bsb);
 	free(stacks->position);
 	if (tmp)
 		free(tmp);

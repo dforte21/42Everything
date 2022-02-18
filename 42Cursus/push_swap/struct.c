@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:53:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/10 17:42:46 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/18 14:34:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@ int	init_stacks(t_stacks *stacks, int ac, char **av)
 				return (0);
 		n = ft_atoi(av[i + 1]);
 		stacks->sa[i] = n;
-		stacks->bsa[i] = true;
 		stacks->sb[i] = 0;
-		stacks->bsb[i] = false;
 		i++;
 	}
 	return (1);
@@ -105,7 +103,7 @@ void	allocate_struct(t_stacks *stack, int ac)
 {
 	stack->sa = malloc(sizeof(int) * (ac - 1));
 	stack->sb = malloc(sizeof(int) * (ac - 1));
-	stack->bsa = malloc(sizeof(int) * (ac - 1));
-	stack->bsb = malloc(sizeof(int) * (ac - 1));
+	stack->alen = ac - 2;
+	stack->blen = -1;
 	stack->position = malloc(sizeof(int) * (ac - 1));
 }

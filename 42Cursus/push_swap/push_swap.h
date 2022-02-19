@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/18 15:01:01 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/19 13:30:35 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,17 @@ int		check_av(char *av);
 int		stackcmp(t_stacks stacks, int arg);
 int		check_stack(t_stacks stack, int arg);
 int		sb_check(t_stacks *stack, int ac);
-int		hold_first(t_stacks *stack, int a_end, int k);
-int		hold_second(t_stacks *stack, int a_end, int k);
+int		hold_first(t_stacks *stack, int len, int k);
+int		hold_second(t_stacks *stack, int len, int k);
+int		find_num(int *stack, int len, int num);
+int		findmin(int	*stack, int len);
+int		findmax(int	*stack, int len);
+int		order_check(int *stack, int len);
+int		check_minmax(int *stack, int len, int position);
+void	backtob(t_stacks *stack);
+void	big_sort(t_stacks *stack, int chunks);
+void	orderb(t_stacks *stack);
+void	pushtotop(t_stacks *stack, int len, int i, int check);
 void	quick_sort(t_stacks *stack);
 void	error_message(t_stacks *stack, int *tmp);
 void	get_position(int sa[], int *position, int args, int *tmp);

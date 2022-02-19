@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/18 14:27:01 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/19 13:26:54 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,12 @@ void	error_message(t_stacks *stack, int *tmp)
 	free_all(stack, tmp);
 }
 
-int	find_num(int *stack, int ac, int num)
+int	find_num(int *stack, int len, int num)
 {
 	int i;
 
 	i = 0;
-	while (i <  ac)
+	while (i <= len)
 	{
 		if (stack[i] == num)
 			return (i);

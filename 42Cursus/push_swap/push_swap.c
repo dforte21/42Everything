@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/18 14:59:57 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/19 13:35:15 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,24 @@ int	main(int ac, char **av)
 
 void	process_start(t_stacks *stack, int ac)
 {
-	if (ac <= 10)
+	int	chunks;
+
+	chunks = ac / 20;
+	if (ac % 20 != 0)
+		chunks++;
+	if (ac <= 10 || order_check(stack->position, stack->alen) == -1)
 	{
 		quick_sort(stack);
 		return ;
 	}
+	big_sort(stack, chunks);
+	backtob(stack);
+	//ft_printf("\n\n");
+	//for (int i = 0; i < ac; i++)
+	//	ft_printf("%d ", stack->sb[i]);
+	//ft_printf("\n\n");
+	//for (int i = 0; i < ac; i++)
+	//	ft_printf("%d ", stack->position[i]);
 }
 
 int	stackcmp(t_stacks stacks, int arg)

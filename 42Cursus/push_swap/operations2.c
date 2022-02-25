@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 13:49:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/18 14:50:19 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:02:01 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_ra(t_stacks *stack, int len)
+void	ft_ra(t_stacks *stack, int len, int check)
 {
 	int	tmp;
 	int	tmp2;
@@ -27,10 +27,11 @@ void	ft_ra(t_stacks *stack, int len)
 		tmp = tmp2;
 		len--;
 	}
-	ft_printf("ra\n");
+	if (check == 0)
+		ft_printf("ra\n");
 }
 
-void	ft_rb(t_stacks *stack, int len)
+void	ft_rb(t_stacks *stack, int len, int check)
 {
 	int	tmp;
 	int	tmp2;
@@ -45,10 +46,11 @@ void	ft_rb(t_stacks *stack, int len)
 		tmp = tmp2;
 		len--;
 	}
-	ft_printf("rb\n");
+	if (check == 0)
+		ft_printf("rb\n");
 }
 
-void	ft_rra(t_stacks *stack, int len)
+void	ft_rra(t_stacks *stack, int len, int check)
 {
 	int	i;
 	int	tmp;
@@ -64,10 +66,11 @@ void	ft_rra(t_stacks *stack, int len)
 		tmp = tmp2;
 	}
 	stack->position[0] = tmp;
-	ft_printf("rra\n");
+	if (check == 0)
+		ft_printf("rra\n");
 }
 
-void	ft_rrb(t_stacks *stack, int len)
+void	ft_rrb(t_stacks *stack, int len, int check)
 {
 	int	i;
 	int	tmp;
@@ -83,5 +86,6 @@ void	ft_rrb(t_stacks *stack, int len)
 		tmp = tmp2;
 	}
 	stack->sb[0] = tmp;
-	ft_printf("rrb\n");
+	if (check == 0)
+		ft_printf("rrb\n");
 }

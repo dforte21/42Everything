@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 12:05:13 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/11 12:13:47 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:37:59 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	ft_bss(t_stacks *stack)
 	ft_bsb(stack);
 }
 
-void	ft_brr(t_stacks *stack, int args, int i)
+void	ft_brr(t_stacks *stack)
 {
-	ft_bra(stack, args, i);
-	ft_brb(stack, args, i);
+	ft_bra(stack, stack->alen);
+	ft_brb(stack, stack->blen);
 }
 
-void	ft_brrr(t_stacks *stack, int args, int i)
+void	ft_brrr(t_stacks *stack)
 {
-	ft_brra(stack, args, i);
-	ft_brrb(stack, args, i);
+	ft_brra(stack, stack->alen);
+	ft_brrb(stack, stack->blen);
 }

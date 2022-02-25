@@ -6,68 +6,120 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 16:10:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/19 13:53:36 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 11:35:28 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	check_minmax(int *stack, int len, int position)
+int	*getbestcomb(t_stacks *stack, int *maxcomb)
 {
 	int	i;
-	int	j;
+	int	count;
+	int	*tmp;
 
-	i = findmin(stack, len);
-	j = findmax(stack, len);
-	if (position == len)
+	while (maxcomb > 0)
 	{
-		if (j == position && i == 0)
-			return (0);
-	}
-	if (j == position && i == j + 1)
-		return (0);
-	return (1);
-}
-
-void	pushtotop(t_stacks *stack, int len, int i, int check)
-{
-	if (i > len / 2)
-	{
-		while (i <= len)
+		i = 0;
+		while (i <= stack->alen)
 		{
-			if (check == 0)
-				ft_rra(stack, len);
-			else
-				ft_rrb(stack, len);
+			checkstack(stack, &count, i);
+			if (count == *maxcomb)
+				break ;
 			i++;
 		}
+		if (count == *maxcomb)
+				break ;
+		*maxcomb -= 1;
 	}
-	else
+	tmp = malloc(sizeof(int) * *maxcomb);
+	stackcopy(stack, i, tmp);
+	return (tmp);
+}
+
+void	checkstack(t_stacks *stack, int *count, int i)
+{
+	int	j;
+	int	k;
+
+	*count = 1;
+	j = i + 1;
+	k = i;
+	while (j <= stack->alen)
 	{
-		while (i > 0)
+		if (stack->position[j] > stack->position[k])
 		{
-			if (check == 0)
-				ft_ra(stack, len);
-			else
-				ft_rb(stack, len);
-			i--;
+			k = j;
+			*count += 1;
 		}
+		j++;
+	}
+	j = 0;
+	while (j < i)
+	{
+		if (stack->position[j] > stack->position[k])
+		{
+			k = j;
+			*count += 1;
+		}
+		j++;
 	}
 }
 
-void	orderb(t_stacks *stack)
+void	stackcopy(t_stacks *stack, int i, int *tmp)
+{
+	int	j;
+	int	k;
+
+	tmp[0] = stack->position[i];
+	j = i + 1;
+	k = 0;
+	while (j <= stack->alen)
+	{
+		if (stack->position[j] > tmp[k])
+		{
+			k++;
+			tmp[k] = stack->position[j];
+		}
+		j++;
+	}
+	j = 0;
+	while (j < i)
+	{
+		if (stack->position[j] > tmp[k])
+		{
+			k++;
+			tmp[k] = stack->position[j];
+		}
+		j++;
+	}
+}
+
+int	checknumb(int num, int *bestcomb, int maxcomb)
+{
+	int i;
+
+	i = 0;
+	while (i < maxcomb)
+	{
+		if (bestcomb[i] == num)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	findnext(t_stacks *stack, int num, int ac)
 {
 	int	i;
-	int	num;
+	int find;
 
-	num = stack->position[0] - 1;
+	find = num + 1;
 	i = -1;
-	while (i == -1 && num > 0)
+	while (i == -1 && find <= ac)
 	{
-		i = find_num(stack->sb, stack->blen, num);
-		num--;
+		i = find_num(stack->position, stack->alen, find);
+		find++;
 	}
-	if (i == -1)
-		i = findmax(stack->sb, stack->blen);
-	pushtotop(stack, stack->blen, i, 1);
+	return (i);
 }

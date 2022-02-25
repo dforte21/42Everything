@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 16:10:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 11:35:28 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:58:44 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	*getbestcomb(t_stacks *stack, int *maxcomb)
 			i++;
 		}
 		if (count == *maxcomb)
-				break ;
+			break ;
 		*maxcomb -= 1;
 	}
 	tmp = malloc(sizeof(int) * *maxcomb);
@@ -97,7 +97,7 @@ void	stackcopy(t_stacks *stack, int i, int *tmp)
 
 int	checknumb(int num, int *bestcomb, int maxcomb)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < maxcomb)
@@ -112,7 +112,7 @@ int	checknumb(int num, int *bestcomb, int maxcomb)
 int	findnext(t_stacks *stack, int num, int ac)
 {
 	int	i;
-	int find;
+	int	find;
 
 	find = num + 1;
 	i = -1;

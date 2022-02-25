@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:20:24 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:58:08 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	findbestnum(t_stacks *stack, int ac, int moves)
 			i++;
 		}
 		if (count == moves)
-				break ;
+			break ;
 		moves++;
 	}
 	return (i);

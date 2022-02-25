@@ -6,15 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:39:13 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:57:32 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 # include "libft/libft.h"
-# include <stdbool.h>
-#include<sys/wait.h>
 
 typedef struct s_stacks
 {

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:56:03 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 11:45:18 by dforte           ###   ########.fr       */
+/*   Updated: 2022/02/25 12:57:47 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,6 @@ void	process_start(t_stacks *stack, int ac)
 	}
 	big_sort(stack, ac);
 	backtob(stack, ac);
-	//ft_printf("\n\n");
-	//for (int i = 0; i < ac; i++)
-	//	ft_printf("%d ", stack->sb[i]);
-	//ft_printf("\n\n");
-	//for (int i = 0; i < ac; i++)
-	//	ft_printf("%d ", stack->position[i]);
 }
 
 int	stackcmp(t_stacks stacks, int arg)

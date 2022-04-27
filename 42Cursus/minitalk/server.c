@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 15:41:09 by dforte            #+#    #+#             */
-/*   Updated: 2022/04/26 18:52:59 by dforte           ###   ########.fr       */
+/*   Updated: 2022/04/26 20:00:44 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	build_msg(int signal, siginfo_t *info, void *niente)
 		c = 0;
 		return ;
 	}
-
 	c <<= 1;
 	i++;
 }

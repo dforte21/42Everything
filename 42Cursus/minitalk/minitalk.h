@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 15:30:23 by dforte            #+#    #+#             */
-/*   Updated: 2022/04/26 18:57:40 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/14 16:37:07 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ void	print_message(int pid, char *msg);
 void	send_msg(int pid, char msg);
 void	build_msg(int signal, siginfo_t *info, void *niente);
 void	print_success(int num);
+int		checkargs(int ac, char **av);
 
 #endif

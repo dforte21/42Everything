@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 15:01:08 by dforte            #+#    #+#             */
-/*   Updated: 2022/04/29 19:08:17 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/16 18:55:29 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,19 @@
 typedef struct s_tiles
 {
 	void	*wall;
-	void	*wall1;
-	void	*wall2;
 	void	*collect;
 	void	*collect1;
 	void	*collect2;
 	void	*floor;
-	void	*floor1;
-	void	*floor2;
 	void	*exit;
 	void	*exit1;
 	void	*exit2;
 	void	*player;
 	void	*player1;
 	void	*player2;
+	void	*enemy;
+	void	*enemy1;
+	void	*enemy2;
 }             t_tiles;
 
 typedef	struct s_map
@@ -42,6 +41,9 @@ typedef	struct s_map
 	char	**map;
 	int		row;
 	int		col;
+	int		collectibles;
+	int		moves;
+	int		frame;
 	void	*mlx_ptr;
 	void	*mlx_winptr;
 	t_tiles	*tiles;
@@ -58,7 +60,11 @@ void	ft_move_right(t_map *maps);
 void	ft_move_left(t_map *maps);
 void	ft_move_down(t_map *maps);
 void	ft_move_up(t_map *maps);
+void	put_moves(t_map *maps);
+void	ft_lose(t_map *maps);
+void	change_tiles(t_map *maps);
+int		ft_destroy(t_map *maps);
 int		load_tiles(t_map *maps);
-int	 movements(int keycode, t_map *maps);
+int		movements(int keycode, t_map *maps);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 15:15:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/04/27 16:31:09 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/16 18:55:57 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ t_map	loadmap(char *file)
 	t_map	maps;
 	int		i;
 	
-	maps.row = 0;
-	maps.col = 0;
+	maps.collectibles = 0;
+	maps.moves = 0;
+	maps.frame = 0;
 	i = 0;
 	get_row_col(file, &maps);
 	maps.map = ft_calloc(maps.row + 1, sizeof(char *));
@@ -39,8 +40,12 @@ void	get_row_col(char *file, t_map *maps)
 
 	fd = open(file, O_RDONLY);
 	buf = read(fd, &c, 1);
+	maps->row = 1;
+	maps->col = 0;
 	while (buf != 0)
 	{
+		if (c == 'C')
+			maps->collectibles++;
 		if (c != '\n')
 			maps->col += 1;
 		else

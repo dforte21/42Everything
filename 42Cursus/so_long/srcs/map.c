@@ -6,36 +6,34 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 15:15:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/05/16 18:55:57 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/17 19:49:31 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include "../includes/so_long.h"
 
-t_map	loadmap(char *file)
+void	loadmap(char *file, t_map *maps)
 {
-	t_map	maps;
-	int		i;
-	
-	maps.collectibles = 0;
-	maps.moves = 0;
-	maps.frame = 0;
+	int	i;
+
+	maps->collectibles = 0;
+	maps->moves = 0;
+	maps->frame = 0;
 	i = 0;
-	get_row_col(file, &maps);
-	maps.map = ft_calloc(maps.row + 1, sizeof(char *));
-	while (i < maps.row)
+	get_row_col(file, maps);
+	maps->map = ft_calloc(maps->row + 1, sizeof(char *));
+	while (i < maps->row)
 	{
-		maps.map[i] = ft_calloc(maps.col + 1, 1);
+		maps->map[i] = ft_calloc(maps->col + 1, 1);
 		i++;
 	}
-	readmap(file, &maps);
-	return (maps);
+	readmap(file, maps);
 }
 
 void	get_row_col(char *file, t_map *maps)
 {
 	int		fd;
-	int 	buf;
+	int		buf;
 	char	c;
 
 	fd = open(file, O_RDONLY);

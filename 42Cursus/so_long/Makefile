@@ -1,5 +1,5 @@
 NAME = so_long
-SRCS = srcs/animations.c srcs/map.c srcs/mapcheck.c srcs/movements.c srcs/so_long.c srcs/utils.c
+SRCS = srcs/animations.c srcs/map.c srcs/mapcheck.c srcs/mapcheck2.c srcs/movements.c srcs/so_long.c srcs/utils.c
 FLAGS = -Wall -Wextra -Werror -lmlx -framework OpenGl -framework AppKit
 PRINTF = ft_printf/libftprintf.a
 

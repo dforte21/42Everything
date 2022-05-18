@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 15:01:08 by dforte            #+#    #+#             */
-/*   Updated: 2022/05/17 20:05:22 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 11:07:38 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int		ver_isnotwall(t_map *maps);
 int		hor_isnotwall(t_map *maps);
 int		find_char(t_map *maps, int *x, int *y, char c);
 int		check_rowcol(int fd, char *c);
+int		check_multipleplayer(t_map *maps);
 int		ft_destroy(t_map *maps);
 int		load_tiles(t_map *maps);
 int		movements(int keycode, t_map *maps);

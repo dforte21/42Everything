@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 17:46:07 by dforte            #+#    #+#             */
-/*   Updated: 2022/05/17 20:06:15 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 11:04:17 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	check_args(int ac, char **av, t_map *map, char c)
 	if (!check_mndchar(map))
 	{
 		free_all(map);
-		return (ft_error("Error\nMap is missing player/collectibles/exit"));
+		return (ft_error("Error\nMap incorrect number of players/collectibles/exits"));
 	}
 	if (!ver_isnotwall(map) || !hor_isnotwall(map))
 	{
@@ -93,6 +93,8 @@ int	check_mndchar(t_map *maps)
 	int	x;
 	int	y;
 
+	if (!check_multipleplayer(maps))
+		return (0);
 	if (!find_char(maps, &x, &y, 'P'))
 		return (0);
 	if (!find_char(maps, &x, &y, 'E'))

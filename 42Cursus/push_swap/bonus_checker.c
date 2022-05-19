@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:04:49 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:49:49 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 14:49:00 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,20 @@
 int	main(int ac, char **av)
 {
 	t_stacks	stacks;
+	char		**mat;
 
-	if (!init_stacks(&stacks, ac, av) || !check_stack(stacks, ac - 1))
-	{
-		error_message(&stacks, NULL);
-		return (0);
-	}
+	mat = loadmat(&ac, av);
+	if (!init_stacks(&stacks, ac, mat) || !check_stack(stacks, ac - 1))
+		return (error_message(&stacks, NULL, mat));
 	if (stacks.alen == -1)
-		return (0);
+		return (error_message(&stacks, NULL, mat));
 	if (!ft_read(&stacks))
-	{
-		error_message(&stacks, NULL);
-		return (0);
-	}
+		return (error_message(&stacks, NULL, mat));
 	if (border_check(&stacks, ac -1) && stacks.blen == -1)
 		ft_printf("OK\n");
 	else
 		ft_printf("KO\n");
-	free_all(&stacks, NULL);
+	free_all(&stacks, NULL, mat);
 }
 
 int	ft_read(t_stacks *stacks)

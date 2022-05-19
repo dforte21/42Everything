@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 16:09:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:58:08 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 16:03:44 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	quick_sort(t_stacks *stack)
 
 	while (order_check(stack->position, stack->alen) != -1)
 	{
-		i = order_check(stack->position, stack->alen);
+		i = find_best(stack->position, stack->alen);
 		pushtotop(stack, stack->alen, i, 0);
 		ft_sa(stack);
 	}

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:53:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/18 14:34:34 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 14:52:12 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@ int	init_stacks(t_stacks *stacks, int ac, char **av)
 
 	i = 0;
 	allocate_struct(stacks, ac);
-	while (i < ac - 1)
+	while (av[i])
 	{
-		if (!check_av(av[i + 1]))
+		if (!check_av(av[i]))
 			return (0);
-		if (ft_strncmp("2147483647", av[i + 1], 10) < 0
-			&& ft_strlen(av[i + 1]) >= 10)
+		if (ft_strncmp("2147483647", av[i], ft_strlen(av[i])) != 0
+			&& ft_strlen(av[i]) >= 10)
 			return (0);
-		if (av[i + 1][0] == '-')
-			if (ft_strncmp("-2147483648", av[i + 1], 11) < 0
-				&& ft_strlen(av[i + 1]) >= 11)
+		if (av[i][0] == '-')
+			if (ft_strncmp("-2147483648", av[i], ft_strlen(av[i])) != 0
+				&& ft_strlen(av[i]) >= 11)
 				return (0);
-		n = ft_atoi(av[i + 1]);
+		n = ft_atoi(av[i]);
 		stacks->sa[i] = n;
 		stacks->sb[i] = 0;
 		i++;

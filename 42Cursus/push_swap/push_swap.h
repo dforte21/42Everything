@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 14:54:04 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:57:32 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 16:03:32 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
-# include "libft/libft.h"
+# include "ft_printf/ft_printf.h"
 
 typedef struct s_stacks
 {
@@ -38,6 +38,10 @@ int		findbestnum(t_stacks *stack, int ac, int moves);
 int		check_minmax(int *stack, int len, int position);
 int		*getbestcomb(t_stacks *stack, int *maxcomb);
 int		checknumb(int num, int *bestcomb, int maxcomb);
+int		error_message(t_stacks *stack, int *tmp, char **map);
+int		free_all(t_stacks *stacks, int *tmp, char **mat);
+int		find_best(int *stack, int len);
+char	**loadmat(int *ac, char **av);
 void	orderstacks(t_stacks *stack, int i, int j);
 void	checkstack(t_stacks *stack, int *count, int i);
 void	pushtotop(t_stacks *stack, int len, int i, int check);
@@ -45,10 +49,8 @@ void	stackcopy(t_stacks *stack, int i, int *tmp);
 void	backtob(t_stacks *stack, int ac);
 void	big_sort(t_stacks *stack, int ac);
 void	quick_sort(t_stacks *stack);
-void	error_message(t_stacks *stack, int *tmp);
 void	get_position(int sa[], int *position, int args, int *tmp);
 void	init_position(int *position, int *tmp, int args, int sa[]);
-void	free_all(t_stacks *stacks, int *tmp);
 void	process_start(t_stacks *stack, int ac);
 void	allocate_struct(t_stacks *stack, int ac);
 void	ft_pa(t_stacks *stack, int len);

@@ -6,19 +6,29 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 18:23:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/02/25 12:58:52 by dforte           ###   ########.fr       */
+/*   Updated: 2022/05/18 13:02:39 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	free_all(t_stacks *stacks, int *tmp)
+int	free_all(t_stacks *stacks, int *tmp, char **mat)
 {
+	int	i;
+
+	i = 0;
+	while (mat[i])
+	{
+		free(mat[i]);
+		i++;
+	}
+	free(mat);
 	free(stacks->sa);
 	free(stacks->sb);
 	free(stacks->position);
 	if (tmp)
 		free(tmp);
+	return (1);
 }
 
 int	check_stack(t_stacks stack, int arg)
@@ -55,10 +65,11 @@ int	border_check(t_stacks *stack, int ac)
 	return (1);
 }
 
-void	error_message(t_stacks *stack, int *tmp)
+int	error_message(t_stacks *stack, int *tmp, char **mat)
 {
 	write(STDERR_FILENO, "Error\n", 6);
-	free_all(stack, tmp);
+	free_all(stack, tmp, mat);
+	return (1);
 }
 
 int	find_num(int *stack, int len, int num)

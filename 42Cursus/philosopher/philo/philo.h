@@ -5,13 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/23 17:49:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 18:58:00 by dforte           ###   ########.fr       */
+/*   Created: 2022/06/22 22:39:30 by dforte            #+#    #+#             */
+/*   Updated: 2022/06/22 22:40:29 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PHILO_H
+#ifndef PHILO_H
 # define PHILO_H
+# define FALSE 0
+# define TRUE 1
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -19,15 +21,11 @@
 # include <pthread.h>
 # include <stdbool.h>
 
-# define FALSE 0
-# define TRUE 1
-
-typedef	struct s_philo
+typedef struct s_philo
 {
 	int				id;
 	int				eat;
 	long long int	strv;
-	bool			isdeath;
 	bool			end;
 	struct s_rules	*rules;
 	pthread_mutex_t	*left;
@@ -42,6 +40,7 @@ typedef struct s_rules
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat;
+	bool			isdeath;
 	long long int	start;
 	t_philo			*philo;
 	pthread_mutex_t	philo_time;

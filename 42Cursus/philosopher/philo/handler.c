@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 15:17:02 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 19:48:26 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/22 22:42:41 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	ft_thread(t_rules *rules)
 	rules->start = ft_time();
 	while (i < rules->nphilo)
 	{
-		pthread_create(&rules->philo[i].thread, NULL, ft_meal, &rules->philo[i]);
+		pthread_create(&rules->philo[i].thread,
+			NULL, ft_meal, &rules->philo[i]);
 		i++;
 	}
 	ft_monitor(rules);
@@ -35,7 +36,7 @@ void	ft_thread(t_rules *rules)
 
 void	ft_monitor(t_rules *rules)
 {
-	t_philo *ph;
+	t_philo	*ph;
 
 	ph = rules->philo;
 	while (1)
@@ -47,7 +48,7 @@ void	ft_monitor(t_rules *rules)
 
 int	ft_finish(t_philo *philo)
 {
-	int tmp;
+	int	tmp;
 	int	i;
 	int	check;
 
@@ -61,6 +62,7 @@ int	ft_finish(t_philo *philo)
 		if (tmp > philo->rules->time_to_die)
 		{
 			ft_death(philo);
+			usleep(2000);
 			ft_message(philo, "has died");
 			return (1);
 		}

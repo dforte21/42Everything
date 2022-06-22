@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 15:27:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 19:45:43 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/22 22:36:35 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 int	main(int ac, char **av)
 {
-	t_rules rules;
+	t_rules	rules;
 
 	//if (!check_args(ac, av))
 	//	return (ft_error());
 	initialize_arg(ac, av, &rules);
-	initialize_philo(&rules);	
+	initialize_philo(&rules);
 	initialize_mutex(&rules);
-
 	ft_thread(&rules);
 }
 
@@ -33,7 +32,6 @@ void	initialize_philo(t_rules *rules)
 	while (i < rules->nphilo)
 	{
 		rules->philo[i].id = i + 1;
-		rules->philo[i].isdeath = FALSE;
 		rules->philo[i].eat = 0;
 		rules->philo[i].end = FALSE;
 		rules->philo[i].rules = rules;
@@ -56,11 +54,12 @@ void	initialize_arg(int ac, char **av, t_rules *rules)
 	rules->time_to_die = ft_atoi(av[2]);
 	rules->time_to_eat = ft_atoi(av[3]);
 	rules->time_to_sleep = ft_atoi(av[4]);
+	rules->isdeath = FALSE;
 	if (ac == 6)
 		rules->must_eat = ft_atoi(av[5]);
 	else
 		rules->must_eat = -1;
-	while (i < rules->nphilo) 
+	while (i < rules->nphilo)
 	{
 		pthread_mutex_init(&rules->forks[i], NULL);
 		i++;

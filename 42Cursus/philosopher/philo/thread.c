@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:24:54 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 19:27:34 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/22 22:30:12 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	*ft_meal(void *philo)
 	{
 		if (ft_take_fork(ph))
 			break ;
-		ft_message(ph, "is eating");
+		if (!check_mutex(0, ph))
+			ft_message(ph, "is eating");
 		ph->eat++;
 		if (ph->eat == ph->rules->must_eat)
 		{
@@ -48,11 +49,13 @@ void	ft_starving(t_philo *philo)
 int	ft_take_fork(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right);
-	ft_message(philo, "has taken a fork");
+	if (!check_mutex(0, philo))
+		ft_message(philo, "has taken a fork");
 	if (philo->rules->nphilo == 1)
 		return (1);
 	pthread_mutex_lock(philo->left);
-	ft_message(philo, "has taken a fork");
+	if (!check_mutex(0, philo))
+		ft_message(philo, "has taken a fork");
 	return (0);
 }
 
@@ -61,14 +64,16 @@ void	ft_routine(t_philo *ph)
 	my_sleep(ph->rules->time_to_eat);
 	pthread_mutex_unlock(ph->right);
 	pthread_mutex_unlock(ph->left);
-	ft_message(ph, "is sleeping");
+	if (!check_mutex(0, ph))
+		ft_message(ph, "is sleeping");
 	my_sleep(ph->rules->time_to_sleep);
-	ft_message(ph, "is thinking");
+	if (!check_mutex(0, ph))
+		ft_message(ph, "is thinking");
 }
 
 void	ft_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->die_mutex);
-	philo->isdeath = TRUE;
+	philo->rules->isdeath = TRUE;
 	pthread_mutex_unlock(&philo->rules->die_mutex);
 }

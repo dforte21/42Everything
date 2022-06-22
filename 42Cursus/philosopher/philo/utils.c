@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:19:55 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 19:26:53 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/22 22:37:11 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_error(void)
+int	ft_error(void)
 {
 	return (1);
 }
@@ -37,13 +37,13 @@ void	my_sleep(long long time)
 
 bool	check_mutex(int flag, t_philo *philo)
 {
-	bool tmp;
+	bool	tmp;
 
 	tmp = TRUE;
 	if (flag == 0)
 	{
 		pthread_mutex_lock(&philo->rules->die_mutex);
-		tmp = philo->isdeath;
+		tmp = philo->rules->isdeath;
 		pthread_mutex_unlock(&philo->rules->die_mutex);
 	}
 	if (flag == 1)

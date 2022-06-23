@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 22:39:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 13:25:38 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 15:12:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ typedef struct s_philo
 {
 	int				id;
 	int				eat;
-	long long int	strv;
 	bool			end;
+	long long int	strv;
 	struct s_rules	*rules;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;

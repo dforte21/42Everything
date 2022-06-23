@@ -1,11 +1,13 @@
 NAME = philo
 
-SRC = ./*.c
+SDIR = sources/
 
-FLAGS = -Wall -Wextra -Werror
+SRC = *.c
+
+FLAGS = -Wall -Wextra -Werror #-fsanitize=address -g3
 
 $(NAME):
-			gcc $(FLAGS) $(SRC) -o $(NAME)
+			gcc $(FLAGS) $(SDIR)$(SRC) -o $(NAME)
 
 all:		$(NAME)
 

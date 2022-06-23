@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:24:54 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 13:13:23 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 14:47:48 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 void	*ft_meal(void *philo)
 {

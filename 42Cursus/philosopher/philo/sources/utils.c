@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:19:55 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 13:17:43 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 14:46:20 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 long long	ft_time(void)
 {

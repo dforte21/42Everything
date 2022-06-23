@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 15:27:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 13:17:16 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 14:46:25 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 int	main(int ac, char **av)
 {

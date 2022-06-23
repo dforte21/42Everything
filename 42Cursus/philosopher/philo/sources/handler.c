@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 15:17:02 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 12:48:22 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 14:46:14 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 void	ft_thread(t_rules *rules)
 {
@@ -41,7 +41,7 @@ void	ft_monitor(t_rules *rules)
 	ph = rules->philo;
 	while (1)
 	{
-		if (ft_finish(ph) == 1 || rules->isdeath == TRUE)
+		if (ft_finish(ph) == 1 || check_mutex(0,  rules->philo))
 			break ;
 	}
 }

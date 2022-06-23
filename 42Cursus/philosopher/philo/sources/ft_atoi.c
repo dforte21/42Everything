@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 15:36:39 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/21 15:36:53 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 14:47:36 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 static int	is_space(char str)
 {

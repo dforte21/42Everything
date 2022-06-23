@@ -1,11 +1,13 @@
 NAME = philo_bonus
 
-SRC = ./*.c
+SDIR = sources/
+
+SRC = *.c
 
 FLAGS = -Wall -Wextra -Werror
 
 $(NAME):
-			gcc $(FLAGS) $(SRC) -o $(NAME)
+			gcc $(FLAGS) $(SDIR)$(SRC) -o $(NAME)
 
 all:		$(NAME)
 
@@ -15,6 +17,6 @@ clean:
 fclean:		clean
 			rm -f $(NAME)
 
-re:			make fclean
+re:			fclean all
 
 .PHONY: 	all clean fclean re

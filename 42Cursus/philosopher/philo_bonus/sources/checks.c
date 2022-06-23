@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 13:15:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/23 19:29:02 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 17:06:35 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/phbonus.h"
 
 int	check_args(int ac, char **av)
 {

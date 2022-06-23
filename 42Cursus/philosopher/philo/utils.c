@@ -6,16 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:19:55 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 22:37:11 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 13:17:43 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	ft_error(void)
-{
-	return (1);
-}
 
 long long	ft_time(void)
 {
@@ -57,7 +52,7 @@ bool	check_mutex(int flag, t_philo *philo)
 
 void	ft_message(t_philo *ph, char *msg)
 {
-	pthread_mutex_lock(&ph->rules->philo_time);
+	pthread_mutex_lock(&ph->rules->lock);
 	printf("%lld %d %s\n", ft_time() - ph->rules->start, ph->id, msg);
-	pthread_mutex_unlock(&ph->rules->philo_time);
+	pthread_mutex_unlock(&ph->rules->lock);
 }

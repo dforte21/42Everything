@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 22:39:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 22:40:29 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 13:25:38 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ typedef struct s_rules
 	pthread_mutex_t	must_eat_mutex;
 }			t_rules;
 
-int			ft_error(void);
+int			ft_error(char *err);
+int			ft_strncmp(char *s1, char *s2, size_t n);
 int			check_args(int ac, char **av);
 int			ft_atoi(const char *str);
 int			ft_take_fork(t_philo *philo);
@@ -68,6 +69,7 @@ void		ft_routine(t_philo *ph);
 void		initialize_mutex(t_rules *rules);
 void		ft_exit(t_rules *rules);
 void		ft_monitor(t_rules *rules);
+size_t		ft_strlen(const char *s);
 long long	ft_time(void);
 
 #endif

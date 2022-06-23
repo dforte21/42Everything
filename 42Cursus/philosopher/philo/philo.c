@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 15:27:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 22:36:35 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 13:17:16 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,13 @@ int	main(int ac, char **av)
 {
 	t_rules	rules;
 
-	//if (!check_args(ac, av))
-	//	return (ft_error());
+	if (!check_args(ac, av))
+		return (1);
 	initialize_arg(ac, av, &rules);
 	initialize_philo(&rules);
 	initialize_mutex(&rules);
 	ft_thread(&rules);
+	return (0);
 }
 
 void	initialize_philo(t_rules *rules)
@@ -76,8 +77,3 @@ void	initialize_mutex(t_rules *rules)
 	pthread_mutex_init(&rules->lock, NULL);
 	pthread_mutex_init(&rules->must_eat_mutex, NULL);
 }
-
-//int	check_args(int ac, char **av)
-//{
-//	return (1);
-//}

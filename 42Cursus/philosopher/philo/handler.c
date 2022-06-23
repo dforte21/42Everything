@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 15:17:02 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/22 22:42:41 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/23 12:48:22 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_monitor(t_rules *rules)
 	ph = rules->philo;
 	while (1)
 	{
-		if (ft_finish(ph) == 1)
+		if (ft_finish(ph) == 1 || rules->isdeath == TRUE)
 			break ;
 	}
 }

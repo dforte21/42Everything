@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:35:08 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/24 18:55:23 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/25 11:52:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	ft_init(t_cub3D *data)
 	x = 0;
 	y = 0;
 	find_player(data, &x, &y);
-	data->p.x = x * 64;
-	data->p.y = y * 64;
+	data->p.x = x * (SCREEN_WIDTH / data->width);
+	data->p.y = y * (SCREEN_HEIGHT / data->height);
 	data->p.a = 0;
 	data->p.dx = cos(data->p.a);
 	data->p.dy = sin(data->p.a);

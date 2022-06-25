@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:31:16 by dforte            #+#    #+#             */
-/*   Updated: 2022/06/24 17:31:31 by dforte           ###   ########.fr       */
+/*   Updated: 2022/06/25 11:47:39 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,13 @@ void	ft_read_file(char *file_name, t_cub3D *data)
 		data->map[row] = ft_get_row(str, 0);
 		row++;
 	}
+	ft_get_width(data);
 	close(fd);
+}
+
+void ft_get_width(t_cub3D *data)
+{
+	data->width = 0;
+	while (data->map[0][data->width])
+			data->width++;
 }

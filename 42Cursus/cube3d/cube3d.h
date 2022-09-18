@@ -6,21 +6,12 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/07/29 16:57:36 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/18 16:54:17 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUBE3D_H
 # define CUBE3D_H
-
-# define PI				3.14159265359
-# define RAD			0.0174533
-# define FOV			60
-# define SCREEN_WIDTH	640
-# define SCREEN_HEIGHT	480
-
-# define SPEED	0.1
-# define SENS	0.06598132
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -28,6 +19,12 @@
 # include <mlx.h>
 # include <stdio.h>
 # include "libft/libft.h"
+
+# define PI				3.14159265359
+# define RAD			0.0174533
+# define FOV			60
+# define SCREEN_WIDTH	640
+# define SCREEN_HEIGHT	480
 
 # define W		13
 # define A		0
@@ -46,72 +43,81 @@ typedef struct s_img
 	int		e;
 }				t_img;
 
+typedef struct s_imgs
+{
+	t_img	background;
+	t_img	win;
+	t_img	nWall;
+	t_img	sWall;
+	t_img	eWall;
+	t_img	wWall;
+}				t_imgs;
+
+typedef	struct s_ray
+{
+	int		wallHeight;
+	int		iTexture;
+	float	rayAngle;
+	float	rayX[640];
+	float	rayY[640];
+	float	rayCos[640];
+	float	raySin[640];
+	float	distance[640];
+}				t_ray;
 
 typedef struct s_player
 {
 	float	x;
 	float	y;
-	float	dx;
-	float	dy;
-	float	ldx;
-	float	ldy;
-	float	angle;
-	float	langle;
-	int		w;
-	int		s;
-	int		a;
-	int		d;
-	int		left;
-	int		right;
+	int	pAngle;
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
 }				t_player;
 
 typedef	struct s_cub3D
 {
+	void		*mlx;
+	void		*win;
 	char		*NO;
 	char		*SO;
 	char		*WE;
 	char		*EA;
+	char		*bGround;
+	char		**map;
 	int			F;
 	int			C;
-	char		**map;
 	int			height;
 	int			width;
-	int			s_h;
-	int			s_w;
-	void		*mlx;
-	void		*win;
-	void		*gun1;
-	void		*gun2;
-	void		*gun;
-	float		dist[FOV * 16];
-	int			color[FOV * 16];
-	float		wheight[FOV * 16];
 	t_player	p;
-	t_img		img;
+	t_imgs		imgs;
 }				t_cub3D;
 
+float	degreeToRadians(float degree);
+char	**loadMap(char *path, t_cub3D *data);
+void	ftExit(t_cub3D *data);
+void	read_file(char *path, t_cub3D *data);
+void	getPath(char *raw, t_cub3D *data);
+void	freeAll(t_cub3D *data);
+void	initPlayer(t_cub3D *data);
+void	getAngle(t_cub3D *data);
+void	drawLine(int i, t_ray *ray, t_cub3D *data);
+void	my_mlx_pixel_put(t_cub3D *data, int x, int y, int color);
+void	rayCasting(t_cub3D *data, t_ray *ray);
+void	ftMovements(t_cub3D *data);
+void	ftDraw(t_cub3D *data, t_ray  *ray);
+void	ftMove(float angle, t_cub3D *data);
+void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y);
+void	loadImages(t_cub3D *data);
+int		getColor(char *str);
+int		ftDisplay(t_cub3D *data);
 int		ft_on(int keycode, t_cub3D *data);
 int		ft_off(int keycode, t_cub3D *data);
-int		ft_get_height(char *file_name, char *str);
-int		ft_3d_render(t_cub3D *data);
-char	*ft_get_row(char *str, int flag);
-void	ft_remove_newline(char *file_name);
-void	ft_check_file(char *file_name);
-void	ft_put_term(char *str);
-void	my_mlx_pixel_put(t_cub3D *data, int x, int y, int color);
-void	ft_check_angle(float *angle);
-void	get_wall_height(t_cub3D *data);
-void	get_distance(t_cub3D *data, float ray);
-void	ft_read_file(char *file_name, t_cub3D *data);
-void	ft_get_width(t_cub3D *data);
-void	ft_get_info(int fd, char *str, t_cub3D *data);
-void	ft_move(t_cub3D	*data, float move_x, float move_y);
-void	ft_movement(t_cub3D *data);
-void	ft_dir(t_cub3D *data, float dir);
-void	ft_init(t_cub3D *data);
-void	ft_init_img(void);
-void	ft_find_p(t_cub3D *data);
-void	ft_init_p(t_cub3D *data, char c);
-void	ft_free_struct(t_cub3D *data);
+int		getTextColor(int x, int y, t_img *text);
+int		printWallPixel(t_ray *ray, t_img *text, int x);
+void	test(void);
 
 #endif

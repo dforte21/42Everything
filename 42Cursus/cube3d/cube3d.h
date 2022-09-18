@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 16:54:17 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/18 17:29:27 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ int		ft_on(int keycode, t_cub3D *data);
 int		ft_off(int keycode, t_cub3D *data);
 int		getTextColor(int x, int y, t_img *text);
 int		printWallPixel(t_ray *ray, t_img *text, int x);
+int		getTextStart(t_ray *ray, int x);
 void	test(void);
 
 #endif

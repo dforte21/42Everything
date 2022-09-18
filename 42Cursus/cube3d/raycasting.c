@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 16:52:08 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/18 17:29:37 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	ftDisplay(t_cub3D *data)
 	ftMovements(data);
 	rayCasting(data, &ray);
 	ftDraw(data, &ray);
-	mlx_put_image_to_window(data->mlx, data->win, data->imgs.background.img, 1920, 1080);
-	//mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, 640, 300);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.background.img, 0, 0);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, 640, 300);
 	return (0);
 }
 
@@ -72,7 +72,7 @@ void	drawLine(int x, t_ray *ray, t_cub3D *data)
 	float		yIncrementer;
 
 	y = 0;
-	ray->iTexture = 0;
+	ray->iTexture = getTextStart(ray, x);
 	yIncrementer = (ray->wallHeight * 2) / 64.0;
 	while (y < SCREEN_HEIGHT / 2 - ray->wallHeight)
 	{
@@ -118,13 +118,4 @@ void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y)
 		my_mlx_pixel_put(data, x, y, printWallPixel(ray, &data->imgs.wWall, x));
 	else
 		my_mlx_pixel_put(data, x, y, 0);
-}
-
-int	printWallPixel(t_ray *ray, t_img *text, int x)
-{
-	int	textX;
-	int	textY;
-
-	textX = (((ray->rayX[x] + ray->rayY[x]) * 64) - ((int)(ray->rayX[x] + ray->rayY[x]) * 64));
-	return (getTextColor(textX, ray->iTexture, text));
 }

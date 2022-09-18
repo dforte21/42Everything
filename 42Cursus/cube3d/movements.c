@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 16:33:50 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/18 18:00:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	ftMove(float angle, t_cub3D *data)
 
 	rcos = cos(angle);
 	rsin = sin(angle);
-	if (data->map[(int)(data->p.y + rsin * 0.3)][(int)(data->p.x + rcos * 0.3)] == '1')
+	if (data->map[(int)(data->p.y + rsin * 0.1)][(int)(data->p.x + rcos * 0.1)] == '1')
 		return ;
 	data->p.y += rsin * 0.1;
 	data->p.x += rcos * 0.1;

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:05:21 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 16:55:55 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/19 18:18:37 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,22 @@ void	loadImages(t_cub3D *data)
 	hght = 1080;
 	data->imgs.background.img = mlx_xpm_file_to_image(data->mlx, data->bGround, &wdth, &hght);
 	data->imgs.background.addr = mlx_get_data_addr(data->imgs.background.img, &data->imgs.background.bpp, &data->imgs.background.ll, &data->imgs.background.e);
+	data->imgs.mMap.img = mlx_new_image(data->mlx, 180, 180);
+	data->imgs.mMap.addr = mlx_get_data_addr(data->imgs.mMap.img, &data->imgs.mMap.bpp, &data->imgs.mMap.ll, &data->imgs.mMap.e);
+	load_mMapTiles(data);
+}
+
+void	load_mMapTiles(t_cub3D *data)
+{
+	int	wdth;
+	int	hght;
+
+	wdth = 20;
+	hght = 20;
+	data->imgs.mMapFloor.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapFloor.xpm", &wdth, &hght);
+	data->imgs.mMapFloor.addr = mlx_get_data_addr(data->imgs.mMapFloor.img, &data->imgs.mMapFloor.bpp, &data->imgs.mMapFloor.ll, &data->imgs.mMapFloor.e);
+	data->imgs.mMapWall.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapWall.xpm", &wdth, &hght);
+	data->imgs.mMapWall.addr = mlx_get_data_addr(data->imgs.mMapWall.img, &data->imgs.mMapWall.bpp, &data->imgs.mMapWall.ll, &data->imgs.mMapWall.e);
 }
 
 void	freeAll(t_cub3D *data)

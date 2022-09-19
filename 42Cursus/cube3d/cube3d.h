@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 17:29:27 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/19 19:20:17 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@
 # include "libft/libft.h"
 
 # define PI				3.14159265359
-# define RAD			0.0174533
 # define FOV			60
-# define SCREEN_WIDTH	640
-# define SCREEN_HEIGHT	480
+# define SCREEN_WIDTH	896
+# define SCREEN_HEIGHT	720
 
 # define W		13
 # define A		0
@@ -45,6 +44,9 @@ typedef struct s_img
 
 typedef struct s_imgs
 {
+	t_img	mMap;
+	t_img	mMapWall;
+	t_img	mMapFloor;
 	t_img	background;
 	t_img	win;
 	t_img	nWall;
@@ -58,11 +60,11 @@ typedef	struct s_ray
 	int		wallHeight;
 	int		iTexture;
 	float	rayAngle;
-	float	rayX[640];
-	float	rayY[640];
-	float	rayCos[640];
-	float	raySin[640];
-	float	distance[640];
+	float	rayX[SCREEN_WIDTH];
+	float	rayY[SCREEN_WIDTH];
+	float	rayCos[SCREEN_WIDTH];
+	float	raySin[SCREEN_WIDTH];
+	float	distance[SCREEN_WIDTH];
 }				t_ray;
 
 typedef struct s_player
@@ -98,6 +100,7 @@ typedef	struct s_cub3D
 
 float	degreeToRadians(float degree);
 char	**loadMap(char *path, t_cub3D *data);
+void	load_mMapTiles(t_cub3D *data);
 void	ftExit(t_cub3D *data);
 void	read_file(char *path, t_cub3D *data);
 void	getPath(char *raw, t_cub3D *data);
@@ -105,20 +108,24 @@ void	freeAll(t_cub3D *data);
 void	initPlayer(t_cub3D *data);
 void	getAngle(t_cub3D *data);
 void	drawLine(int i, t_ray *ray, t_cub3D *data);
-void	my_mlx_pixel_put(t_cub3D *data, int x, int y, int color);
+void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void	rayCasting(t_cub3D *data, t_ray *ray);
 void	ftMovements(t_cub3D *data);
 void	ftDraw(t_cub3D *data, t_ray  *ray);
 void	ftMove(float angle, t_cub3D *data);
 void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y);
 void	loadImages(t_cub3D *data);
+void	getTextStart(t_ray *ray, int x, float *yIncrementer);
+void	ftMiniMap(t_cub3D *data);
+void	ftPutTiles(t_cub3D *data, int tiles, t_img *img);
+void	checkCoords(int *x, int *y, t_cub3D *data);
+void	ftPlayer(t_cub3D *data, int tiles);
 int		getColor(char *str);
 int		ftDisplay(t_cub3D *data);
 int		ft_on(int keycode, t_cub3D *data);
 int		ft_off(int keycode, t_cub3D *data);
 int		getTextColor(int x, int y, t_img *text);
 int		printWallPixel(t_ray *ray, t_img *text, int x);
-int		getTextStart(t_ray *ray, int x);
 void	test(void);
 
 #endif

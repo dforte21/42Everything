@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/18 17:29:37 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/19 19:30:36 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ int	ftDisplay(t_cub3D *data)
 	ftMovements(data);
 	rayCasting(data, &ray);
 	ftDraw(data, &ray);
+	ftMiniMap(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->imgs.background.img, 0, 0);
-	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, 640, 300);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.mMap.img, 0, 0);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, (960 - SCREEN_WIDTH / 2), (540 - SCREEN_HEIGHT / 2));
 	return (0);
 }
 
@@ -34,8 +36,8 @@ void	rayCasting(t_cub3D *data, t_ray *ray)
 	{
 		ray->rayX[i] = data->p.x;
 		ray->rayY[i] = data->p.y;
-		ray->rayCos[i] = cos(degreeToRadians(ray->rayAngle)) / 64;
-		ray->raySin[i] = sin(degreeToRadians(ray->rayAngle)) / 64;
+		ray->rayCos[i] = cos(degreeToRadians(ray->rayAngle)) / 256;
+		ray->raySin[i] = sin(degreeToRadians(ray->rayAngle)) / 256;
 		while (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != '1')
 		{
 			ray->rayX[i] += ray->rayCos[i];
@@ -43,7 +45,7 @@ void	rayCasting(t_cub3D *data, t_ray *ray)
 		}
 		ray->distance[i] = (sqrt(pow(data->p.x - ray->rayX[i], 2) + pow(data->p.y - ray->rayY[i], 2)));
 		ray->distance[i] *= cos(degreeToRadians(ray->rayAngle) - degreeToRadians(data->p.pAngle));
-		ray->rayAngle += 0.09375;
+		ray->rayAngle += 60.0 / SCREEN_WIDTH;
 		i++;
 	}
 }
@@ -59,7 +61,7 @@ void	ftDraw(t_cub3D *data, t_ray  *ray)
 		dist = ray->distance[i];
 		if (dist < 1)
 			dist = 1;
-		ray->wallHeight = 320 / dist;
+		ray->wallHeight = SCREEN_HEIGHT / 2 / dist;
 		drawLine(i, ray, data);
 		i++;
 	}
@@ -72,15 +74,14 @@ void	drawLine(int x, t_ray *ray, t_cub3D *data)
 	float		yIncrementer;
 
 	y = 0;
-	ray->iTexture = getTextStart(ray, x);
-	yIncrementer = (ray->wallHeight * 2) / 64.0;
+	getTextStart(ray, x, &yIncrementer);
 	while (y < SCREEN_HEIGHT / 2 - ray->wallHeight)
 	{
-		my_mlx_pixel_put(data, x, y, data->C);
+		my_mlx_pixel_put(&data->imgs.win, x, y, data->C);
 		y++;
 	}
 	d = y;
-	while (ray->iTexture < 64)
+	while (y < SCREEN_HEIGHT / 2 + ray->wallHeight)
 	{	
 		d += yIncrementer;
 		while (y < d)
@@ -92,7 +93,7 @@ void	drawLine(int x, t_ray *ray, t_cub3D *data)
 	}
 	while (y < SCREEN_HEIGHT)
 	{
-		my_mlx_pixel_put(data, x, y, data->F);
+		my_mlx_pixel_put(&data->imgs.win, x, y, data->F);
 		y++;
 	}
 }
@@ -109,13 +110,13 @@ void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y)
 	floorX = (int)(ray->rayX[x] - ray->rayCos[x]);
 	floorY = (int)(ray->rayY[x] - ray->raySin[x]);
 	if (floorY > wallY && floorX == wallX)
-		my_mlx_pixel_put(data, x, y, printWallPixel(ray, &data->imgs.sWall, x));
+		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.sWall, x));
 	else if (floorY < wallY && floorX == wallX)
-		my_mlx_pixel_put(data, x, y, printWallPixel(ray, &data->imgs.nWall, x));
+		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.nWall, x));
 	else if (floorX > wallX && floorY == wallY)
-		my_mlx_pixel_put(data, x, y, printWallPixel(ray, &data->imgs.eWall, x));
+		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.eWall, x));
 	else if (floorX < wallX && floorY == wallY)
-		my_mlx_pixel_put(data, x, y, printWallPixel(ray, &data->imgs.wWall, x));
+		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.wWall, x));
 	else
-		my_mlx_pixel_put(data, x, y, 0);
+		my_mlx_pixel_put(&data->imgs.win, x, y, 0);
 }

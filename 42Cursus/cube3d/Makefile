@@ -5,7 +5,7 @@ MLX_FLG = -l mlx -framework openGL -framework AppKit
 
 $(NAME):
 		make -C libft
-		gcc $(MLX_FLG) $(SRC) -o $(NAME) libft/libft.a
+		gcc $(FLG) $(MLX_FLG) $(SRC) -o $(NAME) libft/libft.a
 
 clean:
 		make clean -C libft

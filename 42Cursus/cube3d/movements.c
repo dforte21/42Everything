@@ -6,17 +6,15 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:38:05 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:41:56 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
 
-int	ftMouse(int key, int x, int y, t_cub3D *data)
+int	ftMouse(int key, int wX, int wY, t_cub3D *data)
 {
 	int	i;
-	int	wX;
-	int	wY;
 
 	i = SCREEN_WIDTH / 2 - 1;
 	wX = data->ray->wX;

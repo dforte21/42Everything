@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 17:26:28 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:38:20 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:41:14 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	printWallPixel(t_ray *ray, t_img *text, int x)
 {
 	int	textX;
-	int	textY;
 
 	textX = (((ray->rayX[x] + ray->rayY[x]) * 128.0) - ((int)(ray->rayX[x] + ray->rayY[x]) * 128));
 	return (getTextColor(textX, ray->iTexture, text));

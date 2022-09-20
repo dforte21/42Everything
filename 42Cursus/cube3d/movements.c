@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:08:39 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:38:05 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,19 +90,19 @@ void	ftMovements(t_cub3D *data)
 	if (data->p.right == 1)
 		data->p.pAngle += 2;
 	if (data->p.w == 1)
-		ftMove(degreeToRadians((float)data->p.pAngle), data);
+		ftMove(degreeToRadians((double)data->p.pAngle), data);
 	if (data->p.a == 1)
-		ftMove(degreeToRadians((float)data->p.pAngle - 90), data);
+		ftMove(degreeToRadians((double)data->p.pAngle - 90), data);
 	if (data->p.s == 1)
-		ftMove(degreeToRadians((float)data->p.pAngle - 180), data);
+		ftMove(degreeToRadians((double)data->p.pAngle - 180), data);
 	if (data->p.d == 1)
-		ftMove(degreeToRadians((float)data->p.pAngle + 90), data);
+		ftMove(degreeToRadians((double)data->p.pAngle + 90), data);
 }
 
-void	ftMove(float angle, t_cub3D *data)
+void	ftMove(double angle, t_cub3D *data)
 {
-	float rcos;
-	float rsin;
+	double rcos;
+	double rsin;
 
 	rcos = cos(angle);
 	rsin = sin(angle);

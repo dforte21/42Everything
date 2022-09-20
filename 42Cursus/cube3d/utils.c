@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 15:12:29 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:38:27 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	getColor(char *str)
 	return (rgbint[0] + rgbint[1] + rgbint[2]);
 }
 
-float	degreeToRadians(float degree)
+double	degreeToRadians(double degree)
 {
 	return (degree * PI / 180);
 }

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 17:26:28 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:12:43 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:38:20 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	printWallPixel(t_ray *ray, t_img *text, int x)
 	return (getTextColor(textX, ray->iTexture, text));
 }
 
-void	getTextStart(t_ray *ray, int x, float *yIncrementer)
+void	getTextStart(t_ray *ray, int x, double *yIncrementer)
 {
 	int wheigt;
 

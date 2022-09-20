@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:10:52 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:37:06 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,20 @@ typedef	struct s_ray
 {
 	int		wallHeight;
 	int		iTexture;
-	float	wX;
-	float	wY;
-	float	rayAngle;
-	float	rayX[SCREEN_WIDTH];
-	float	rayY[SCREEN_WIDTH];
-	float	rayCos[SCREEN_WIDTH];
-	float	raySin[SCREEN_WIDTH];
-	float	distance[SCREEN_WIDTH];
+	double	wX;
+	double	wY;
+	double	rayAngle;
+	double	rayX[SCREEN_WIDTH];
+	double	rayY[SCREEN_WIDTH];
+	double	rayCos[SCREEN_WIDTH];
+	double	raySin[SCREEN_WIDTH];
+	double	distance[SCREEN_WIDTH];
 }				t_ray;
 
 typedef struct s_player
 {
-	float	x;
-	float	y;
+	double	x;
+	double	y;
 	int	pAngle;
 	int	w;
 	int	a;
@@ -105,7 +105,7 @@ typedef	struct s_cub3D
 	t_ray		*ray;
 }				t_cub3D;
 
-float	degreeToRadians(float degree);
+double	degreeToRadians(double degree);
 char	**loadMap(char *path, t_cub3D *data);
 void	freeAll(t_cub3D *data);
 void	load_mMapTiles(t_cub3D *data);
@@ -118,10 +118,10 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void	rayCasting(t_cub3D *data, t_ray *ray);
 void	ftMovements(t_cub3D *data);
 void	ftDraw(t_cub3D *data, t_ray  *ray);
-void	ftMove(float angle, t_cub3D *data);
+void	ftMove(double angle, t_cub3D *data);
 void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y);
 void	loadImages(t_cub3D *data);
-void	getTextStart(t_ray *ray, int x, float *yIncrementer);
+void	getTextStart(t_ray *ray, int x, double *yIncrementer);
 void	ftMiniMap(t_cub3D *data);
 void	ftPutTiles(t_cub3D *data, int tiles, t_img *img);
 void	checkCoords(int *x, int *y, t_cub3D *data);

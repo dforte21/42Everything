@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 16:34:24 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:38:12 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	rayCasting(t_cub3D *data, t_ray *ray)
 void	ftDraw(t_cub3D *data, t_ray  *ray)
 {
 	int		i;
-	float	dist;
+	double	dist;
 
 	i = 0;
 	while (i < SCREEN_WIDTH)
@@ -76,8 +76,8 @@ void	ftDraw(t_cub3D *data, t_ray  *ray)
 void	drawLine(int x, t_ray *ray, t_cub3D *data)
 {
 	int			y;
-	float		d;
-	float		yIncrementer;
+	double		d;
+	double		yIncrementer;
 
 	y = 0;
 	getTextStart(ray, x, &yIncrementer);

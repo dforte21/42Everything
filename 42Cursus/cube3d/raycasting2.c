@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 17:26:28 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/19 19:22:57 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:12:43 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	printWallPixel(t_ray *ray, t_img *text, int x)
 	int	textX;
 	int	textY;
 
-	textX = (((ray->rayX[x] + ray->rayY[x]) * 64.0) - ((int)(ray->rayX[x] + ray->rayY[x]) * 64));
+	textX = (((ray->rayX[x] + ray->rayY[x]) * 128.0) - ((int)(ray->rayX[x] + ray->rayY[x]) * 128));
 	return (getTextColor(textX, ray->iTexture, text));
 }
 
@@ -26,14 +26,14 @@ void	getTextStart(t_ray *ray, int x, float *yIncrementer)
 	int wheigt;
 
 	wheigt = SCREEN_HEIGHT / 2 / ray->distance[x];
-	*yIncrementer = (wheigt * 2) / 64.0;
+	*yIncrementer = (wheigt * 2) / 128.0;
 	if (ray->distance[x] >= 1)
 	{
 		ray->iTexture = 0;
 		return ;
 	}
 	ray->iTexture = (wheigt - SCREEN_HEIGHT / 2) / *yIncrementer;
-	*yIncrementer = (ray->wallHeight * 2) / (64.0 - ray->iTexture * 2);
+	*yIncrementer = (ray->wallHeight * 2) / (128.0 - ray->iTexture * 2);
 }
 
 void	ftMiniMap(t_cub3D *data)
@@ -50,7 +50,11 @@ void	ftMiniMap(t_cub3D *data)
 	{
 		if (data->map[y][x] == '1')
 			ftPutTiles(data, tiles, &data->imgs.mMapWall);
-		else if (data->map[y][x] == '0' || data->map[y][x] == 'N' || data->map[y][x] == 'E' || data->map[y][x] == 'W' || data->map[y][x] == 'S')
+		else if (data->map[y][x] == 'D')
+			ftPutTiles(data, tiles, &data->imgs.mMapDoorClosed);
+		else if (data->map[y][x] == 'd')
+			ftPutTiles(data, tiles, &data->imgs.mMapDoorOpen);
+		else
 			ftPutTiles(data, tiles, &data->imgs.mMapFloor);
 		if (x == (int)data->p.x && y == (int)data->p.y)
 			ftPlayer(data, tiles);

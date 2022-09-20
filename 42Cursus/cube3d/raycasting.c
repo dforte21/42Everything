@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/19 19:30:36 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 16:34:24 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	ftDisplay(t_cub3D *data)
 {
 	t_ray	ray;
 
+	data->ray = &ray;
 	ray.rayAngle = data->p.pAngle - 30;
 	ftMovements(data);
 	rayCasting(data, &ray);
@@ -38,10 +39,15 @@ void	rayCasting(t_cub3D *data, t_ray *ray)
 		ray->rayY[i] = data->p.y;
 		ray->rayCos[i] = cos(degreeToRadians(ray->rayAngle)) / 256;
 		ray->raySin[i] = sin(degreeToRadians(ray->rayAngle)) / 256;
-		while (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != '1')
+		while (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != '1' && data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != 'D')
 		{
 			ray->rayX[i] += ray->rayCos[i];
 			ray->rayY[i] += ray->raySin[i];
+			if (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'd' || data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'D')
+			{
+				ray->wY = ray->rayY[i];
+				ray->wX = ray->rayX[i];
+			}
 		}
 		ray->distance[i] = (sqrt(pow(data->p.x - ray->rayX[i], 2) + pow(data->p.y - ray->rayY[i], 2)));
 		ray->distance[i] *= cos(degreeToRadians(ray->rayAngle) - degreeToRadians(data->p.pAngle));
@@ -86,7 +92,10 @@ void	drawLine(int x, t_ray *ray, t_cub3D *data)
 		d += yIncrementer;
 		while (y < d)
 		{
-			getWallOrient(data, ray, x, y);
+			if (data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == '1' || data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == 'd')
+				getWallOrient(data, ray, x, y);
+			else if (data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == 'D')
+				my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.door, x));
 			y++;
 		}
 		ray->iTexture++;

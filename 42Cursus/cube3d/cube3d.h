@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/19 19:20:17 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:10:52 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define PI				3.14159265359
 # define FOV			60
-# define SCREEN_WIDTH	896
+# define SCREEN_WIDTH	960
 # define SCREEN_HEIGHT	720
 
 # define W		13
@@ -47,18 +47,23 @@ typedef struct s_imgs
 	t_img	mMap;
 	t_img	mMapWall;
 	t_img	mMapFloor;
+	t_img	mMapDoorOpen;
+	t_img	mMapDoorClosed;
 	t_img	background;
 	t_img	win;
 	t_img	nWall;
 	t_img	sWall;
 	t_img	eWall;
 	t_img	wWall;
+	t_img	door;
 }				t_imgs;
 
 typedef	struct s_ray
 {
 	int		wallHeight;
 	int		iTexture;
+	float	wX;
+	float	wY;
 	float	rayAngle;
 	float	rayX[SCREEN_WIDTH];
 	float	rayY[SCREEN_WIDTH];
@@ -78,6 +83,7 @@ typedef struct s_player
 	int	d;
 	int	left;
 	int	right;
+	int	space;
 }				t_player;
 
 typedef	struct s_cub3D
@@ -96,15 +102,15 @@ typedef	struct s_cub3D
 	int			width;
 	t_player	p;
 	t_imgs		imgs;
+	t_ray		*ray;
 }				t_cub3D;
 
 float	degreeToRadians(float degree);
 char	**loadMap(char *path, t_cub3D *data);
+void	freeAll(t_cub3D *data);
 void	load_mMapTiles(t_cub3D *data);
-void	ftExit(t_cub3D *data);
 void	read_file(char *path, t_cub3D *data);
 void	getPath(char *raw, t_cub3D *data);
-void	freeAll(t_cub3D *data);
 void	initPlayer(t_cub3D *data);
 void	getAngle(t_cub3D *data);
 void	drawLine(int i, t_ray *ray, t_cub3D *data);
@@ -124,6 +130,9 @@ int		getColor(char *str);
 int		ftDisplay(t_cub3D *data);
 int		ft_on(int keycode, t_cub3D *data);
 int		ft_off(int keycode, t_cub3D *data);
+int		ftOpenDoor(int key, t_cub3D *data);
+int		ftMouse(int key, int x, int y, t_cub3D *data);
+int		ftExit(t_cub3D *data);
 int		getTextColor(int x, int y, t_img *text);
 int		printWallPixel(t_ray *ray, t_img *text, int x);
 void	test(void);

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:05:21 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/19 18:18:37 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 17:12:25 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ int main(int ac, char **av)
 	mlx_do_key_autorepeaton(data.mlx);
 	mlx_hook(data.win, 2, 0, ft_on, &data);
 	mlx_hook(data.win, 3, 0, ft_off, &data);
+	mlx_mouse_hook(data.win, ftMouse, &data);
 	mlx_loop_hook(data.mlx, ftDisplay, &data);
+	mlx_hook(data.win, 17, 0, ftExit, &data);
 	mlx_loop(data.mlx);
 }
 
@@ -37,8 +39,8 @@ void	loadImages(t_cub3D *data)
 	int	wdth;
 	int	hght;
 
-	wdth = 64;
-	hght = 64;
+	wdth = 128;
+	hght = 128;
 	data->imgs.win.img = mlx_new_image(data->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
 	data->imgs.win.addr = mlx_get_data_addr(data->imgs.win.img, &data->imgs.win.bpp, &data->imgs.win.ll, &data->imgs.win.e);
 	data->imgs.nWall.img = mlx_xpm_file_to_image(data->mlx, data->NO, &wdth, &hght);
@@ -49,6 +51,8 @@ void	loadImages(t_cub3D *data)
 	data->imgs.wWall.addr = mlx_get_data_addr(data->imgs.wWall.img, &data->imgs.wWall.bpp, &data->imgs.wWall.ll, &data->imgs.wWall.e);
 	data->imgs.eWall.img = mlx_xpm_file_to_image(data->mlx, data->EA, &wdth, &hght);
 	data->imgs.eWall.addr = mlx_get_data_addr(data->imgs.eWall.img, &data->imgs.eWall.bpp, &data->imgs.eWall.ll, &data->imgs.eWall.e);
+	data->imgs.door.img = mlx_xpm_file_to_image(data->mlx, "./sprites/door.xpm", &wdth, &hght);
+	data->imgs.door.addr = mlx_get_data_addr(data->imgs.door.img, &data->imgs.door.bpp, &data->imgs.door.ll, &data->imgs.door.e);
 	wdth = 1920;
 	hght = 1080;
 	data->imgs.background.img = mlx_xpm_file_to_image(data->mlx, data->bGround, &wdth, &hght);
@@ -69,6 +73,10 @@ void	load_mMapTiles(t_cub3D *data)
 	data->imgs.mMapFloor.addr = mlx_get_data_addr(data->imgs.mMapFloor.img, &data->imgs.mMapFloor.bpp, &data->imgs.mMapFloor.ll, &data->imgs.mMapFloor.e);
 	data->imgs.mMapWall.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapWall.xpm", &wdth, &hght);
 	data->imgs.mMapWall.addr = mlx_get_data_addr(data->imgs.mMapWall.img, &data->imgs.mMapWall.bpp, &data->imgs.mMapWall.ll, &data->imgs.mMapWall.e);
+	data->imgs.mMapDoorClosed.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapDoorClosed.xpm", &wdth, &hght);
+	data->imgs.mMapDoorClosed.addr = mlx_get_data_addr(data->imgs.mMapDoorClosed.img, &data->imgs.mMapDoorClosed.bpp, &data->imgs.mMapDoorClosed.ll, &data->imgs.mMapDoorClosed.e);
+	data->imgs.mMapDoorOpen.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapDoorOpen.xpm", &wdth, &hght);
+	data->imgs.mMapDoorOpen.addr = mlx_get_data_addr(data->imgs.mMapDoorOpen.img, &data->imgs.mMapDoorOpen.bpp, &data->imgs.mMapDoorOpen.ll, &data->imgs.mMapDoorOpen.e);
 }
 
 void	freeAll(t_cub3D *data)
@@ -76,6 +84,7 @@ void	freeAll(t_cub3D *data)
 	int	i;
 
 	i = 0;
+	mlx_destroy_window(data->mlx, data->win);
 	free(data->NO);
 	free(data->WE);
 	free(data->EA);

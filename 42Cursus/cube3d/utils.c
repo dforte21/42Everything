@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/19 17:41:25 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/20 15:12:29 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	ftExit(t_cub3D *data)
+int	ftExit(t_cub3D *data)
 {
 	freeAll(data);
 	exit(0);

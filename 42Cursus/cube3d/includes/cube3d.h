@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:59:53 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 18:22:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ typedef struct s_player
 	int	d;
 	int	left;
 	int	right;
-	int	space;
 }				t_player;
 
 typedef	struct s_cub3D

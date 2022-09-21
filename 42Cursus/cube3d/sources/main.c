@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:05:21 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:12:25 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:46:34 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 int main(int ac, char **av)
 {
@@ -77,6 +77,12 @@ void	load_mMapTiles(t_cub3D *data)
 	data->imgs.mMapDoorClosed.addr = mlx_get_data_addr(data->imgs.mMapDoorClosed.img, &data->imgs.mMapDoorClosed.bpp, &data->imgs.mMapDoorClosed.ll, &data->imgs.mMapDoorClosed.e);
 	data->imgs.mMapDoorOpen.img = mlx_xpm_file_to_image(data->mlx, "./sprites/mMapDoorOpen.xpm", &wdth, &hght);
 	data->imgs.mMapDoorOpen.addr = mlx_get_data_addr(data->imgs.mMapDoorOpen.img, &data->imgs.mMapDoorOpen.bpp, &data->imgs.mMapDoorOpen.ll, &data->imgs.mMapDoorOpen.e);
+	wdth = 256;
+	hght = 256;
+	data->imgs.hand1.img = mlx_xpm_file_to_image(data->mlx, "./sprites/hand1.xpm", &wdth, &hght);
+	data->imgs.hand1.addr = mlx_get_data_addr(data->imgs.hand1.img, &data->imgs.hand1.bpp, &data->imgs.hand1.ll, &data->imgs.hand1.e);
+	data->imgs.hand2.img = mlx_xpm_file_to_image(data->mlx, "./sprites/hand2.xpm", &wdth, &hght);
+	data->imgs.hand2.addr = mlx_get_data_addr(data->imgs.hand2.img, &data->imgs.hand2.bpp, &data->imgs.hand2.ll, &data->imgs.hand2.e);
 }
 
 void	freeAll(t_cub3D *data)

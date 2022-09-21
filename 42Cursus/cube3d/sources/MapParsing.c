@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:13:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:14:30 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:43:51 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 void	read_file(char *path, t_cub3D *data)
 {

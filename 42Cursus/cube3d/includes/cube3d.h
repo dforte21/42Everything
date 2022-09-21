@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:37:06 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:45:03 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <math.h>
 # include <mlx.h>
 # include <stdio.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 
 # define PI				3.14159265359
 # define FOV			60
@@ -56,6 +56,8 @@ typedef struct s_imgs
 	t_img	eWall;
 	t_img	wWall;
 	t_img	door;
+	t_img	hand1;
+	t_img	hand2;
 }				t_imgs;
 
 typedef	struct s_ray
@@ -119,6 +121,7 @@ void	rayCasting(t_cub3D *data, t_ray *ray);
 void	ftMovements(t_cub3D *data);
 void	ftDraw(t_cub3D *data, t_ray  *ray);
 void	ftMove(double angle, t_cub3D *data);
+void	ftAnimations(t_cub3D *data);
 void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y);
 void	loadImages(t_cub3D *data);
 void	getTextStart(t_ray *ray, int x, double *yIncrementer);

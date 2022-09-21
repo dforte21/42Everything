@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:38:27 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:44:04 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 int	getColor(char *str)
 {

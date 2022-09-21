@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 17:26:28 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:41:14 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:43:59 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 int	printWallPixel(t_ray *ray, t_img *text, int x)
 {

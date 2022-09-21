@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 18:36:43 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:14:39 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:44:08 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 void	checkCoords(int *x, int *y, t_cub3D *data)
 {

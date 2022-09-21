@@ -1,5 +1,5 @@
 NAME = cub3D
-SRC = *.c
+SRC = sources/*.c
 FLG = -Wall -Wextra -Werror
 MLX_FLG = -l mlx -framework openGL -framework AppKit
 

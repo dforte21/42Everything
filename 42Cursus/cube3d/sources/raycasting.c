@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/20 17:38:12 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/21 17:43:57 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 
 int	ftDisplay(t_cub3D *data)
 {
@@ -18,6 +18,8 @@ int	ftDisplay(t_cub3D *data)
 
 	data->ray = &ray;
 	ray.rayAngle = data->p.pAngle - 30;
+	ray.wY = 0;
+	ray.wX = 0;
 	ftMovements(data);
 	rayCasting(data, &ray);
 	ftDraw(data, &ray);
@@ -25,6 +27,7 @@ int	ftDisplay(t_cub3D *data)
 	mlx_put_image_to_window(data->mlx, data->win, data->imgs.background.img, 0, 0);
 	mlx_put_image_to_window(data->mlx, data->win, data->imgs.mMap.img, 0, 0);
 	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, (960 - SCREEN_WIDTH / 2), (540 - SCREEN_HEIGHT / 2));
+	ftAnimations(data);
 	return (0);
 }
 
@@ -43,10 +46,13 @@ void	rayCasting(t_cub3D *data, t_ray *ray)
 		{
 			ray->rayX[i] += ray->rayCos[i];
 			ray->rayY[i] += ray->raySin[i];
-			if (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'd' || data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'D')
+			if (i == SCREEN_WIDTH / 2 - 1)
 			{
-				ray->wY = ray->rayY[i];
-				ray->wX = ray->rayX[i];
+				if ((data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'd' || data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'D'))
+				{
+					ray->wY = ray->rayY[i];
+					ray->wX = ray->rayX[i];
+				}
 			}
 		}
 		ray->distance[i] = (sqrt(pow(data->p.x - ray->rayX[i], 2) + pow(data->p.y - ray->rayY[i], 2)));

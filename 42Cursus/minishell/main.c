@@ -11,6 +11,5 @@ int main(int ac, char **av)
 		ftParser(line);
 		free(line);
 		asd();
-		hello;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mabasset <mabasset@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:27:15 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/22 17:44:59 by dforte           ###   ########.fr       */
+/*   Updated: 2022/09/22 18:00:37 by mabasset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ int main(int ac, char **av)
 	{
 		line = readline("Minishell>? ");
 		ftParser(line);
-		free(line);
+		free(line);a
 	}
 }

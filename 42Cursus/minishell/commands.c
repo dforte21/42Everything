@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/22 15:27:15 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/22 17:44:59 by dforte           ###   ########.fr       */
+/*   Created: 2022/09/22 17:39:11 by dforte            #+#    #+#             */
+/*   Updated: 2022/09/22 17:40:22 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int ac, char **av)
+void	getCommand(char *line)
 {
-	char	*line;
-	size_t	buf;
+	char	**mat;
 
-	while (1)
-	{
-		line = readline("Minishell>? ");
-		ftParser(line);
-		free(line);
-	}
+	mat = ft_split(line, ' ');
 }

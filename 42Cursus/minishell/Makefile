@@ -4,7 +4,7 @@ FLG = -Wall -Wextra -Werror
 
 $(NAME):
 		make -C libft
-		gcc $(SRC) -o $(NAME) libft/libft.a
+		gcc $(SRC) -o $(NAME) libft/libft.a -lreadline
 
 clean:
 		make clean -C libft

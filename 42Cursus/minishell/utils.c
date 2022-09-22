@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/22 15:27:15 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/22 17:44:59 by dforte           ###   ########.fr       */
+/*   Created: 2022/09/22 17:48:53 by dforte            #+#    #+#             */
+/*   Updated: 2022/09/22 17:50:01 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int ac, char **av)
+int	ftStrchr(char *str, char c)
 {
-	char	*line;
-	size_t	buf;
+	int	i;
 
-	while (1)
-	{
-		line = readline("Minishell>? ");
-		ftParser(line);
-		free(line);
-	}
+	i = 0;
+	
 }

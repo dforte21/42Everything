@@ -6,7 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:27:15 by dforte            #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/22 18:06:02 by dforte           ###   ########.fr       */
+=======
+/*   Updated: 2022/09/22 18:07:03 by mabasset         ###   ########.fr       */
+>>>>>>> dave
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +26,10 @@ int main(int ac, char **av)
 		line = readline("Minishell>? ");
 		ftParser(line);
 		free(line);
+<<<<<<< HEAD
 		asd();
+=======
+		dave;
+>>>>>>> dave
 	}
 }

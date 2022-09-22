@@ -26,10 +26,6 @@ int main(int ac, char **av)
 		line = readline("Minishell>? ");
 		ftParser(line);
 		free(line);
-<<<<<<< HEAD
 		asd();
-=======
-		dave;
->>>>>>> dave
 	}
 }

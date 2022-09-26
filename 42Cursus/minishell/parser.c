@@ -12,7 +12,13 @@ void	ftParser(char *line)
 	else if (ft_strncmp(args[0], "echo", ft_strlen(args[0])) == 0)
 		ftEcho(args);
 	else
-		ft_printf("Minishell: %s: command not found\n", args[0]);
+		ftError(args[0]);
 	add_history(line);
 	ftFree(args, line);
+}
+
+void	ftError(char *arg)
+{
+	printf("Minishell: %s: command not found\n", arg);
+	g_exit_status = 127;
 }

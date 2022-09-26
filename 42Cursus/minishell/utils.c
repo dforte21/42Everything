@@ -32,3 +32,8 @@ void	ftExit(char **args, char *line)
 	printf("exit\n");
 	exit (0);
 }
+
+void	ftExitStatus(void)
+{
+	printf("%d\n", g_exit_status);
+}

@@ -35,6 +35,8 @@ void	ftEcho(char **args);
 void	ftParser(char *line);
 void	ftFree(char **args, char *line);
 void	ftExit(char **args, char *line);
+void	ftError(char *arg);
+void	ftExitStatus(void);
 void	copyArgs(int words, char **args, char *line, int i);
 char	**newSplit(char *line);
 int		countWords(char *line);

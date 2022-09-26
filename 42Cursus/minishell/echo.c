@@ -14,7 +14,7 @@ void	ftEcho(char **args)
 			printf(" ");
 		i++;
 	}
-	if (args[i] && ft_strncmp(args[i], "-n", ft_strlen(args[i])) == 0)
+	if (ft_strncmp(args[1], "-n", ft_strlen(args[1])) != 0)
 		printf("\n");
 	g_exit_status = 0;
 }

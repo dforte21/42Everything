@@ -31,4 +31,13 @@ typedef struct s_comms
 	char	*exit;
 }              t_comms;
 
+void	ftEcho(char **args);
+void	ftParser(char *line);
+void	ftFree(char **args, char *line);
+void	ftExit(char **args, char *line);
+void	copyArgs(int words, char **args, char *line, int i);
+char	**newSplit(char *line);
+int		countWords(char *line);
+int		ftStrchr(char *str, char c, int start);
+
 #endif

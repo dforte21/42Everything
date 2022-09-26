@@ -7,7 +7,7 @@ int main(int ac, char **av)
 
 	while (1)
 	{
-		line = readline("Minishell 1.0>? ");
+		line = readline("Minishell 1.0$ ");
 		ftParser(line);
 	}
 }

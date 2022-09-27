@@ -22,23 +22,25 @@ int	g_exit_status;
 
 typedef struct s_comms
 {
-	char	*echo;
-	char	*cd;
-	char	*pwd;
-	char	*export;
-	char	*unset;
-	char	*env;
-	char	*exit;
+	char	*line;
+	char	**pargs;
+	char	**cargs;
+	int		pipefd[2];
+	int		exit;
 }              t_comms;
 
-void	ftEcho(char **args);
-void	ftParser(char *line);
-void	ftFree(char **args, char *line);
-void	ftExit(char **args, char *line);
-void	ftError(char *arg);
-void	ftExitStatus(void);
+void	writePipe(char *args, int pipefd);
+void	ftEcho(t_comms *comms);
+void	ftEnv(t_comms *comms, char **envp);
+void	ftParser(t_comms *comms, char **envp);
+void	exeCommand(t_comms *comms, char **envp);
+void	ftFree(char **args);
+void	ftExit(t_comms *comms);
+void	ftError(char *arg, int pipefd);
+void	ftStrReplace(char *str, char c);
 void	copyArgs(int words, char **args, char *line, int i);
 char	**newSplit(char *line);
+char	*readPipe(int pipefd);
 int		countWords(char *line);
 int		ftStrchr(char *str, char c, int start);
 

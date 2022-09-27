@@ -1,24 +1,17 @@
 #include "minishell.h"
 
-void	ftParser(char *line)
+void	ftParser(t_comms *comms, char **envp)
 {
-	char	**args;
+	char	*line;
 
-	args = newSplit(line);
-	//for (int i = 0; args[i]; i++)
-	//	printf("%s\n", args[i]);
-	if (ft_strncmp(args[0], "exit", ft_strlen(args[0])) == 0)
-		ftExit(args, line);
-	else if (ft_strncmp(args[0], "echo", ft_strlen(args[0])) == 0)
-		ftEcho(args);
-	else
-		ftError(args[0]);
-	add_history(line);
-	ftFree(args, line);
-}
-
-void	ftError(char *arg)
-{
-	printf("Minishell: %s: command not found\n", arg);
-	g_exit_status = 127;
+	if (pipe(comms->pipefd) == -1)
+		return ;
+	exeCommand(comms, envp);
+	if (comms->exit != 1 && g_exit_status != 127)
+	{
+		line = readPipe(comms->pipefd[0]);
+		ftStrReplace(line, '\a');
+		printf("%s", line);
+		free(line);
+	}
 }

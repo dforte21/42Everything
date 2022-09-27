@@ -10,7 +10,7 @@ int	ftStrchr(char *str, char c, int start)
 	return (i);
 }
 
-void	ftFree(char **args, char *line)
+void	ftFree(char **args)
 {
 	int	i;
 
@@ -22,18 +22,26 @@ void	ftFree(char **args, char *line)
 	}
 	free(args[i]);
 	free(args);
-	free(line);
 }
 
-void	ftExit(char **args, char *line)
+void	ftExit(t_comms *comms)
 {
-	ftFree(args, line);
 	clear_history();
+	close(comms->pipefd[0]);
+	close(comms->pipefd[1]);
 	printf("exit\n");
 	exit (0);
 }
 
-void	ftExitStatus(void)
+void	ftStrReplace(char *str, char c)
 {
-	printf("%d\n", g_exit_status);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			str[i] = '\n';
+		i++;
+	}
 }

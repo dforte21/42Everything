@@ -1,13 +1,15 @@
 #include "minishell.h"
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **envp)
 {
-	char	*line;
-	size_t	buf;
+	t_comms	comms;
 
-	while (1)
+	comms.exit = 0;
+	while (comms.exit == 0)
 	{
-		line = readline("Minishell-1.0$ ");
-		ftParser(line);
+		comms.line = readline("Minishell-1.0$ ");
+		ftParser(&comms, envp);
+		free(comms.line);
 	}
+	ftExit(&comms);
 }

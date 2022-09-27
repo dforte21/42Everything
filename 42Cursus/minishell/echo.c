@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-void	ftEcho(char **args)
+void	ftEcho(t_comms *comms)
 {
 	int	i;
 
 	i = 1;
-	if (args[i] && ft_strncmp(args[i], "-n", ft_strlen(args[i])) == 0)
+	if (comms->cargs[i] && ft_strncmp(comms->cargs[i], "-n", ft_strlen(comms->cargs[i])) == 0)
 		i++;
-	while (args[i])
+	while (comms->cargs[i])
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
+		writePipe(comms->cargs[i], comms->pipefd[1]);
+		if (comms->cargs[i + 1])
+			writePipe(" ", comms->pipefd[1]);
 		i++;
 	}
-	if (ft_strncmp(args[1], "-n", ft_strlen(args[1])) != 0)
-		printf("\n");
+	if (ft_strncmp(comms->cargs[1], "-n", ft_strlen(comms->cargs[1])) != 0)
+		writePipe("\a", comms->pipefd[1]);
+	writePipe("\b", comms->pipefd[1]);
 	g_exit_status = 0;
 }

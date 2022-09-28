@@ -52,7 +52,7 @@ int	findEnv(char *arg, char **envp)
 	j = 0;
 	while (envp[j])
 	{
-		if (ft_strncmp(arg, envp[j], i) == 0)
+		if (ft_strncmp(arg, envp[j], i + 1) == 0)
 			return (j);
 		if (ft_strncmp(arg, envp[j], i) == 0 && envp[j][i] == '=')
 			return (j);

@@ -11,6 +11,10 @@ void	exeCommand(t_comms *comms, char **envp)
 		ftEcho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)
 		ftEnv(comms, envp);
+	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
+		ftExport(comms, envp, 0, 0);
+	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
+		ftUnset(comms, envp);
 	else
 		ftError(comms->cargs[0], comms->pipefd[1]);
 	add_history(comms->line);

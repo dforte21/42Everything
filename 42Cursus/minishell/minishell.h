@@ -25,13 +25,17 @@ typedef struct s_comms
 	char	*line;
 	char	**pargs;
 	char	**cargs;
+	char	**envcpy;
 	int		pipefd[2];
 	int		exit;
+	int		lenv;
 }              t_comms;
 
 void	writePipe(char *args, int pipefd);
 void	ftEcho(t_comms *comms);
 void	ftEnv(t_comms *comms, char **envp);
+void	ftExport(t_comms *comms, char **envp, int i, int flag);
+void	ftUnset(t_comms *comms, char **envp);
 void	ftParser(t_comms *comms, char **envp);
 void	exeCommand(t_comms *comms, char **envp);
 void	ftFree(char **args);
@@ -39,9 +43,15 @@ void	ftExit(t_comms *comms);
 void	ftError(char *arg, int pipefd);
 void	ftStrReplace(char *str, char c);
 void	copyArgs(int words, char **args, char *line, int i);
+void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
+void	sortEnv(t_comms *comms, char **envcpy);
+char	**copyEnv(t_comms *comms, char **envp);
 char	**newSplit(char *line);
+char	*createEnv(char *arg);
 char	*readPipe(int pipefd);
 int		countWords(char *line);
 int		ftStrchr(char *str, char c, int start);
+int		findEnv(char *arg, char **envp);
+int		checkEnv(char *arg, char **envp);
 
 #endif

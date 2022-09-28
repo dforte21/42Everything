@@ -15,4 +15,7 @@ fclean:	clean
 
 all:	$(NAME)
 
-re:		fclean all
+temp:	
+		rm -rf $(NAME)
+
+re:		temp all

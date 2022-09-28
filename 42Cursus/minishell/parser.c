@@ -10,8 +10,11 @@ void	ftParser(t_comms *comms, char **envp)
 	if (comms->exit != 1 && g_exit_status != 127)
 	{
 		line = readPipe(comms->pipefd[0]);
-		ftStrReplace(line, '\a');
-		printf("%s", line);
-		free(line);
+		if (line)
+		{
+			ftStrReplace(line, '\a');
+			printf("%s", line);
+			free(line);
+		}
 	}
 }

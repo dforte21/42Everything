@@ -15,25 +15,30 @@ void	ftFree(char **args)
 	int	i;
 
 	i = 0;
-	while (args[i])
+	if (args)
 	{
+		while (args[i])
+		{
+			free(args[i]);
+			i++;
+		}
 		free(args[i]);
-		i++;
+		free(args);
 	}
-	free(args[i]);
-	free(args);
 }
 
 void	ftExit(t_comms *comms)
 {
 	clear_history();
+	ftFree(comms->path);
+	ftFree(comms->pipes);
 	close(comms->pipefd[0]);
 	close(comms->pipefd[1]);
 	printf("exit\n");
 	exit (0);
 }
 
-void	ftStrReplace(char *str, char c)
+void	ftStrReplace(char *str, char old, char new)
 {
 	int	i;
 
@@ -42,8 +47,8 @@ void	ftStrReplace(char *str, char c)
 		return ;
 	while (str[i])
 	{
-		if (str[i] == c)
-			str[i] = '\n';
+		if (str[i] == old)
+			str[i] = new;
 		i++;
 	}
 }

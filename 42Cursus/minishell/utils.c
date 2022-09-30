@@ -31,10 +31,8 @@ void	ftExit(t_comms *comms)
 {
 	clear_history();
 	ftFree(comms->path);
-	ftFree(comms->pipes);
 	close(comms->pipefd[0]);
 	close(comms->pipefd[1]);
-	printf("exit\n");
 	exit (0);
 }
 

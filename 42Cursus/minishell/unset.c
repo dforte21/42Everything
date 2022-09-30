@@ -22,7 +22,7 @@ void	ftUnset(t_comms *comms, char **envp)
 		i++;
 	}
 	comms->lenv--;
-	writePipe("\b", comms->pipefd[1]);
+	printf("\b");
 	g_exit_status = 0;
 }
 

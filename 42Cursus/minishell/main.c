@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+int g_exit_status;
+
 int main(int ac, char **av, char **envp)
 {
 	t_comms	comms;
@@ -14,8 +16,12 @@ int main(int ac, char **av, char **envp)
 		comms.line = readline("Minishell-1.0$ ");
 		comms.pipes = ft_split(comms.line, '|');
 		ftParser(&comms, envp);
+		if (ftStrchr(comms.line, '|', 0) != (int)ft_strlen(comms.line))
+			comms.exit = 0;
 		free(comms.line);
+		ftFree(comms.pipes);
 	}
+	printf("exit\n");
 	ftExit(&comms);
 }
 

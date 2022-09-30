@@ -1,8 +1,9 @@
 #include "minishell.h"
 
-void	exeCommand(t_comms *comms, char **envp)
+void	exeCommand(t_comms *comms, char **envp, int i)
 {
-	comms->cargs = newSplit(comms->line);
+	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
+	comms->cargs = newSplit(comms->pipes[i]);
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
 		comms->exit = 1;
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)
@@ -13,17 +14,21 @@ void	exeCommand(t_comms *comms, char **envp)
 		ftExport(comms, envp, 0, 0);
 	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
 		ftUnset(comms, envp);
+	else if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
+		ftCd(comms);
+	else if (ft_strncmp(comms->cargs[0], "pwd", 4) == 0)
+		ftPwd(comms);
 	else
 	{
 		if (ftExecve(comms, envp) == 1)
-			ftError(comms->cargs[0], comms->pipefd[1]);	
+			ftError(comms->cargs[0]);	
 	}
-	add_history(comms->line);
 	ftFree(comms->cargs);
 }
 
-void	ftError(char *arg, int pipefd)
+void	ftError(char *arg)
 {
-	printf("Minishell: %s: command not found\n", arg);
+	perror(arg);
+	strerror(errno);
 	g_exit_status = 127;
 }

@@ -18,14 +18,14 @@ void	ftExport(t_comms *comms, char **envp, int i, int flag)
 		sortEnv(comms, comms->envcpy);
 		while (comms->envcpy[i])
 		{
-			writePipe("declare -x ", comms->pipefd[1]);
-			writePipe(comms->envcpy[i], comms->pipefd[1]);
-			writePipe("\a", comms->pipefd[1]);
+			printf("declare -x ");
+			printf("%s", comms->envcpy[i]);
+			printf("\n");
 			i++;
 		}
 		ftFree(comms->envcpy);
 	}
-	writePipe("\b", comms->pipefd[1]);
+	printf("\b");
 	g_exit_status = 0;
 }
 

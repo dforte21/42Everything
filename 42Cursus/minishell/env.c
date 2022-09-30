@@ -7,10 +7,10 @@ void	ftEnv(t_comms *comms, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		writePipe(envp[i], comms->pipefd[1]);
-		writePipe("\a", comms->pipefd[1]);
+		printf("%s", envp[i]);
+		printf("\n");
 		i++;
 	}
-	writePipe("\b", comms->pipefd[1]);
+	printf("\b");
 	g_exit_status = 0;
 }

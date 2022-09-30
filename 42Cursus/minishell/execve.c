@@ -19,43 +19,30 @@ int	ftExecve (t_comms *comms, char **envp)
 			i++;
 		free(path);
 		if (!comms->path[i])
+		{
+			printf("\b");
 			return (1);
+		}
 	}
-	exeFork(comms, envp, path);
+	r = exeFork(comms, envp, path);
 	free(path);
-	return (0);
+	return (r);
 }
 
-void	exeFork(t_comms *comms, char **envp, char *path)
+int	exeFork(t_comms *comms, char **envp, char *path)
 {
-	int		fd[2];
 	char	*line;
 	char	*output;
 	pid_t	pid;
 
 
-	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd[1], 1);
-		execve(path, comms->cargs, envp);
+		if(execve(path, comms->cargs, envp) == -1)
+			return (1);
 	}
 	waitpid(pid, NULL, 0);
-	writePipe("\b", fd[1]);
-	line = get_next_line(fd[0]);
-	output = ft_strdup(line);
-	while (line)
-	{
-		free(line);
-		line = get_next_line(fd[0]);
-		if (line)
-			output = ft_strjoin(output, line);
-	}
-	ftStrReplace(output, '\n', '\a');
-	writePipe(output, comms->pipefd[1]);
-	writePipe("\b", comms->pipefd[1]);
-	free(output);
-	close(fd[0]);
-	close(fd[1]);
+	printf("\b");
+	return (0);
 }

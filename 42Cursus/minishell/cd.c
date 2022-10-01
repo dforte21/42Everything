@@ -13,4 +13,5 @@ void	ftCd(t_comms *comms)
 	int	r;
 
 	r = chdir(comms->cargs[1]);
+	printf("\b");
 }

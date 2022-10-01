@@ -29,7 +29,7 @@ typedef struct s_comms
 	char	**cargs;
 	char	**envcpy;
 	char	**path;
-	int		pipefd[2];
+	int		**pipefd;
 	int		exit;
 	int		lenv;
 }              t_comms;
@@ -50,6 +50,8 @@ void	ftStrReplace(char *str, char old, char new);
 void	copyArgs(int words, char **args, char *line, int i);
 void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
 void	sortEnv(t_comms *comms, char **envcpy);
+void	childExecute(t_comms *comms, char **envp, int i);
+void	ftFreePipe(t_comms *comms, int j);
 char	**getPath(void);
 char	**copyEnv(t_comms *comms, char **envp);
 char	**newSplit(char *line);
@@ -62,6 +64,5 @@ int		ftStrchr(char *str, char c, int start);
 int		findEnv(char *arg, char **envp);
 int		checkEnv(char *arg, char **envp);
 int		exeFork(t_comms *comms, char **envp, char *path);
-int		getFd(t_comms *comms, int i);
 
 #endif

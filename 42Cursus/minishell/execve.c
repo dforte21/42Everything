@@ -33,8 +33,8 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 {
 	char	*line;
 	char	*output;
+	char	*tmp[3];
 	pid_t	pid;
-
 
 	pid = fork();
 	if (pid == 0)
@@ -43,6 +43,5 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 			return (1);
 	}
 	waitpid(pid, NULL, 0);
-	printf("\b");
 	return (0);
 }

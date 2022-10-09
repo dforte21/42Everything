@@ -22,7 +22,6 @@ void	ftUnset(t_comms *comms, char **envp)
 		i++;
 	}
 	comms->lenv--;
-	printf("\b");
 	g_exit_status = 0;
 }
 

@@ -11,16 +11,15 @@ int main(int ac, char **av, char **envp)
 	while (envp[comms.lenv])
 		comms.lenv++;
 	comms.path = getPath();
-	while (comms.exit == 0)
-	{
+	//while (comms.exit == 0)
+	//{
 		comms.line = readline("Minishell-1.0$ ");
 		comms.pipes = ft_split(comms.line, '|');
+		comms.pipefd = allocPipe(&comms);
 		ftParser(&comms, envp);
-		if (ftStrchr(comms.line, '|', 0) != (int)ft_strlen(comms.line))
-			comms.exit = 0;
 		free(comms.line);
 		ftFree(comms.pipes);
-	}
+	//}
 	printf("exit\n");
 	ftExit(&comms);
 }
@@ -40,4 +39,23 @@ char	**getPath(void)
 		i++;
 	}
 	return (path);
+}
+
+int	**allocPipe(t_comms *comms)
+{
+	int	**fd;
+	int	j;
+	int	i;
+
+	j = 0;
+	i = 0;
+	while (comms->pipes[j])
+		j++;
+	fd = malloc(sizeof(int *) * j);
+	while (comms->pipes[i])
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		i++;
+	}
+	return (fd);
 }

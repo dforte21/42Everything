@@ -25,7 +25,6 @@ void	ftExport(t_comms *comms, char **envp, int i, int flag)
 		}
 		ftFree(comms->envcpy);
 	}
-	printf("\b");
 	g_exit_status = 0;
 }
 

@@ -19,10 +19,7 @@ int	ftExecve (t_comms *comms, char **envp)
 			i++;
 		free(path);
 		if (!comms->path[i])
-		{
-			printf("\b");
 			return (1);
-		}
 	}
 	r = exeFork(comms, envp, path);
 	free(path);
@@ -31,9 +28,6 @@ int	ftExecve (t_comms *comms, char **envp)
 
 int	exeFork(t_comms *comms, char **envp, char *path)
 {
-	char	*line;
-	char	*output;
-	char	*tmp[3];
 	pid_t	pid;
 
 	pid = fork();

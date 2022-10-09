@@ -16,6 +16,5 @@ void	ftEcho(t_comms *comms)
 	}
 	if (!comms->cargs[1] || ft_strncmp(comms->cargs[1], "-n", ft_strlen(comms->cargs[1])) != 0)
 		printf("\n");
-	printf("\b");
 	g_exit_status = 0;
 }

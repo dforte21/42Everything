@@ -77,13 +77,13 @@ void	copyArgs(int words, char **args, char *line, int i)
 void	checkArgs(char **args, char c)
 {
 	char	*tmp;
-	char	*tmp2;
+	char	*tmp3;
 	int		i;
 	int		j;
 	int		k;
 
 	i = 1;
-	tmp2 = NULL;
+	tmp3 = NULL;
 	while(args[i])
 	{
 		j = 0;
@@ -97,15 +97,15 @@ void	checkArgs(char **args, char c)
 			if (tmp[0] != '\"' || tmp[j - k] != '\"')
 				tmp = ftRemoveChar(tmp, '\'');
 			tmp = ftRemoveChar(tmp, '\"');
-			if (tmp2)
-				tmp2 = ft_strjoin(tmp2, tmp);
+			if (tmp3)
+				tmp3 = ft_strjoin(tmp3, tmp);
 			else
-				tmp2 = ft_strdup(tmp);
+				tmp3 = ft_strdup(tmp);
 			free(tmp);
 		}
 		free(args[i]);
-		args[i] = ft_strdup(tmp2);
-		free(tmp2);
+		args[i] = ft_strdup(tmp3);
+		free(tmp3);
 		i++;
 	}
 }

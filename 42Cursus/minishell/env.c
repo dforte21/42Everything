@@ -1,5 +1,29 @@
 #include "minishell.h"
 
+char	*fdGetEnv(char *str, char **envp)
+{
+	int		row;
+	int		col;
+	char	*dst;
+
+	dst = NULL;
+	row = 0;
+	while (envp[row])
+	{
+		if (!ft_strncmp(str, envp[row], ft_strlen(str)))
+		{
+			col = 0;
+			while(envp[row][col] != '=')
+				col++;
+			if (col == ft_strlen(str))
+				dst = ft_strdup(&envp[row][col + 1]);
+		}
+		row++;
+	}
+	free(str);
+	return(dst);
+}
+
 void	ftEnv(t_comms *comms, char **envp)
 {
 	int	i;
@@ -11,5 +35,6 @@ void	ftEnv(t_comms *comms, char **envp)
 		printf("\n");
 		i++;
 	}
+	printf("\b");
 	g_exit_status = 0;
 }

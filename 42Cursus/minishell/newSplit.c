@@ -15,6 +15,7 @@ char	**newSplit(char *line)
 	args[0] = ft_calloc(i + 1, sizeof(char));
 	ft_strlcpy(args[0], line, i + 1);
 	copyArgs(words, args, line, i);
+	checkArgs(args, '\"');
 	return (args);
 }
 
@@ -27,16 +28,16 @@ int	countWords(char *line)
 	n = 1;
 	while (line[i])
 	{
-		if (line[i] == ' ' && line[i + 1] != 34)
+		if (line[i] == ' ')
 		{
 			while (line[i] == ' ')
 				i++;
-			i = ftStrchr(line, ' ', i);
-			n++;
-		}
-		else if (line[i] == 34)
-		{
-			i = ftStrchr(line, 34, i + 1) + 1;
+			while (line[i] != ' ' && line[i])
+			{
+				if (line[i] == '\"' || line[i] == '\'')
+					i = ftStrchr(line, line[i], i + 1);
+				i++;
+			}
 			n++;
 		}
 		else
@@ -53,25 +54,50 @@ void	copyArgs(int words, char **args, char *line, int i)
 	k = 1;
 	while (k < words)
 	{
-		j = i;
-		if (line[i] == ' ' && line[i + 1] != 34)
+		if (line[i] == ' ')
 		{
 			while (line[i] == ' ')
 				i++;
-			j = i - 1;
-			i = ftStrchr(line, ' ', i);
-			args[k] = ft_calloc(i - j, sizeof(char));
-			ft_strlcpy(args[k], &line[j + 1], i - j);
-			k++;
-		}
-		else if (line[i] == 34)
-		{
-			i = ftStrchr(line, 34, i + 1) + 1;
-			args[k] = ft_calloc(i - j, sizeof(char));
-			ft_strlcpy(args[k], &line[j + 1], i - j - 1);
+			j = i;
+			while (line[i] != ' ' && line[i])
+			{
+				if (line[i] == '\"' || line[i] == '\'')
+					i = ftStrchr(line, line[i], i + 1);
+				i++;
+			}
+			args[k] = ft_calloc(i - j + 1, sizeof(char));
+			ft_strlcpy(args[k], &line[j], i - j + 1);
 			k++;
 		}
 		else
 			i++;
+	}
+}
+
+void	checkArgs(char **args, char c)
+{
+	char	*tmp;
+	char	*tmp2;
+	int		i;
+	int		j;
+	int		k;
+
+	i = 1;
+	while(args[i])
+	{
+		j = 0;
+		while (args[i][j])
+		{
+			k = j;
+			j = ftStrchr(args[i], '\"', j);
+			tmp = ft_substr(args[i], k, j - k);
+			if (tmp2)
+				tmp2 = ft_strjoin(tmp2, tmp);
+			else
+				tmp2 = ft_strdup(tmp);
+			free(tmp);
+			j++;
+		}
+
 	}
 }

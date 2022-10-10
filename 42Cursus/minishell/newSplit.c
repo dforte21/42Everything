@@ -91,6 +91,8 @@ void	checkArgs(char **args, char c)
 		{
 			k = j;
 			j = ftStrchr(args[i], '\"', j + 1);
+			if (!args[i][j])
+				continue ;
 			tmp = ft_substr(args[i], k, j - k + 1);
 			if (tmp[0] != '\"' || tmp[j - k] != '\"')
 				tmp = ftRemoveChar(tmp, '\'');

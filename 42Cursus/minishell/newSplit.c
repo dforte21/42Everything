@@ -83,21 +83,27 @@ void	checkArgs(char **args, char c)
 	int		k;
 
 	i = 1;
+	tmp2 = NULL;
 	while(args[i])
 	{
 		j = 0;
 		while (args[i][j])
 		{
 			k = j;
-			j = ftStrchr(args[i], '\"', j);
-			tmp = ft_substr(args[i], k, j - k);
+			j = ftStrchr(args[i], '\"', j + 1);
+			tmp = ft_substr(args[i], k, j - k + 1);
+			if (tmp[0] != '\"' || tmp[j - k] != '\"')
+				tmp = ftRemoveChar(tmp, '\'');
+			tmp = ftRemoveChar(tmp, '\"');
 			if (tmp2)
 				tmp2 = ft_strjoin(tmp2, tmp);
 			else
 				tmp2 = ft_strdup(tmp);
 			free(tmp);
-			j++;
 		}
-
+		free(args[i]);
+		args[i] = ft_strdup(tmp2);
+		free(tmp2);
+		i++;
 	}
 }

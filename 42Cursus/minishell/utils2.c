@@ -29,5 +29,6 @@ char	*ftRemoveChar(char *str, char c)
 		i++;
 	}
 	free(str);
+	ftFree(arg);
 	return (tmp);
 }

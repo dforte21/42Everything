@@ -3,7 +3,7 @@
 void	exeCommand(t_comms *comms, char **envp, int i)
 {
 	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
-	comms->cargs = newSplit(comms->pipes[i]);
+	comms->cargs = ft_split(comms->pipes[i], ' ');
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
 		comms->exit = 1;
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)

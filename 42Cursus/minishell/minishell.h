@@ -29,7 +29,9 @@ typedef struct s_comms
 	char	**cargs;
 	char	**envcpy;
 	char	**path;
+	char	*heredoc[20];
 	int		**pipefd;
+	int		redirection[20][2];
 	int		exit;
 	int		lenv;
 }              t_comms;

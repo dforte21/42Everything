@@ -15,9 +15,6 @@ int	ftCd(t_comms *comms)
 
 	r = chdir(comms->cargs[1]);
 	if (r == -1)
-	{
-		errno = ENOENT;
 		return (ftError(comms->cargs, 2, 1));
-	}
 	return (0);
 }

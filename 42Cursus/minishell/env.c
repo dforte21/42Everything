@@ -24,7 +24,7 @@ char	*fdGetEnv(char *str, char **envp)
 	return(dst);
 }
 
-void	ftEnv(t_comms *comms, char **envp)
+int	ftEnv(t_comms *comms, char **envp)
 {
 	int	i;
 
@@ -35,6 +35,5 @@ void	ftEnv(t_comms *comms, char **envp)
 		printf("\n");
 		i++;
 	}
-	printf("\b");
-	g_exit_status = 0;
+	return (0);;
 }

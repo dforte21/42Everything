@@ -6,20 +6,24 @@ int main(int ac, char **av, char **envp)
 {
 	t_comms	comms;
 
+	ft_ctrlc(envp);
 	comms.exit = 0;
 	comms.lenv = 0;
 	while (envp[comms.lenv])
 		comms.lenv++;
 	comms.path = getPath();
-	//while (comms.exit == 0)
-	//{
+	while (comms.exit == 0)
+	{
+		ft_signal();
 		comms.line = readline("Minishell-1.0$ ");
+		if (!comms.line)
+			break ;
 		comms.pipes = ft_split(comms.line, '|');
 		comms.pipefd = allocPipe(&comms);
 		ftParser(&comms, envp);
-		free(comms.line);
 		ftFree(comms.pipes);
-	//}
+		free(comms.line);
+	}
 	printf("exit\n");
 	ftExit(&comms);
 }

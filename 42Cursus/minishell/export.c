@@ -1,11 +1,13 @@
 #include "minishell.h"
 
-void	ftExport(t_comms *comms, char **envp, int i, int flag)
+int	ftExport(t_comms *comms, char **envp, int i, int flag)
 {
 	if (comms->cargs[1])
 	{
 		while (comms->cargs[i + 1])
 		{
+			if (checkInput(comms->cargs[i + 1]))
+				return (ftError(comms->cargs, 1, i + 1));
 			flag = checkEnv(comms->cargs[i + 1], envp);
 			if (flag != -1)
 				addEnv(comms->cargs[i + 1], envp, flag, comms);
@@ -25,7 +27,7 @@ void	ftExport(t_comms *comms, char **envp, int i, int flag)
 		}
 		ftFree(comms->envcpy);
 	}
-	g_exit_status = 0;
+	return (0);
 }
 
 char	**copyEnv(t_comms *comms, char **envp)

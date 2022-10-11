@@ -29,11 +29,9 @@ void	ftFree(char **args)
 
 void	ftExit(t_comms *comms)
 {
-	int	i;
-
-	i = 0;
 	clear_history();
 	ftFree(comms->path);
+	//pause();
 	exit (0);
 }
 

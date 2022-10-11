@@ -4,6 +4,7 @@ void	ftParser(t_comms *comms, char **envp)
 {
 	int		i;
 	int		j;
+	int		exit;
 	pid_t	pid;
 
 	
@@ -17,7 +18,8 @@ void	ftParser(t_comms *comms, char **envp)
 		pid = fork();
 		if (pid == 0)
 			childExecute(comms, envp, i, j);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &exit, 0);
+		check_status(exit, comms);
 		close(comms->pipefd[i][1]);
 		i++;
 	}
@@ -35,5 +37,23 @@ void	childExecute(t_comms *comms, char **envp, int i, int j)
 	free(comms->line);
 	ftFree(comms->pipes);
 	ftFreePipe(comms, j);
-	ftExit(comms);
+	clear_history();
+	ftFree(comms->path);
+	if (comms->exit == 1)
+		exit(2);
+	exit(g_exit_status);
+}
+
+void	check_status(int exit, t_comms *comms)
+{
+	if (WIFEXITED(exit))
+	{
+		if (WEXITSTATUS(exit) == 2)
+		{
+			comms->exit = 1;
+			g_exit_status = 0;
+		}
+		else
+			g_exit_status = WEXITSTATUS(exit);
+	}
 }

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	ftEcho(t_comms *comms)
+int	ftEcho(t_comms *comms)
 {
 	int	i;
 
@@ -16,5 +16,5 @@ void	ftEcho(t_comms *comms)
 	}
 	if (!comms->cargs[1] || ft_strncmp(comms->cargs[1], "-n", ft_strlen(comms->cargs[1])) != 0)
 		printf("\n");
-	g_exit_status = 0;
+	return (0);
 }

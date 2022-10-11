@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	ftUnset(t_comms *comms, char **envp)
+int	ftUnset(t_comms *comms, char **envp)
 {
 	int	i;
 	int	j;
@@ -8,6 +8,8 @@ void	ftUnset(t_comms *comms, char **envp)
 	i = 1;
 	while (comms->cargs[i])
 	{
+		if (checkInput(comms->cargs[1]))
+			return (ftError(comms->cargs, 1, i));
 		j = findEnv(comms->cargs[i], envp);
 		if (j == -1)
 			continue ;
@@ -22,7 +24,7 @@ void	ftUnset(t_comms *comms, char **envp)
 		i++;
 	}
 	comms->lenv--;
-	g_exit_status = 0;
+	return (0);
 }
 
 int	checkEnv(char *arg, char **envp)
@@ -58,4 +60,20 @@ int	findEnv(char *arg, char **envp)
 		j++;
 	}
 	return (-1);
+}
+
+int	checkInput(char *arg)
+{
+	int	i;
+
+	i = 0;
+	if (arg[0] == '=')
+		return (1);
+	while (arg[i])
+	{
+		if (!ft_isalnum(arg[i]) && arg[i] != '=')
+			return (1);
+		i++;
+	}
+	return (0);
 }

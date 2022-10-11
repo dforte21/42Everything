@@ -36,39 +36,57 @@ typedef struct s_comms
 	int		lenv;
 }              t_comms;
 
-void	ftEcho(t_comms *comms);
-void	ftEnv(t_comms *comms, char **envp);
-void	ftExport(t_comms *comms, char **envp, int i, int flag);
-void	ftUnset(t_comms *comms, char **envp);
-void	ftPwd(t_comms *comms);
-void	ftCd(t_comms *comms);
+//commands
+int		ftEcho(t_comms *comms);
+int		ftEnv(t_comms *comms, char **envp);
+int		ftExport(t_comms *comms, char **envp, int i, int flag);
+int		ftUnset(t_comms *comms, char **envp);
+int		ftPwd(t_comms *comms);
+int		ftCd(t_comms *comms);
+int		ftExecve (t_comms *comms, char **envp);
+
+//pipe&fork
 void	ftParser(t_comms *comms, char **envp);
 void	exeCommand(t_comms *comms, char **envp, int i);
-void	ftFree(char **args);
-void	ftExit(t_comms *comms);
-void	ftError(char *arg);
-void	ftStrReplace(char *str, char old, char new);
-void	copyArgs(int words, char **args, char *line, int i);
-void	checkArgs(char **args, char c);
+void	childExecute(t_comms *comms, char **envp, int i, int j);
+int		**allocPipe(t_comms *comms);
+int		exeFork(t_comms *comms, char **envp, char *path);
+
+//signals
+void	ft_ctrlc(char **envp);
+void	ft_sigint(int sig);
+void	ft_signal(void);
+void 	rl_replace_line (const char *text, int clear_undo);
+
+//env
 void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
 void	sortEnv(t_comms *comms, char **envcpy);
-void	childExecute(t_comms *comms, char **envp, int i, int j);
-void	ftFreePipe(t_comms *comms, int j);
-char	**getPath(void);
 char	**ftExpand(char **src, char **envp);
 char	**copyEnv(t_comms *comms, char **envp);
-char	**newSplit(char *line);
 char	*fdGetEnv(char *str, char **envp);
-char 	*ftReplace(char *src, char **envp, int i);
 char	*createEnv(char *arg);
-char	*createTmpFile(void);
-char	*ftRemoveChar(char *str, char c);
-int		**allocPipe(t_comms *comms);
-int		ftExecve (t_comms *comms, char **envp);
-int		countWords(char *line);
-int		ftStrchr(char *str, char c, int start);
 int		findEnv(char *arg, char **envp);
 int		checkEnv(char *arg, char **envp);
-int		exeFork(t_comms *comms, char **envp, char *path);
+
+//utils
+void	ftFree(char **args);
+void	ftExit(t_comms *comms);
+void	ftStrReplace(char *str, char old, char new);
+void	ftFreePipe(t_comms *comms, int j);
+void	check_status(int exit, t_comms *comms);
+char	**getPath(void);
+char	*createTmpFile(void);
+char 	*ftReplace(char *src, char **envp, int i);
+char	*ftRemoveChar(char *str, char c);
+char	*buildPath(t_comms *comms);
+int		ftError(char **arg, int caller, int i);
+int		ftStrchr(char *str, char c, int start);
+int		checkInput(char *arg);
+
+//split
+void	copyArgs(int words, char **args, char *line, int i);
+void	checkArgs(char **args, char c);
+char	**newSplit(char *line);
+int		countWords(char *line);
 
 #endif

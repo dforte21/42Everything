@@ -11,7 +11,7 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 		g_exit_status = ftEcho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)
 		g_exit_status = ftEnv(comms, envp);
-	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
+	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0 && !comms->cargs[1])
 		g_exit_status = ftExport(comms, envp, 0, 0);
 	else if (ft_strncmp(comms->cargs[0], "pwd", 4) == 0)
 		g_exit_status = ftPwd(comms);

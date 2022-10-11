@@ -27,11 +27,11 @@ void	chooseCommand(t_comms *comms, char **envp, int i, int j)
 
 	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
 	comms->cargs = ft_split(comms->pipes[i], ' ');
-	if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
+	if (ft_strncmp(comms->cargs[0], "cd", 3) == 0 && !comms->pipes[1])
 		g_exit_status = ftCd(comms);
-	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0 && comms->cargs[1])
+	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0 && comms->cargs[1] && !comms->pipes[1])
 		g_exit_status = ftExport(comms, envp, 0, 0);
-	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
+	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0 && !comms->pipes[1])
 		g_exit_status = ftUnset(comms, envp);
 	else
 	{

@@ -4,9 +4,6 @@ void	ftParser(t_comms *comms, char **envp)
 {
 	int		i;
 	int		j;
-	int		exit;
-	pid_t	pid;
-
 	
 	i = 0;
 	j = 0;
@@ -15,16 +12,36 @@ void	ftParser(t_comms *comms, char **envp)
 	while (comms->pipes[i])
 	{
 		pipe(comms->pipefd[i]);
-		pid = fork();
-		if (pid == 0)
-			childExecute(comms, envp, i, j);
-		waitpid(pid, &exit, 0);
-		check_status(exit, comms);
+		chooseCommand(comms, envp, i, j);
 		close(comms->pipefd[i][1]);
 		i++;
 	}
 	ftFreePipe(comms, j);
 	add_history(comms->line);
+}
+
+void	chooseCommand(t_comms *comms, char **envp, int i, int j)
+{
+	int		status;
+	pid_t	pid;
+
+	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
+	comms->cargs = ft_split(comms->pipes[i], ' ');
+	if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
+		g_exit_status = ftCd(comms);
+	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0 && comms->cargs[1])
+		g_exit_status = ftExport(comms, envp, 0, 0);
+	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
+		g_exit_status = ftUnset(comms, envp);
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+			childExecute(comms, envp, i, j);
+		waitpid(pid, &status, 0);
+		check_status(status, comms);
+	}
+	ftFree(comms->cargs);
 }
 
 void	childExecute(t_comms *comms, char **envp, int i, int j)
@@ -35,6 +52,7 @@ void	childExecute(t_comms *comms, char **envp, int i, int j)
 		dup2(comms->pipefd[i - 1][0], 0);
 	exeCommand(comms, envp, i);
 	free(comms->line);
+	ftFree(comms->cargs);
 	ftFree(comms->pipes);
 	ftFreePipe(comms, j);
 	clear_history();

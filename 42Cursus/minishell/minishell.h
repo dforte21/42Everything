@@ -49,6 +49,7 @@ int		ftExecve (t_comms *comms, char **envp);
 void	ftParser(t_comms *comms, char **envp);
 void	exeCommand(t_comms *comms, char **envp, int i);
 void	childExecute(t_comms *comms, char **envp, int i, int j);
+void	chooseCommand(t_comms *comms, char **envp, int i, int j);
 int		**allocPipe(t_comms *comms);
 int		exeFork(t_comms *comms, char **envp, char *path);
 

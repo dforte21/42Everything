@@ -10,7 +10,7 @@ int	ftExecve (t_comms *comms, char **envp)
 	if (comms->cargs[0][i])
 	{
 		path = ft_strdup(comms->cargs[0]);
-		r = access(path, R_OK);
+		r = access(path, X_OK);
 	}
 	else
 		path = buildPath(comms);
@@ -52,7 +52,7 @@ char	*buildPath(t_comms *comms)
 	while (comms->path[i])
 	{
 		comms->path[i] = ft_strjoin(comms->path[i], comms->cargs[0]);
-		r = access(comms->path[i], R_OK);
+		r = access(comms->path[i], X_OK);
 		path = ft_strdup(comms->path[i]);
 		comms->path[i] = ft_strtrim(comms->path[i], comms->cargs[0]);
 		if (r == 0)

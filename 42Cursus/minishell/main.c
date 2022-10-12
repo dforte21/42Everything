@@ -20,7 +20,6 @@ int main(int ac, char **av, char **envp)
 		ftFree(comms.pipes);
 		free(comms.line);
 	}
-	printf("exit\n");
 	ftExit(&comms);
 }
 

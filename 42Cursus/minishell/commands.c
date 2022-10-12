@@ -5,10 +5,7 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
 	comms->cargs = ft_split(comms->pipes[i], ' ');
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
-	{
-		g_exit_status = 0;
-		comms->exit = 1;
-	}
+		g_exit_status = ft_exit(comms);
 	else if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
 		g_exit_status = ftCd(comms);
 	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
@@ -50,6 +47,32 @@ int	ftError(char **arg, int caller, int i)
 		free(line);
 		return (127);
 	}
+	if (caller == 4)
+	{
+		line = ft_strjoin(line, ": ");
+		line = ft_strjoin(line, arg[i]);
+		line = ft_strjoin(line, ": numeric argument required\n");
+		write(STDERR_FILENO, line, ft_strlen(line));
+	}
 	free(line);
 	return (1);
+}
+
+int	ft_exit(t_comms *comms)
+{
+	int	i;
+
+	i = 0;
+	comms->exit = 1;
+	if (!comms->pipes[1])
+		printf("exit\n");
+	if (!comms->cargs[1])
+		return (0);
+	while (comms->cargs[1][i])
+	{
+		if (!ft_isdigit(comms->cargs[1][i]))
+			return (ftError(comms->cargs, 4, 1));
+		i++;
+	}
+	return (ft_atoi(comms->cargs[1]));
 }

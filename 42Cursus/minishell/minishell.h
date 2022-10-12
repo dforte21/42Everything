@@ -44,6 +44,7 @@ int		ftUnset(t_comms *comms, char **envp);
 int		ftPwd(t_comms *comms);
 int		ftCd(t_comms *comms);
 int		ftExecve (t_comms *comms, char **envp);
+int		ft_exit(t_comms *comms);
 
 //pipe&fork
 void	ftParser(t_comms *comms, char **envp);
@@ -79,7 +80,7 @@ void	ftFree(char **args);
 void	ftExit(t_comms *comms);
 void	ftStrReplace(char *str, char old, char new);
 void	ftFreePipe(t_comms *comms, int j);
-void	check_status(int exit, t_comms *comms);
+void	check_status(int exit, t_comms *comms, int i);
 char	**getPath(void);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);

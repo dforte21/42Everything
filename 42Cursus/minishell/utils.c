@@ -32,7 +32,7 @@ void	ftExit(t_comms *comms)
 	clear_history();
 	ftFree(comms->path);
 	//pause();
-	exit (0);
+	exit (g_exit_status);
 }
 
 void	ftStrReplace(char *str, char old, char new)

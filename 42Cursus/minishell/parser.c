@@ -33,7 +33,7 @@ void	chooseCommand(t_comms *comms, char **envp, int i, int j)
 		if (pid == 0)
 			childExecute(comms, envp, i, j);
 		waitpid(pid, &status, 0);
-		check_status(status, comms);
+		check_status(status, comms, i);
 	}
 }
 
@@ -52,8 +52,8 @@ void	childExecute(t_comms *comms, char **envp, int i, int j)
 	exit(g_exit_status);
 }
 
-void	check_status(int exit, t_comms *comms)
+void	check_status(int exit, t_comms *comms, int i)
 {
-	if (WIFEXITED(exit))
+	if (WIFEXITED(exit) && !comms->pipes[i + 1])
 		g_exit_status = WEXITSTATUS(exit);
 }

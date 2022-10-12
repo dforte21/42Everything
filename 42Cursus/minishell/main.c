@@ -6,12 +6,8 @@ int main(int ac, char **av, char **envp)
 {
 	t_comms	comms;
 
-	ft_ctrlc(envp);
-	comms.exit = 0;
-	comms.lenv = 0;
-	while (envp[comms.lenv])
-		comms.lenv++;
-	comms.path = getPath();
+	initArgs(&comms, envp);
+	incrementShlvl(envp, &comms);
 	while (comms.exit == 0)
 	{
 		ft_signal();
@@ -45,21 +41,34 @@ char	**getPath(void)
 	return (path);
 }
 
-int	**allocPipe(t_comms *comms)
+void	initArgs(t_comms *comms, char **envp)
 {
-	int	**fd;
-	int	j;
-	int	i;
+	ft_ctrlc(envp);
+	comms->exit = 0;
+	comms->lenv = 0;
+	while (envp[comms->lenv])
+		comms->lenv++;
+	comms->path = getPath();
+}
 
-	j = 0;
-	i = 0;
-	while (comms->pipes[j])
-		j++;
-	fd = malloc(sizeof(int *) * j);
-	while (comms->pipes[i])
-	{
-		fd[i] = malloc(sizeof(int) * 2);
-		i++;
-	}
-	return (fd);
+void	incrementShlvl(char **envp, t_comms *comms)
+{
+	int		lvl;
+	char	*input;
+	char	*shlvl;
+	char	*newlvl;
+
+	input = ft_strdup("SHLVL");
+	shlvl = fdGetEnv(input, envp);
+	shlvl = ft_strtrim(shlvl, "\"");
+	lvl = ft_atoi(shlvl);
+	free(shlvl);
+	newlvl = ft_itoa(lvl + 1);
+	comms->cargs = ft_calloc(3, sizeof(char *));
+	comms->cargs[0] = ft_strdup("export");
+	comms->cargs[1] = ft_strdup("SHLVL=");
+	comms->cargs[1] = ft_strjoin(comms->cargs[1], newlvl);
+	ftExport(comms, envp, 0, 0);
+	free(input);
+	ftFree(comms->cargs);
 }

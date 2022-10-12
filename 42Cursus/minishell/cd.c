@@ -11,9 +11,16 @@ int	ftPwd(t_comms *comms)
 
 int	ftCd(t_comms *comms)
 {
-	int	r;
+	int		r;
+	char	*home;
 
-	r = chdir(comms->cargs[1]);
+	if (!comms->cargs[1])
+	{
+		home = getenv("HOME");
+		r = chdir(home);
+	}
+	else
+		r = chdir(comms->cargs[1]);
 	if (r == -1)
 		return (ftError(comms->cargs, 2, 1));
 	return (0);

@@ -32,3 +32,22 @@ char	*ftRemoveChar(char *str, char c)
 	ftFree(arg);
 	return (tmp);
 }
+
+int	**allocPipe(t_comms *comms)
+{
+	int	**fd;
+	int	j;
+	int	i;
+
+	j = 0;
+	i = 0;
+	while (comms->pipes[j])
+		j++;
+	fd = malloc(sizeof(int *) * j);
+	while (comms->pipes[i])
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		i++;
+	}
+	return (fd);
+}

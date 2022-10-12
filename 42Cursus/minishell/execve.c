@@ -3,16 +3,18 @@
 int	ftExecve (t_comms *comms, char **envp)
 {
 	int		r;
+	int		i;
 	char	*path;
 
-	path = ft_strdup(comms->cargs[0]);
-	r = access(path, R_OK);
-	if (r == -1)
+	i = ftStrchr(comms->cargs[0], '/', 0);
+	if (comms->cargs[0][i])
 	{
-		free(path);
-		path = buildPath(comms);
+		path = ft_strdup(comms->cargs[0]);
+		r = access(path, R_OK);
 	}
-	if (!path)
+	else
+		path = buildPath(comms);
+	if (!path || r == -1)
 		return (ftError(comms->cargs, 3, 0));
 	r = exeFork(comms, envp, path);
 	free(path);

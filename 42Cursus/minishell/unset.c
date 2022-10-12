@@ -39,7 +39,6 @@ int	checkEnv(char *arg, char **envp)
 	j = ftStrchr(arg, '=', 0);
 	if (!arg[j])
 		return (-1);
-	free(envp[i]);
 	envp[i] = NULL;
 	return (1);
 }

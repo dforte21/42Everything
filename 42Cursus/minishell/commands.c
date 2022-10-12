@@ -2,21 +2,28 @@
 
 void	exeCommand(t_comms *comms, char **envp, int i)
 {
+	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
+	comms->cargs = ft_split(comms->pipes[i], ' ');
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
 	{
-		if (i == 0 && !comms->pipes[i + 1])
-			comms->exit = 1;
+		g_exit_status = 0;
+		comms->exit = 1;
 	}
+	else if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
+		g_exit_status = ftCd(comms);
+	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
+		g_exit_status = ftExport(comms, envp, 0, 0);
+	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
+		g_exit_status = ftUnset(comms, envp);
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)
 		g_exit_status = ftEcho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)
 		g_exit_status = ftEnv(comms, envp);
-	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0 && !comms->cargs[1])
-		g_exit_status = ftExport(comms, envp, 0, 0);
 	else if (ft_strncmp(comms->cargs[0], "pwd", 4) == 0)
 		g_exit_status = ftPwd(comms);
 	else
 		g_exit_status = ftExecve(comms, envp);
+	ftFree(comms->cargs);
 }
 
 int	ftError(char **arg, int caller, int i)

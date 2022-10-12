@@ -69,6 +69,11 @@ char	*createEnv(char *arg);
 int		findEnv(char *arg, char **envp);
 int		checkEnv(char *arg, char **envp);
 
+//initializator
+void	initArgs(t_comms *comms, char **envp);
+void	incrementShlvl(char **envp, t_comms *comms);
+char	*buildPath(t_comms *comms);
+
 //utils
 void	ftFree(char **args);
 void	ftExit(t_comms *comms);
@@ -79,7 +84,6 @@ char	**getPath(void);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);
-char	*buildPath(t_comms *comms);
 int		ftError(char **arg, int caller, int i);
 int		ftStrchr(char *str, char c, int start);
 int		checkInput(char *arg);

@@ -2,10 +2,18 @@
 
 int	ftExecve (t_comms *comms, char **envp)
 {
-	int		r;
-	int		i;
-	char	*path;
+	int			r;
+	int			i;
+	char		*path;
+	struct stat	filestat;
 
+	r = stat(comms->cargs[0], &filestat);
+	if (S_ISDIR(filestat.st_mode) && r == 0)
+	{
+		errno = EISDIR;
+		ftError(comms->cargs, 2, 0);
+		return (126);
+	}
 	i = ftStrchr(comms->cargs[0], '/', 0);
 	if (comms->cargs[0][i])
 	{

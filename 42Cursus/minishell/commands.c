@@ -2,6 +2,7 @@
 
 void	exeCommand(t_comms *comms, char **envp, int i)
 {
+	set_fd(comms, 0);
 	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
 	comms->cargs = ft_split(comms->pipes[i], ' ');
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
@@ -21,6 +22,8 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 	else
 		g_exit_status = ftExecve(comms, envp);
 	ftFree(comms->cargs);
+	set_fd(comms, 1);
+	set_fd(comms, 2);
 }
 
 int	ftError(char **arg, int caller, int i)
@@ -53,6 +56,7 @@ int	ftError(char **arg, int caller, int i)
 		line = ft_strjoin(line, arg[i]);
 		line = ft_strjoin(line, ": numeric argument required\n");
 		write(STDERR_FILENO, line, ft_strlen(line));
+		return (255);
 	}
 	free(line);
 	return (1);

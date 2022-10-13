@@ -37,8 +37,8 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 	pid = fork();
 	if (pid == 0)
 	{
-		if(execve(path, comms->cargs, envp) == -1)
-			exit(errno);
+		execve(path, comms->cargs, envp);
+		exit(errno);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

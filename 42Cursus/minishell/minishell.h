@@ -29,9 +29,9 @@ typedef struct s_comms
 	char	**cargs;
 	char	**envcpy;
 	char	**path;
-	char	*heredoc[20];
 	int		**pipefd;
-	int		redirection[20][2];
+	int		stdincpy;
+	int		stdoutcpy;
 	int		exit;
 	int		lenv;
 }              t_comms;
@@ -48,9 +48,9 @@ int		ft_exit(t_comms *comms);
 
 //pipe&fork
 void	ftParser(t_comms *comms, char **envp);
+void	chooseCommand(t_comms *comms, char **envp, int i, int j);
 void	exeCommand(t_comms *comms, char **envp, int i);
 void	childExecute(t_comms *comms, char **envp, int i, int j);
-void	chooseCommand(t_comms *comms, char **envp, int i, int j);
 int		**allocPipe(t_comms *comms);
 int		exeFork(t_comms *comms, char **envp, char *path);
 
@@ -80,7 +80,8 @@ void	ftFree(char **args);
 void	ftExit(t_comms *comms);
 void	ftStrReplace(char *str, char old, char new);
 void	ftFreePipe(t_comms *comms, int j);
-void	check_status(int exit, t_comms *comms, int i);
+void	check_status(int exit);
+void	set_fd(t_comms *comms, int flag);
 char	**getPath(void);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);

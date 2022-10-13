@@ -7,7 +7,6 @@ void	ftFreePipe(t_comms *comms, int j)
 	i = 0;
 	while (i < j)
 	{
-		close(comms->pipefd[i][0]);
 		free(comms->pipefd[i]);
 		i++;
 	}
@@ -50,4 +49,23 @@ int	**allocPipe(t_comms *comms)
 		i++;
 	}
 	return (fd);
+}
+
+void	set_fd(t_comms *comms, int flag)
+{
+	if (flag == 0)
+	{
+		comms->stdincpy = dup(0);
+		comms->stdoutcpy = dup(1);
+	}
+	else if (flag == 1)
+	{
+		dup2(comms->stdincpy, 0);
+		dup2(comms->stdoutcpy, 1);
+	}
+	else if (flag == 2)
+	{
+		close(comms->stdincpy);
+		close(comms->stdoutcpy);
+	}
 }

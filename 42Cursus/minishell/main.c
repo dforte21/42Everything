@@ -4,6 +4,8 @@ int g_exit_status;
 
 int main(int ac, char **av, char **envp)
 {
+	int		status;
+	pid_t	pid;
 	t_comms	comms;
 
 	initArgs(&comms, envp);
@@ -13,7 +15,10 @@ int main(int ac, char **av, char **envp)
 		ft_signal();
 		comms.line = readline("Minishell-1.0$ ");
 		if (!comms.line)
+		{
+			printf("exit\n");
 			break ;
+		}
 		comms.pipes = ft_split(comms.line, '|');
 		comms.pipefd = allocPipe(&comms);
 		ftParser(&comms, envp);

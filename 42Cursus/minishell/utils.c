@@ -31,7 +31,6 @@ void	ftExit(t_comms *comms)
 {
 	clear_history();
 	ftFree(comms->path);
-	//pause();
 	exit (g_exit_status);
 }
 

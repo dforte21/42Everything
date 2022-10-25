@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+int	ft_skip_quotes(char *str, int i, char c)
+{
+	if (str[i] == c)
+	{
+		i += 1;
+		while (str[i] != c && str[i])
+			i++;
+	}
+	if (str[i] == '\0')
+		return (-1);
+	return (i);
+}
+
 int	ftStrchr(char *str, char c, int start)
 {
 	int	i;
@@ -22,7 +35,6 @@ void	ftFree(char **args)
 			free(args[i]);
 			i++;
 		}
-		free(args[i]);
 		free(args);
 	}
 }
@@ -31,6 +43,7 @@ void	ftExit(t_comms *comms)
 {
 	clear_history();
 	ftFree(comms->path);
+	//pause();
 	exit (g_exit_status);
 }
 

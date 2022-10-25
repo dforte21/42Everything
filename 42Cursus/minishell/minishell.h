@@ -82,18 +82,19 @@ void	ftStrReplace(char *str, char old, char new);
 void	ftFreePipe(t_comms *comms, int j);
 void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
+void	ft_redirection(char **matrix);
+char	**ft_remove_quotes(char **matrix);
 char	**getPath(void);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);
+int		ft_skip_quotes(char *str, int i, char c);
+int		ft_check_line(char *str);
 int		ftError(char **arg, int caller, int i);
 int		ftStrchr(char *str, char c, int start);
 int		checkInput(char *arg);
 
 //split
-void	copyArgs(int words, char **args, char *line, int i);
-void	checkArgs(char **args, char c);
-char	**newSplit(char *line);
-int		countWords(char *line);
+char	**ft_smart_split(char *s, char c);
 
 #endif

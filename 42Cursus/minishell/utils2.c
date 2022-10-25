@@ -7,6 +7,7 @@ void	ftFreePipe(t_comms *comms, int j)
 	i = 0;
 	while (i < j)
 	{
+		close(comms->pipefd[i][0]);
 		free(comms->pipefd[i]);
 		i++;
 	}

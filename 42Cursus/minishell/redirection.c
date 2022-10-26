@@ -1,53 +1,36 @@
 #include "minishell.h"
 
-void	ft_heredoc(char **matrix, int row)
-{
-	char	*end;
-	char	*line;
-	int		fd[2];
+//void	ft_heredoc(char *cmd, int row, int *fd)
+//{
+	
+//}
 
-	if (matrix[row][2] == '\0')
-		end = ft_strdup(matrix[row + 1]);
-	else
-		end = ft_strdup(&matrix[row][2]);
-	while (matrix[row])
+void	ft_redirection(char *cmd, int *fd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[i])
 	{
-		free(matrix[row]);
-		matrix[row] = NULL;
-		row++;
+		i = ft_skip_quotes(cmd, i, '\"');
+		i = ft_skip_quotes(cmd, i, '\"');
+		if (cmd[i] == '<' || cmd[i] == '>')
+			i = execRedirect(cmd, i, fd);
+		i++;
 	}
-	pipe(fd);
-	line = readline("> ");
-	while (ft_strncmp(line, end, ft_strlen(end)))
-	{
-		write(fd[1], line, ft_strlen(line));
-		write(fd[1], "\n", 1);
-		free(line);
-		line = readline("> ");
-	}
-	free(line);
-	free(end);
-	write(fd[1], "\0", 1);
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[0]);
 }
 
-void	ft_redirection(char **matrix)
+int	execRedirect(char *cmd, int i, int *fd)
 {
-	int		row;
+	int 	end;
+	char	*red;
 
-	row = 0;
-	while (matrix[row])
-	{
-		if (matrix[row][0] == '<' && matrix[row][1] != '<')
-			continue ;
-		else if (matrix[row][0] == '>' && matrix[row][1] != '>')
-			continue ;
-		else if (ft_strncmp(matrix[row], "<<", 2) == 0)
-			ft_heredoc(matrix, row);
-		else if (ft_strncmp(matrix[row], ">>", 2) == 0)
-			continue ;
-		row++;
-	}
+	end = i + 1;
+	if (cmd[end] == '<' || cmd[end] == '>')
+		end++;
+	while (cmd[end] == ' ')
+		end++;
+	while (cmd[end] != ' ')
+		end++;
+	red = ft_substr(cmd, i, end - i);
 }

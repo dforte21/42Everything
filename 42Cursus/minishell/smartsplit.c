@@ -61,6 +61,8 @@ char	**ft_smart_split(char *s, char c)
 	while (row < count)
 	{
 		len = ft_rowlen(s, c);
+		while (*s == c)
+			s++;
 		matrix[row] = (char *) malloc (sizeof(char) * (len + 1));
 		ft_strlcpy(matrix[row], s, len + 1);
 		s += len + 1;

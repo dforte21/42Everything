@@ -82,7 +82,6 @@ void	ftStrReplace(char *str, char old, char new);
 void	ftFreePipe(t_comms *comms, int j);
 void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
-void	ft_redirection(char **matrix);
 char	**ft_remove_quotes(char **matrix);
 char	**getPath(void);
 char	*createTmpFile(void);
@@ -96,5 +95,9 @@ int		checkInput(char *arg);
 
 //split
 char	**ft_smart_split(char *s, char c);
+
+//redirection
+void	ft_redirection(char *cmd, int *fd);
+int		execRedirect(char *cmd, int i, int *fd);
 
 #endif

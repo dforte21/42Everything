@@ -26,6 +26,7 @@ void	ft_sigint(int sig)
 }
 
 void	ft_signal(void)
-{	signal(SIGINT, ft_sigint);
+{	
+	signal(SIGINT, ft_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }

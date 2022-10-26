@@ -33,8 +33,10 @@ void	ftParser(t_comms *comms, char **envp)
 
 void	chooseCommand(t_comms *comms, char **envp, int i, int j)
 {
+	int		fd[2];
 	pid_t	pid;
 
+	ft_redirection(comms->pipes[i], &fd);
 	if (!comms->pipes[1])
 		exeCommand(comms, envp, i);
 	else

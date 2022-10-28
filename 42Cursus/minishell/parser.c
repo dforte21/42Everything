@@ -36,29 +36,38 @@ void	chooseCommand(t_comms *comms, char **envp, int i, int j)
 	int		fd[2];
 	pid_t	pid;
 
-	ft_redirection(comms->pipes[i], &fd);
+	if (ft_redirection(comms->pipes[i], fd) == -1)
+	{
+		g_exit_status = 1;
+		return ;
+	}
 	if (!comms->pipes[1])
-		exeCommand(comms, envp, i);
+		exeCommand(comms, envp, i, fd);
 	else
 	{
 		pid = fork();
 		if (pid == 0)
-			childExecute(comms, envp, i, j);
-		dup2(comms->pipefd[i][0], STDIN_FILENO);
+			childExecute(comms, envp, i, fd);
+		if (checkHD(comms->pipes[i + 1]) == 0)
+			dup2(comms->pipefd[i][0], STDIN_FILENO);
 	}
 	close(comms->pipefd[i][0]);
 	close(comms->pipefd[i][1]);
+	if (fd[0] != -1)
+		close(fd[0]);
+	if (fd[1] != -1)
+		close(fd[1]);
 }
 
-void	childExecute(t_comms *comms, char **envp, int i, int j)
+void	childExecute(t_comms *comms, char **envp, int i, int *fd)
 {
 	close(comms->pipefd[i][0]);
-	if (comms->pipes[i + 1])
+	if (comms->pipes[i + 1] && fd[1] == -1)
 		dup2(comms->pipefd[i][1], STDOUT_FILENO);
-	else
+	else if (fd[1] == -1 && !comms->pipes[i + 1])
 		dup2(comms->stdoutcpy, STDOUT_FILENO);
 	close(comms->pipefd[i][1]);
-	exeCommand(comms, envp, i);
+	exeCommand(comms, envp, i, fd);
 	free(comms->line);
 	ftFree(comms->pipes);
 	clear_history();

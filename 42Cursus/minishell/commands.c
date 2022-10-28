@@ -1,8 +1,11 @@
 #include "minishell.h"
 
-void	exeCommand(t_comms *comms, char **envp, int i)
+void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 {
-	set_fd(comms, 0);
+	if (fd[0] != -1)
+		dup2(fd[0], STDIN_FILENO);
+	if (fd[1] != -1)
+		dup2(fd[1], STDOUT_FILENO);
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');
 	comms->cargs = ft_remove_quotes(comms->cargs);
 	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
@@ -22,8 +25,6 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 	else
 		g_exit_status = ftExecve(comms, envp);
 	ftFree(comms->cargs);
-	set_fd(comms, 1);
-	set_fd(comms, 2);
 }
 
 int	ftError(char **arg, int caller, int i)

@@ -13,13 +13,13 @@ int main(int ac, char **av, char **envp)
 	while (comms.exit == 0)
 	{
 		ft_signal();
-		comms.line = readline("Minishell-1.0$ ");
+		comms.line = readline("Minishell-1.32$ ");
 		if (!comms.line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		comms.pipes = ft_split(comms.line, '|');
+		comms.pipes = ft_smart_split(comms.line, '|');
 		comms.pipefd = allocPipe(&comms);
 		ftParser(&comms, envp);
 		ftFree(comms.pipes);

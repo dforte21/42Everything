@@ -31,8 +31,11 @@ int	ftEnv(t_comms *comms, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		printf("%s", envp[i]);
-		printf("\n");
+		if (envp[i][ftStrchr(envp[i], '=', 0)])
+		{
+			printf("%s", envp[i]);
+			printf("\n");
+		}
 		i++;
 	}
 	return (0);;

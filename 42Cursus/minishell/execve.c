@@ -44,8 +44,10 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 	if (WIFEXITED(status))
 	{
 		if (WEXITSTATUS(status) != 0)
+		{
 			errno = WEXITSTATUS(status);
 			return (1);
+		}
 	}
 	return (0);
 }

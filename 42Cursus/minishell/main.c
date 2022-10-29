@@ -5,7 +5,6 @@ int g_exit_status;
 int main(int ac, char **av, char **envp)
 {
 	int		status;
-	pid_t	pid;
 	t_comms	comms;
 
 	initArgs(&comms, envp);

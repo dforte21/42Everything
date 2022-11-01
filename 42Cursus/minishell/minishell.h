@@ -25,6 +25,7 @@ extern int	g_exit_status;
 typedef struct s_comms
 {
 	char	*line;
+	char	*cmd;
 	char	**newenvcp;
 	char	**pipes;
 	char	**cargs;
@@ -35,6 +36,7 @@ typedef struct s_comms
 	int		stdoutcpy;
 	int		exit;
 	int		lenv;
+	int		cmdflag;
 }              t_comms;
 
 //builtins
@@ -49,6 +51,7 @@ int		ft_exit(t_comms *comms);
 
 //pipe&fork
 pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j);
+void	ftProcess(t_comms comms, char **envp, int i);
 void	ftParser(t_comms *comms, char **envp);
 void	exeCommand(t_comms *comms, char **envp, int i, int *fd);
 void	childExecute(t_comms *comms, char **envp, int i, int *fd);
@@ -107,5 +110,9 @@ int		ft_redirection(char *cmd, int *fd, int caller);
 int		createFd(char *cmd, int *fd, char *fullcmd, int i);
 int		execRedirect(char *cmd, int i, int *fd, int caller);
 int		checkHD(char *cmd);
+
+//andor
+int		checkMltCmd(t_comms *comms, int i);
+int		checkFlag(t_comms *comms);
 
 #endif

@@ -4,29 +4,41 @@ int g_exit_status;
 
 int main(int ac, char **av, char **envp)
 {
-	int		status;
+	int		i;
 	t_comms	comms;
-
 	initArgs(&comms, envp);
 	incrementShlvl(envp, &comms);
+	ftProcess(comms, envp, 0);
+	ftExit(&comms);
+}
+
+void	ftProcess(t_comms comms, char **envp, int i)
+{
 	while (comms.exit == 0)
 	{
+		i = 0;
 		ft_signal();
-		comms.line = readline("Minishell-1.33$ ");
+		comms.line = readline("Minishell-1.34$ ");
 		if (!comms.line)
 		{
-			printf("exit\n");
+			write(STDERR_FILENO, "exit\n", 5);
 			break ;
 		}
 		if (ft_check_line(comms.line) || ft_strlen(comms.line) == 0)
 			continue ;
-		comms.pipes = ft_smart_split(comms.line, '|');
-		comms.pipefd = allocPipe(&comms);
-		ftParser(&comms, envp);
-		ftFree(comms.pipes);
+		while (comms.line[i])
+		{
+			i = checkMltCmd(&comms, i);
+			comms.pipes = ft_smart_split(comms.cmd, '|');
+			comms.pipefd = allocPipe(&comms);
+			ftParser(&comms, envp);
+			ftFree(comms.pipes);
+			if (!checkFlag(&comms) || comms.exit != 0)
+				break ;
+		}
+		add_history(comms.line);
 		free(comms.line);
 	}
-	ftExit(&comms);
 }
 
 char	**getPath(void)

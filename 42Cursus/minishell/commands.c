@@ -73,7 +73,7 @@ int	ft_exit(t_comms *comms)
 	i = 0;
 	comms->exit = 1;
 	if (!comms->pipes[1])
-		printf("exit\n");
+		write(STDERR_FILENO, "exit\n", 5);
 	if (!comms->cargs[1])
 		return (0);
 	while (comms->cargs[1][i])

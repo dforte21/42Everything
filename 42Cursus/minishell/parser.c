@@ -14,6 +14,7 @@ void	ftParser(t_comms *comms, char **envp)
 	set_fd(comms, 0);
 	while (comms->pipes[i])
 	{
+		comms->pipes[i] = ft_expand(comms->pipes[i], envp);
 		pipe(comms->pipefd[i]);
 		chooseCommand(comms, envp, i, j);
 		i++;

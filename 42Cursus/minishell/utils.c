@@ -41,6 +41,16 @@ void	ftFree(char **args)
 
 void	ftExit(t_comms *comms)
 {
+	int	i;
+
+	i = 0;
+	while (i < 100)
+	{
+		if (comms->newenvcp[i])
+			free(comms->newenvcp[i]);
+		i++;
+	}
+	free(comms->newenvcp);
 	clear_history();
 	ftFree(comms->path);
 	exit (g_exit_status);

@@ -8,7 +8,9 @@ void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 		dup2(fd[1], STDOUT_FILENO);
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');
 	comms->cargs = ft_remove_quotes(comms->cargs);
-	if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
+	if (!comms->cargs[0])
+		g_exit_status = 0;
+	else if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
 		g_exit_status = ft_exit(comms);
 	else if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
 		g_exit_status = ftCd(comms);

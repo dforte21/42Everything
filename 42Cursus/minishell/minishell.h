@@ -25,6 +25,7 @@ extern int	g_exit_status;
 typedef struct s_comms
 {
 	char	*line;
+	char	**newenvcp;
 	char	**pipes;
 	char	**cargs;
 	char	**envcpy;
@@ -36,7 +37,7 @@ typedef struct s_comms
 	int		lenv;
 }              t_comms;
 
-//commands
+//builtins
 int		ftEcho(t_comms *comms);
 int		ftEnv(t_comms *comms, char **envp);
 int		ftExport(t_comms *comms, char **envp, int i, int flag);
@@ -63,12 +64,14 @@ void 	rl_replace_line (const char *text, int clear_undo);
 //env
 void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
 void	sortEnv(t_comms *comms, char **envcpy);
+void	newEnv(t_comms *comms, char *env);
 char	**ftExpand(char **src, char **envp);
 char	**copyEnv(t_comms *comms, char **envp);
 char	*fdGetEnv(char *str, char **envp);
 char	*createEnv(char *arg);
 int		findEnv(char *arg, char **envp);
-int		checkEnv(char *arg, char **envp);
+int		checkEnv(char *arg, char **envp, t_comms *comms);
+int		delEnv(t_comms *comms, char *env);
 
 //initializator
 void	initArgs(t_comms *comms, char **envp);
@@ -84,6 +87,7 @@ void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
 char	**ft_remove_quotes(char **matrix);
 char	**getPath(void);
+char	*ft_expand(char *src, char **envp);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);

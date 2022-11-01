@@ -18,6 +18,8 @@ int main(int ac, char **av, char **envp)
 			printf("exit\n");
 			break ;
 		}
+		if (ft_check_line(comms.line))
+			continue ;
 		comms.pipes = ft_smart_split(comms.line, '|');
 		comms.pipefd = allocPipe(&comms);
 		ftParser(&comms, envp);
@@ -52,6 +54,7 @@ void	initArgs(t_comms *comms, char **envp)
 	while (envp[comms->lenv])
 		comms->lenv++;
 	comms->path = getPath();
+	comms->newenvcp=ft_calloc(101, sizeof(char *));
 }
 
 void	incrementShlvl(char **envp, t_comms *comms)
@@ -71,6 +74,7 @@ void	incrementShlvl(char **envp, t_comms *comms)
 	comms->cargs[0] = ft_strdup("export");
 	comms->cargs[1] = ft_strdup("SHLVL=");
 	comms->cargs[1] = ft_strjoin(comms->cargs[1], newlvl);
+	free(newlvl);
 	ftExport(comms, envp, 0, 0);
 	free(input);
 	ftFree(comms->cargs);

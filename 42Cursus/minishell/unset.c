@@ -27,7 +27,7 @@ int	ftUnset(t_comms *comms, char **envp)
 	return (0);
 }
 
-int	checkEnv(char *arg, char **envp)
+int	checkEnv(char *arg, char **envp, t_comms *comms)
 {
 	int	i;
 	int	j;
@@ -39,6 +39,8 @@ int	checkEnv(char *arg, char **envp)
 	j = ftStrchr(arg, '=', 0);
 	if (!arg[j])
 		return (-1);
+	if (delEnv(comms, envp[i]))
+		free(envp[i]);
 	envp[i] = NULL;
 	return (1);
 }

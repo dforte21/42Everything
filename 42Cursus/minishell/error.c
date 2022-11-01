@@ -45,7 +45,7 @@ int	ft_parse_error(char *str, char c)
 			if (str[i + 1] == c)
 				i++;
 			else if (ft_char_error(str, i, c))
-					return(1);
+				return(1);
 		}
 		i++;
 	}

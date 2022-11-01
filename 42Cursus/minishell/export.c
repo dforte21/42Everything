@@ -8,7 +8,7 @@ int	ftExport(t_comms *comms, char **envp, int i, int flag)
 		{
 			if (checkInput(comms->cargs[i + 1]))
 				return (ftError(comms->cargs, 1, i + 1));
-			flag = checkEnv(comms->cargs[i + 1], envp);
+			flag = checkEnv(comms->cargs[i + 1], envp, comms);
 			if (flag != -1)
 				addEnv(comms->cargs[i + 1], envp, flag, comms);
 			i++;
@@ -65,6 +65,7 @@ void	addEnv(char *arg, char **envp, int flag, t_comms *comms)
 		envp[i + 1] = NULL;
 		comms->lenv++;
 	}
+	newEnv(comms, tmp);
 	free(tmp);
 }
 

@@ -6,7 +6,7 @@ char	*fdGetEnv(char *str, char **envp)
 	int		col;
 	char	*dst;
 
-	dst = NULL;
+	dst = 0;
 	row = 0;
 	while (envp[row])
 	{
@@ -16,11 +16,13 @@ char	*fdGetEnv(char *str, char **envp)
 			while(envp[row][col] != '=')
 				col++;
 			if (col == ft_strlen(str))
+			{
 				dst = ft_strdup(&envp[row][col + 1]);
+				break ;
+			}
 		}
 		row++;
 	}
-	free(str);
 	return(dst);
 }
 

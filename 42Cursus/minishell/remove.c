@@ -1,13 +1,5 @@
 #include "minishell.h"
 
-// char	*ft_remove_heredoc(char **matrx, int row)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < r
-// }
-
 void	ft_between_quotes(char *s1, char *s2, char c, int *i)
 {
 	i[0] += 1;

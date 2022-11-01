@@ -14,17 +14,17 @@ void	ftParser(t_comms *comms, char **envp)
 	set_fd(comms, 0);
 	while (comms->pipes[i])
 	{
-		comms->pipes[i] = ft_expand(comms->pipes[i], envp);
 		pipe(comms->pipefd[i]);
-		chooseCommand(comms, envp, i, j);
+		pid = chooseCommand(comms, envp, i, j);
 		i++;
 	}
 	i = 0;
-	while (comms->pipes[i])
+	while (comms->pipes[i + 1])
 	{
-		waitpid(-1, &status, 0);
+		waitpid(-1, NULL, 0);
 		i++;
 	}
+	waitpid(pid, &status, 0);
 	check_status(status);
 	set_fd(comms, 1);
 	set_fd(comms, 2);
@@ -32,15 +32,19 @@ void	ftParser(t_comms *comms, char **envp)
 	add_history(comms->line);
 }
 
-void	chooseCommand(t_comms *comms, char **envp, int i, int j)
+pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j)
 {
-	int		fd[2];
+	int		fd[3];
 	pid_t	pid;
 
-	if (ft_redirection(comms->pipes[i], fd) == -1)
+	pid = 0;
+	fd[0] = -1;
+	fd[1] = -1;
+	fd[2] = -1;
+	if (ft_redirection(comms->pipes[i], fd, 0) == -1)
 	{
 		g_exit_status = 1;
-		return ;
+		return (pid);
 	}
 	if (!comms->pipes[1])
 		exeCommand(comms, envp, i, fd);
@@ -58,10 +62,13 @@ void	chooseCommand(t_comms *comms, char **envp, int i, int j)
 		close(fd[0]);
 	if (fd[1] != -1)
 		close(fd[1]);
+	return (pid);
 }
 
 void	childExecute(t_comms *comms, char **envp, int i, int *fd)
 {
+	if (i > 0)
+		g_exit_status = 0;
 	close(comms->pipefd[i][0]);
 	if (comms->pipes[i + 1] && fd[1] == -1)
 		dup2(comms->pipefd[i][1], STDOUT_FILENO);

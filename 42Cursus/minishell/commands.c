@@ -6,6 +6,7 @@ void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 		dup2(fd[0], STDIN_FILENO);
 	if (fd[1] != -1)
 		dup2(fd[1], STDOUT_FILENO);
+	comms->pipes[i] = ft_expand(comms->pipes[i], envp);
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');
 	comms->cargs = ft_remove_quotes(comms->cargs);
 	if (!comms->cargs[0])

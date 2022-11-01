@@ -48,8 +48,8 @@ int		ftExecve (t_comms *comms, char **envp);
 int		ft_exit(t_comms *comms);
 
 //pipe&fork
+pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j);
 void	ftParser(t_comms *comms, char **envp);
-void	chooseCommand(t_comms *comms, char **envp, int i, int j);
 void	exeCommand(t_comms *comms, char **envp, int i, int *fd);
 void	childExecute(t_comms *comms, char **envp, int i, int *fd);
 int		**allocPipe(t_comms *comms);
@@ -101,9 +101,10 @@ int		checkInput(char *arg);
 char	**ft_smart_split(char *s, char c);
 
 //redirection
-int		ft_redirection(char *cmd, int *fd);
-int		createFd(char *cmd, int *fd);
-int		execRedirect(char *cmd, int i, int *fd);
+void	outRedirection(char *cmd, int *fd, char **path);
+int		ft_redirection(char *cmd, int *fd, int caller);
+int		createFd(char *cmd, int *fd, char *fullcmd, int i);
+int		execRedirect(char *cmd, int i, int *fd, int caller);
 int		checkHD(char *cmd);
 
 #endif

@@ -12,13 +12,13 @@ int main(int ac, char **av, char **envp)
 	while (comms.exit == 0)
 	{
 		ft_signal();
-		comms.line = readline("Minishell-1.32$ ");
+		comms.line = readline("Minishell-1.33$ ");
 		if (!comms.line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (ft_check_line(comms.line))
+		if (ft_check_line(comms.line) || ft_strlen(comms.line) == 0)
 			continue ;
 		comms.pipes = ft_smart_split(comms.line, '|');
 		comms.pipefd = allocPipe(&comms);
@@ -49,6 +49,7 @@ char	**getPath(void)
 void	initArgs(t_comms *comms, char **envp)
 {
 	ft_ctrlc(envp);
+	g_exit_status = 0;
 	comms->exit = 0;
 	comms->lenv = 0;
 	while (envp[comms->lenv])

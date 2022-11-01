@@ -103,24 +103,8 @@ int	createFd(char *cmd, int *fd, char *fullcmd, int j)
 		outRedirection(cmd, fd, path);
 	else if (cmd[0] == '<')
 	{
-		if (fd[2] != -1)
-			close(fd[2]);
-		fd[2] = open(path[0], O_RDONLY);
-		if (fd[2] == -1)
-		{
-			errno = 2;
-			ftError(path, 2, 0);
-			free(path[0]);
+		if (inRedirection(cmd, fd, path, checkHD(&fullcmd[j])) == -1)
 			return (-1);
-		}
-		else if (!checkHD(&fullcmd[j]))
-		{
-			if (fd[0] != -1)
-				close(fd[0]);
-			fd[0] = dup(fd[2]);
-			close(fd[2]);
-			fd[2] = -1;
-		}
 	}
 	free(path[0]);
 	return (0);

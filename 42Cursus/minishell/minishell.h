@@ -102,6 +102,7 @@ char	**ft_smart_split(char *s, char c);
 
 //redirection
 void	outRedirection(char *cmd, int *fd, char **path);
+int		inRedirection(char *cmd, int *fd, char **path, int check);
 int		ft_redirection(char *cmd, int *fd, int caller);
 int		createFd(char *cmd, int *fd, char *fullcmd, int i);
 int		execRedirect(char *cmd, int i, int *fd, int caller);

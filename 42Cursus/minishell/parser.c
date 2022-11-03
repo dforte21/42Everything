@@ -22,7 +22,7 @@ void	ftParser(t_comms *comms, char **envp)
 	waitpid(pid, &status, 0);
 	while (comms->pipes[i + 1])
 	{
-		waitpid(-1, &status, 0);
+		waitpid(-1, NULL, 0);
 		i++;
 	}
 	check_status(status);

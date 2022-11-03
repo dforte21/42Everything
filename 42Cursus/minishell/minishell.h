@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/03 17:30:46 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -20,7 +32,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-extern int	g_exit_status;
+int	g_exit_status;
 
 typedef struct s_comms
 {
@@ -38,7 +50,7 @@ typedef struct s_comms
 	int		lenv;
 	int		cmdflag;
 	int		subshflag;
-}              t_comms;
+}					t_comms;
 
 //builtins
 int		ftEcho(t_comms *comms);
@@ -47,7 +59,7 @@ int		ftExport(t_comms *comms, char **envp, int i, int flag);
 int		ftUnset(t_comms *comms, char **envp, int i);
 int		ftPwd(t_comms *comms);
 int		ftCd(t_comms *comms);
-int		ftExecve (t_comms *comms, char **envp);
+int		ftExecve(t_comms *comms, char **envp);
 int		ft_exit(t_comms *comms);
 
 //pipe&fork
@@ -63,7 +75,7 @@ int		exeFork(t_comms *comms, char **envp, char *path);
 void	ft_ctrlc(char **envp);
 void	ft_sigint(int sig);
 void	ft_signal(void);
-void 	rl_replace_line (const char *text, int clear_undo);
+void	rl_replace_line(const char *text, int clear_undo);
 
 //env
 void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
@@ -95,7 +107,7 @@ char	**getPath(void);
 char	*ft_multijoin(char **matrix);
 char	*ft_expand(char *src, char **envp, char c);
 char	*createTmpFile(void);
-char 	*ftReplace(char *src, char **envp, int i);
+char	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);
 int		ft_skip_quotes(char *str, int i, char c);
 int		ft_check_line(char *str);

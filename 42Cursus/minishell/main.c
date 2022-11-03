@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/03 17:27:41 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/03 17:29:12 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int g_exit_status;
-
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	t_comms	comms;
 	int		i;
@@ -65,7 +75,7 @@ void	initArgs(t_comms *comms, char **envp, char **av)
 	while (envp[comms->lenv])
 		comms->lenv++;
 	comms->path = getPath();
-	comms->newenvcp=ft_calloc(101, sizeof(char *));
+	comms->newenvcp = ft_calloc(101, sizeof(char *));
 }
 
 void	incrementShlvl(char **envp, t_comms *comms)

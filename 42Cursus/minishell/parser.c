@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/03 17:28:41 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/03 17:28:42 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ftParser(t_comms *comms, char **envp)
@@ -6,7 +18,7 @@ void	ftParser(t_comms *comms, char **envp)
 	int		j;
 	int		status;
 	pid_t	pid;
-	
+
 	i = 0;
 	j = 0;
 	while (comms->pipes[j])

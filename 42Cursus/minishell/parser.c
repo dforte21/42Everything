@@ -29,7 +29,6 @@ void	ftParser(t_comms *comms, char **envp)
 	set_fd(comms, 1);
 	set_fd(comms, 2);
 	ftFreePipe(comms, j);
-	free(comms->cmd);
 }
 
 pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j)

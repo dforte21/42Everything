@@ -38,12 +38,14 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			if (comms.subshflag == 1)
 			{
 				ft_subshell(&comms, envp);
+				free(comms.cmd);
 				continue ;
 			}
 			comms.pipes = ft_smart_split(comms.cmd, '|');
 			comms.pipefd = allocPipe(&comms);
 			ftParser(&comms, envp);
 			ftFree(comms.pipes);
+			free(comms.cmd);
 			if (!checkFlag(&comms) || comms.exit != 0)
 				break ;
 		}

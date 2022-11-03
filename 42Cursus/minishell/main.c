@@ -4,9 +4,15 @@ int g_exit_status;
 
 int main(int ac, char **av, char **envp)
 {
-	int		i;
 	t_comms	comms;
-	initArgs(&comms, envp);
+	int		i;
+
+	initArgs(&comms, envp, av);
+	if (av[1] && av[0][0] != '.')
+	{
+		ft_subcommand(av, envp, &comms);
+		ftExit(&comms);
+	}
 	incrementShlvl(envp, &comms);
 	ftProcess(comms, envp, 0);
 	ftExit(&comms);
@@ -18,7 +24,7 @@ void	ftProcess(t_comms comms, char **envp, int i)
 	{
 		i = 0;
 		ft_signal();
-		comms.line = readline("Minishell-1.34$ ");
+		comms.line = readline("Minishell-1.35$ ");
 		if (!comms.line)
 		{
 			write(STDERR_FILENO, "exit\n", 5);
@@ -29,6 +35,11 @@ void	ftProcess(t_comms comms, char **envp, int i)
 		while (comms.line[i])
 		{
 			i = checkMltCmd(&comms, i);
+			if (comms.subshflag == 1)
+			{
+				ft_subshell(&comms, envp);
+				continue ;
+			}
 			comms.pipes = ft_smart_split(comms.cmd, '|');
 			comms.pipefd = allocPipe(&comms);
 			ftParser(&comms, envp);
@@ -41,27 +52,12 @@ void	ftProcess(t_comms comms, char **envp, int i)
 	}
 }
 
-char	**getPath(void)
-{
-	char	**path;
-	char	*env;
-	int		i;
-
-	i = 0;
-	env = getenv("PATH");
-	path = ft_split(env, ':');
-	while (path[i])
-	{
-		path[i] = ft_strjoin(path[i], "/");
-		i++;
-	}
-	return (path);
-}
-
-void	initArgs(t_comms *comms, char **envp)
+void	initArgs(t_comms *comms, char **envp, char **av)
 {
 	ft_ctrlc(envp);
 	g_exit_status = 0;
+	if (av[2])
+		g_exit_status = ft_atoi(av[2]);
 	comms->exit = 0;
 	comms->lenv = 0;
 	while (envp[comms->lenv])
@@ -91,4 +87,27 @@ void	incrementShlvl(char **envp, t_comms *comms)
 	ftExport(comms, envp, 0, 0);
 	free(input);
 	ftFree(comms->cargs);
+}
+
+void	ft_subcommand(char **av, char **envp, t_comms *comms)
+{
+	int	i;
+
+	i = 0;
+	comms->line = ft_strdup(av[1]);
+	if (ft_check_line(comms->line) || ft_strlen(comms->line) == 0)
+		return ;
+	while (comms->line[i])
+	{
+		i = checkMltCmd(comms, i);
+		if (comms->subshflag == 1)
+		{
+			ft_subshell(comms, envp);
+			continue ;
+		}
+		comms->pipes = ft_smart_split(comms->cmd, '|');
+		comms->pipefd = allocPipe(comms);
+		ftParser(comms, envp);
+		ftFree(comms->pipes);
+	}
 }

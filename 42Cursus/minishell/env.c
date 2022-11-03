@@ -28,15 +28,19 @@ char	*fdGetEnv(char *str, char **envp)
 
 int	ftEnv(t_comms *comms, char **envp)
 {
-	int	i;
+	char	*env;
+	int		i;
 
 	i = 0;
 	while (envp[i])
 	{
 		if (envp[i][ftStrchr(envp[i], '=', 0)])
 		{
-			printf("%s", envp[i]);
+			env = ft_strdup(envp[i]);
+			env = ft_no_quotes(env);
+			printf("%s", env);
 			printf("\n");
+			free(env);
 		}
 		i++;
 	}

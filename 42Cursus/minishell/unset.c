@@ -1,19 +1,21 @@
 #include "minishell.h"
 
-int	ftUnset(t_comms *comms, char **envp)
+int	ftUnset(t_comms *comms, char **envp, int i)
 {
-	int	i;
 	int	j;
 
-	i = 1;
 	while (comms->cargs[i])
 	{
 		if (checkInput(comms->cargs[1]))
 			return (ftError(comms->cargs, 1, i));
 		j = findEnv(comms->cargs[i], envp);
 		if (j == -1)
+		{
+			i++;
 			continue ;
-		free(envp[j]);
+		}
+		if (delEnv(comms, envp[j]))
+			free(envp[j]);
 		envp[j] = NULL;
 		while (envp[j + 1])
 		{

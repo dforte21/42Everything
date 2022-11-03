@@ -37,13 +37,14 @@ typedef struct s_comms
 	int		exit;
 	int		lenv;
 	int		cmdflag;
+	int		subshflag;
 }              t_comms;
 
 //builtins
 int		ftEcho(t_comms *comms);
 int		ftEnv(t_comms *comms, char **envp);
 int		ftExport(t_comms *comms, char **envp, int i, int flag);
-int		ftUnset(t_comms *comms, char **envp);
+int		ftUnset(t_comms *comms, char **envp, int i);
 int		ftPwd(t_comms *comms);
 int		ftCd(t_comms *comms);
 int		ftExecve (t_comms *comms, char **envp);
@@ -77,7 +78,7 @@ int		checkEnv(char *arg, char **envp, t_comms *comms);
 int		delEnv(t_comms *comms, char *env);
 
 //initializator
-void	initArgs(t_comms *comms, char **envp);
+void	initArgs(t_comms *comms, char **envp, char **av);
 void	incrementShlvl(char **envp, t_comms *comms);
 char	*buildPath(t_comms *comms);
 
@@ -88,9 +89,11 @@ void	ftStrReplace(char *str, char old, char new);
 void	ftFreePipe(t_comms *comms, int j);
 void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
+char	**ft_delrow(char **src, int del);
 char	**ft_remove_quotes(char **matrix);
 char	**getPath(void);
-char	*ft_expand(char *src, char **envp);
+char	*ft_multijoin(char **matrix);
+char	*ft_expand(char *src, char **envp, char c);
 char	*createTmpFile(void);
 char 	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);
@@ -99,9 +102,11 @@ int		ft_check_line(char *str);
 int		ftError(char **arg, int caller, int i);
 int		ftStrchr(char *str, char c, int start);
 int		checkInput(char *arg);
+int		ft_matlen(char **matrix);
 
 //split
 char	**ft_smart_split(char *s, char c);
+char	*ft_no_quotes(char *scr);
 
 //redirection
 void	outRedirection(char *cmd, int *fd, char **path);
@@ -111,8 +116,14 @@ int		createFd(char *cmd, int *fd, char *fullcmd, int i);
 int		execRedirect(char *cmd, int i, int *fd, int caller);
 int		checkHD(char *cmd);
 
-//andor
+//andorparenthesis
+void	ft_subcommand(char **av, char **envp, t_comms *comms);
+void	ft_subshell(t_comms *comms, char **envp);
+int		ft_buildss(t_comms *comms, int i);
 int		checkMltCmd(t_comms *comms, int i);
 int		checkFlag(t_comms *comms);
+
+//wildcards
+char	*ft_asterisk(char *src, int *i);
 
 #endif

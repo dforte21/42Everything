@@ -70,3 +70,20 @@ void	set_fd(t_comms *comms, int flag)
 		close(comms->stdoutcpy);
 	}
 }
+
+char	**getPath(void)
+{
+	char	**path;
+	char	*env;
+	int		i;
+
+	i = 0;
+	env = getenv("PATH");
+	path = ft_split(env, ':');
+	while (path[i])
+	{
+		path[i] = ft_strjoin(path[i], "/");
+		i++;
+	}
+	return (path);
+}

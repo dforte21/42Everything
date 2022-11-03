@@ -19,12 +19,12 @@ void	ftParser(t_comms *comms, char **envp)
 		i++;
 	}
 	i = 0;
+	waitpid(pid, &status, 0);
 	while (comms->pipes[i + 1])
 	{
-		waitpid(-1, NULL, 0);
+		waitpid(-1, &status, 0);
 		i++;
 	}
-	waitpid(pid, &status, 0);
 	check_status(status);
 	set_fd(comms, 1);
 	set_fd(comms, 2);

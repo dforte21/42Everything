@@ -6,7 +6,8 @@ void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 		dup2(fd[0], STDIN_FILENO);
 	if (fd[1] != -1)
 		dup2(fd[1], STDOUT_FILENO);
-	comms->pipes[i] = ft_expand(comms->pipes[i], envp);
+	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '$');
+	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '*');
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');
 	comms->cargs = ft_remove_quotes(comms->cargs);
 	if (!comms->cargs[0])
@@ -18,7 +19,7 @@ void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
 		g_exit_status = ftExport(comms, envp, 0, 0);
 	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
-		g_exit_status = ftUnset(comms, envp);
+		g_exit_status = ftUnset(comms, envp, 1);
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)
 		g_exit_status = ftEcho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)

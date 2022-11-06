@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/03 17:29:12 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/06 17:02:14 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(int ac, char **av, char **envp)
 	initArgs(&comms, envp, av);
 	if (av[1] && av[0][0] != '.')
 	{
+		g_exit_status = ft_atoi(av[2]);
 		ft_subcommand(av, envp, &comms);
 		ftExit(&comms);
 	}
@@ -34,7 +35,7 @@ void	ftProcess(t_comms comms, char **envp, int i)
 	{
 		i = 0;
 		ft_signal();
-		comms.line = readline("Minishell-1.35$ ");
+		comms.line = readline("Minishell-1.37$ ");
 		if (!comms.line)
 		{
 			write(STDERR_FILENO, "exit\n", 5);
@@ -68,8 +69,6 @@ void	initArgs(t_comms *comms, char **envp, char **av)
 {
 	ft_ctrlc(envp);
 	g_exit_status = 0;
-	if (av[2])
-		g_exit_status = ft_atoi(av[2]);
 	comms->exit = 0;
 	comms->lenv = 0;
 	while (envp[comms->lenv])

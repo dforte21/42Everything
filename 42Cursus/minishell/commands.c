@@ -2,6 +2,11 @@
 
 void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
 {
+	if (ft_redirection(comms->pipes[i], fd, 0) == -1)
+	{
+		g_exit_status = 1;
+		return ;
+	}
 	if (fd[0] != -1)
 		dup2(fd[0], STDIN_FILENO);
 	if (fd[1] != -1)
@@ -70,6 +75,7 @@ int	ftError(char **arg, int caller, int i)
 int	ft_exit(t_comms *comms)
 {
 	int	i;
+	int	n;
 
 	i = 0;
 	comms->exit = 1;
@@ -83,5 +89,8 @@ int	ft_exit(t_comms *comms)
 			return (ftError(comms->cargs, 4, 1));
 		i++;
 	}
-	return (ft_atoi(comms->cargs[1]));
+	n = ft_atoi(comms->cargs[1]);
+	if (n > 255)
+		n %= 256;
+	return (n);
 }

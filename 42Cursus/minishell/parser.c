@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:28:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/03 17:28:42 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/06 17:23:09 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,6 @@ pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j)
 	fd[0] = -1;
 	fd[1] = -1;
 	fd[2] = -1;
-	if (ft_redirection(comms->pipes[i], fd, 0) == -1)
-	{
-		g_exit_status = 1;
-		return (pid);
-	}
 	if (!comms->pipes[1])
 		exeCommand(comms, envp, i, fd);
 	else

@@ -68,15 +68,21 @@ int	findEnv(char *arg, char **envp)
 int	checkInput(char *arg)
 {
 	int	i;
+	int	flag;
 
 	i = 0;
+	flag = 0;
 	if (arg[0] == '=')
 		return (1);
-	while (arg[i])
+	while (arg[i] && arg[i] != '=')
 	{
-		if (!ft_isalnum(arg[i]) && arg[i] != '=')
+		if (!ft_isalnum(arg[i]))
 			return (1);
+		if (ft_isalpha(arg[i]))
+			flag = 1;
 		i++;
 	}
+	if (flag == 0)
+		return (1);
 	return (0);
 }

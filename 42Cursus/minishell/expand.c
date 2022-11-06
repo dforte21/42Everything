@@ -12,6 +12,7 @@ char	*ft_dollar(char *src, char **envp, int i)
 	dst = malloc (sizeof(char) * j + 1);
 	ft_strlcpy(dst, &src[i + 1], j);
 	matrix[1] = fdGetEnv(dst, envp);
+	matrix[1] = ft_no_quotes(matrix[1]);
 	free(dst);
 	matrix[2] = ft_strdup(&src[i + j]);
 	matrix[0] = ft_substr(src, 0, i);

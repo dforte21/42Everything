@@ -20,7 +20,10 @@ char	*ft_dollar(char *src, char **envp, int i)
 	if (matrix[1] != NULL)
 		dst = ft_multijoin(matrix);
 	else
+	{
 		dst = ft_strjoin(matrix[0], matrix[2]);
+		free(matrix[2]);
+	}
 	return (dst);
 }
 

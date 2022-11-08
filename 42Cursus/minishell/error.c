@@ -2,72 +2,53 @@
 
 int	ft_syntax_error(void)
 {
-	printf("minishell: syntax error\n");
+	write(STDERR_FILENO, "minishell: syntax error\n", 25);
 	return(1);
 }
 
-int	ft_char_error(char *str, int x, char c)
+int	ft_char_error(char *str, int i, char c)
 {
-	int	i;
+	int	j;
 
-	i = x - 1;
-	while (i >= 0 && str[i] != c)
+	j = i + 1;
+	while (((str[j] != c && str[j] != '|') || j == i + 1) && str[j])
 	{
-		if (str[i] == ' ')
-			i--;
-		else
-			break;
-	}
-	if (i == -1 || str[i] == c)
-		return (ft_syntax_error());
-	i = x + 1;
-	while (str[i] != '\0' && str[i] != c)
-	{
-		if (str[i] == ' ')
-			i++;
-		else
+		if (str[j] != ' ' && j != i + 1)
 			break ;
+		j++;
 	}
-	if (str[i] == '\0' || str[i] == c)
-		return (ft_syntax_error());
+	if (str[j] == '\0' || str[j] == c || str[j] == '|')
+		return (1);
 	return (0);
 }
 
-int	ft_parse_error(char *str, char c)
+int	ft_check_char(char *str, char c)
 {
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-		{
-			if (str[i + 1] == c)
-				i++;
-			else if (ft_char_error(str, i, c))
-				return(1);
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	ft_check_line(char *str)
-{
+	int	flag;
 	int	i;
 
-	if (ft_parse_error(str, '|') || ft_parse_error(str, '>') || ft_parse_error(str, '<'))
-		return (1);
+	flag = 0;
 	i = 0;
 	while (str[i])
 	{
-		i = ft_skip_quotes(str, i, '\'');
-		if (i == -1)
-			return (ft_syntax_error());
+		if (str[i] != ' ' && str[i] != c)
+			flag = 1;
 		i = ft_skip_quotes(str, i, '\"');
-		if (i == -1)
-			return (ft_syntax_error());
+		i = ft_skip_quotes(str, i, '\'');
+		if (str[i] == c)
+			if (flag == 0 || ft_char_error(str, i, c))
+				return (1);
 		i++;
+	}
+	return (0);
+}
+
+int	ft_check_syntax(char *str)
+{
+	if (ft_check_char(str, '|') || ft_check_char(str, '&'))
+	{
+		free(str);
+		return (ft_syntax_error());
 	}
 	return (0);
 }

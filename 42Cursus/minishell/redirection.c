@@ -33,6 +33,12 @@ int	ft_redirection(char *cmd, int *fd, int caller)
 	int	end;
 
 	i = 0;
+	if (caller == 0)
+	{
+		fd[0] = -1;
+		fd[1] = -1;
+		fd[2] = -1;
+	}
 	while (cmd[i])
 	{
 		i = ft_skip_quotes(cmd, i, '\"');
@@ -53,10 +59,7 @@ int	ft_redirection(char *cmd, int *fd, int caller)
 		else
 			i++;
 	}
-	if (caller == 0)
-		return (ft_redirection(cmd, fd, 1));
-	else
-		return (0);
+	return (0);
 }
 
 int	execRedirect(char *cmd, int i, int *fd, int caller)

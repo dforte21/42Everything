@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/03 17:30:46 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/08 12:15:41 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_comms
 	char	**envcpy;
 	char	**path;
 	int		**pipefd;
+	int		redfd[100][3];
 	int		stdincpy;
 	int		stdoutcpy;
 	int		exit;
@@ -66,8 +67,8 @@ int		ft_exit(t_comms *comms);
 pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j);
 void	ftProcess(t_comms comms, char **envp, int i);
 void	ftParser(t_comms *comms, char **envp);
-void	exeCommand(t_comms *comms, char **envp, int i, int *fd);
-void	childExecute(t_comms *comms, char **envp, int i, int *fd);
+void	exeCommand(t_comms *comms, char **envp, int i);
+void	childExecute(t_comms *comms, char **envp, int i);
 int		**allocPipe(t_comms *comms);
 int		exeFork(t_comms *comms, char **envp, char *path);
 
@@ -110,7 +111,7 @@ char	*createTmpFile(void);
 char	*ftReplace(char *src, char **envp, int i);
 char	*ftRemoveChar(char *str, char c);
 int		ft_skip_quotes(char *str, int i, char c);
-int		ft_check_line(char *str);
+int		ft_check_syntax(char *str);
 int		ftError(char **arg, int caller, int i);
 int		ftStrchr(char *str, char c, int start);
 int		checkInput(char *arg);

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/06 17:02:14 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/08 12:31:01 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			write(STDERR_FILENO, "exit\n", 5);
 			break ;
 		}
-		if (ft_check_line(comms.line) || ft_strlen(comms.line) == 0)
+		if (ft_strlen(comms.line) != 0)
+			add_history(comms.line);
+		if (ft_check_syntax(comms.line) || ft_strlen(comms.line) == 0)
 			continue ;
 		while (comms.line[i])
 		{
@@ -60,7 +62,6 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			if (!checkFlag(&comms) || comms.exit != 0)
 				break ;
 		}
-		add_history(comms.line);
 		free(comms.line);
 	}
 }
@@ -106,7 +107,7 @@ void	ft_subcommand(char **av, char **envp, t_comms *comms)
 
 	i = 0;
 	comms->line = ft_strdup(av[1]);
-	if (ft_check_line(comms->line) || ft_strlen(comms->line) == 0)
+	if (ft_check_syntax(comms->line) || ft_strlen(comms->line) == 0)
 		return ;
 	while (comms->line[i])
 	{

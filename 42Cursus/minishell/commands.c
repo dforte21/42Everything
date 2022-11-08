@@ -1,16 +1,16 @@
 #include "minishell.h"
 
-void	exeCommand(t_comms *comms, char **envp, int i, int *fd)
+void	exeCommand(t_comms *comms, char **envp, int i)
 {
-	if (ft_redirection(comms->pipes[i], fd, 0) == -1)
+	if (ft_redirection(comms->pipes[i], comms->redfd[i], 1) == -1)
 	{
 		g_exit_status = 1;
 		return ;
 	}
-	if (fd[0] != -1)
-		dup2(fd[0], STDIN_FILENO);
-	if (fd[1] != -1)
-		dup2(fd[1], STDOUT_FILENO);
+	if (comms->redfd[i][0] != -1)
+		dup2(comms->redfd[i][0], STDIN_FILENO);
+	if (comms->redfd[i][1] != -1)
+		dup2(comms->redfd[i][1], STDOUT_FILENO);
 	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '$');
 	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '*');
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');

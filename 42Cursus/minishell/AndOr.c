@@ -46,8 +46,20 @@ int	ft_buildss(t_comms *comms, int i)
 {
 	pid_t	pid;
 	int		j;
-
-	j = ftStrchr(comms->line, ')', i);
+	int		count;
+	
+	count = 0;
+	j = i;
+	while (comms->line[j])
+	{
+		if (comms->line[j] == '(')
+			count++;
+		else if (comms->line[j] == ')' && count == 0)
+			break ;
+		else if (comms->line[j] == ')')
+			count--;
+		j++;
+	}
 	comms->cmd = ft_substr(comms->line, i + 1, j - i - 1);
 	comms->subshflag = 1;
 	return (j + 1);

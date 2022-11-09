@@ -56,11 +56,12 @@ int	ft_buildss(t_comms *comms, int i)
 			count++;
 		else if (comms->line[j] == ')' && count == 0)
 			break ;
-		else if (comms->line[j] == ')')
+		else if (comms->line[j] == ')' && count > 0)
 			count--;
 		j++;
 	}
-	comms->cmd = ft_substr(comms->line, i + 1, j - i - 1);
+	comms->cmd = ft_substr(comms->line, i + 1, j - i - 2);
+	printf("%s\n", comms->cmd);
 	comms->subshflag = 1;
 	return (j + 1);
 }

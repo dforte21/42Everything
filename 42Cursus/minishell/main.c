@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/08 12:31:01 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/09 17:50:56 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ftProcess(t_comms comms, char **envp, int i)
 	{
 		i = 0;
 		ft_signal();
-		comms.line = readline("Minishell-1.37$ ");
+		comms.line = readline("Minishell-1.39$ ");
 		if (!comms.line)
 		{
 			write(STDERR_FILENO, "exit\n", 5);

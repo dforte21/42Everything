@@ -40,6 +40,7 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 		execve(path, comms->cargs, envp);
 		exit(errno);
 	}
+	signal(SIGINT, ft_quit130);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{

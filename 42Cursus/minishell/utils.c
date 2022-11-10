@@ -2,11 +2,25 @@
 
 int	ft_skip_quotes(char *str, int i, char c)
 {
-	if (str[i] == c)
+	int count;
+
+	count = 1;
+	if (i == -1)
+		return (i);
+	if (str[i] == c || (str[i] == '(' && c == ')'))
 	{
-		i += 1;
+		i++;
 		while (str[i] != c && str[i])
+		{
 			i++;
+			if (str[i] == '(')
+				count++;
+			if (str[i] == ')' && count > 1)
+			{
+				count--;
+				i++;
+			}
+		}
 	}
 	if (str[i] == '\0')
 		return (-1);

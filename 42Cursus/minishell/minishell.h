@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/08 12:15:41 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/10 16:39:13 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_comms
 {
 	char	*line;
 	char	*cmd;
+	char	*subsh;
 	char	**newenvcp;
 	char	**pipes;
 	char	**cargs;
@@ -50,7 +51,6 @@ typedef struct s_comms
 	int		exit;
 	int		lenv;
 	int		cmdflag;
-	int		subshflag;
 }					t_comms;
 
 //builtins
@@ -73,6 +73,7 @@ int		**allocPipe(t_comms *comms);
 int		exeFork(t_comms *comms, char **envp, char *path);
 
 //signals
+void	ft_quit130(int sig);
 void	ft_ctrlc(char **envp);
 void	ft_sigint(int sig);
 void	ft_signal(void);
@@ -132,7 +133,7 @@ int		checkHD(char *cmd);
 //andorparenthesis
 void	ft_subcommand(char **av, char **envp, t_comms *comms);
 void	ft_subshell(t_comms *comms, char **envp);
-int		ft_buildss(t_comms *comms, int i);
+char	*ft_buildss(t_comms *comms, int i);
 int		checkMltCmd(t_comms *comms, int i);
 int		checkFlag(t_comms *comms);
 

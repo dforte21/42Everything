@@ -17,6 +17,7 @@ static int	ft_rowcount(char *str, char c)
 		{
 			i = ft_skip_quotes(str, i, '\'');
 			i = ft_skip_quotes(str, i, '\"');
+			i = ft_skip_quotes(str, i, ')');
 			i++;
 		}
 	}
@@ -39,6 +40,7 @@ static int	ft_rowlen(char *str, char c)
 	{
 		i = ft_skip_quotes(str, i, '\'');
 		i = ft_skip_quotes(str, i, '\"');
+		i = ft_skip_quotes(str, i, ')');
 		if (str[i] == c)
 			break ;
 		i++;

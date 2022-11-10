@@ -11,6 +11,14 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 		dup2(comms->redfd[i][0], STDIN_FILENO);
 	if (comms->redfd[i][1] != -1)
 		dup2(comms->redfd[i][1], STDOUT_FILENO);
+	comms->pipes[i] = ft_strtrim(comms->pipes[i], " ");
+	if (comms->pipes[i][0] == '(')
+	{
+		comms->subsh = ft_buildss(comms, i);
+		ft_subshell(comms, envp);
+		free(comms->subsh);
+		return ;
+	}
 	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '$');
 	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '*');
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');

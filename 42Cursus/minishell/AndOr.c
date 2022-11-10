@@ -6,11 +6,11 @@ int	checkMltCmd(t_comms *comms, int i)
 
 	end = i;
 	comms->cmdflag = 0;
-	comms->subshflag = 0;
 	while (comms->line[end])
 	{
 		end = ft_skip_quotes(comms->line, end, '\"');
 		end = ft_skip_quotes(comms->line, end, '\'');
+		end = ft_skip_quotes(comms->line, end, ')');
 		if (comms->line[end] == '&' || ft_strncmp(&comms->line[end], "||", 2) == 0)
 		{
 			if (comms->line[end] == '&')
@@ -18,11 +18,6 @@ int	checkMltCmd(t_comms *comms, int i)
 			if (comms->line[end] == '|')
 				comms->cmdflag = 2;
 			break ;
-		}
-		else if (comms->line[end] == '(')
-		{
-			end = ft_buildss(comms, end);
-			return (end);
 		}
 		end++;
 	}
@@ -42,28 +37,17 @@ int	checkFlag(t_comms *comms)
 	return (1);
 }
 
-int	ft_buildss(t_comms *comms, int i)
+char	*ft_buildss(t_comms *comms, int i)
 {
 	pid_t	pid;
 	int		j;
-	int		count;
-	
-	count = 0;
-	j = i;
-	while (comms->line[j])
-	{
-		if (comms->line[j] == '(')
-			count++;
-		else if (comms->line[j] == ')' && count == 0)
-			break ;
-		else if (comms->line[j] == ')' && count > 0)
-			count--;
+	char	*cmd;
+
+	j = 0;
+	while (comms->pipes[i][j])
 		j++;
-	}
-	comms->cmd = ft_substr(comms->line, i + 1, j - i - 2);
-	printf("%s\n", comms->cmd);
-	comms->subshflag = 1;
-	return (j + 1);
+	cmd = ft_substr(comms->pipes[i], 1, j - 2);
+	return (cmd);
 }
 
 void	ft_subshell(t_comms *comms, char **envp)
@@ -75,7 +59,7 @@ void	ft_subshell(t_comms *comms, char **envp)
 
 	path = ft_strdup("./minishell");
 	av[0] = ft_strdup("minishell");
-	av[1] = ft_strdup(comms->cmd);
+	av[1] = ft_strdup(comms->subsh);
 	av[2] = ft_itoa(g_exit_status);
 	av[3] = NULL;
 	pid = fork();

@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+void	ft_quit130(int sig)
+{
+	(void) sig;
+	g_exit_status = 130;
+	write(1, "ˆC\n", 4);
+}
+
 void	ft_ctrlc(char **envp)
 {
 	char	*argv[3];

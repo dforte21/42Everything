@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:41 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/09 17:50:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/10 16:35:13 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,11 @@ void	ftProcess(t_comms comms, char **envp, int i)
 		}
 		if (ft_strlen(comms.line) != 0)
 			add_history(comms.line);
-		if (ft_check_syntax(comms.line) || ft_strlen(comms.line) == 0)
+		if (ft_strlen(comms.line) == 0)
 			continue ;
 		while (comms.line[i])
 		{
 			i = checkMltCmd(&comms, i);
-			if (comms.subshflag == 1)
-			{
-				ft_subshell(&comms, envp);
-				free(comms.cmd);
-				continue ;
-			}
 			comms.pipes = ft_smart_split(comms.cmd, '|');
 			comms.pipefd = allocPipe(&comms);
 			ftParser(&comms, envp);
@@ -112,11 +106,6 @@ void	ft_subcommand(char **av, char **envp, t_comms *comms)
 	while (comms->line[i])
 	{
 		i = checkMltCmd(comms, i);
-		if (comms->subshflag == 1)
-		{
-			ft_subshell(comms, envp);
-			continue ;
-		}
 		comms->pipes = ft_smart_split(comms->cmd, '|');
 		comms->pipefd = allocPipe(comms);
 		ftParser(comms, envp);

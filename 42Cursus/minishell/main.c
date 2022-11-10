@@ -56,7 +56,6 @@ void	initArgs(t_comms *comms, char **envp, char **av)
 	comms->lenv = 0;
 	while (envp[comms->lenv])
 		comms->lenv++;
-	comms->path = getPath();
 	comms->newenvcp = ft_calloc(101, sizeof(char *));
 }
 

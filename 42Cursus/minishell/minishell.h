@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/10 16:39:13 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/10 17:41:09 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
 char	**ft_delrow(char **src, int del);
 char	**ft_remove_quotes(char **matrix);
-char	**getPath(void);
+char	**getPath(char **envp);
 char	*ft_multijoin(char **matrix);
 char	*ft_expand(char *src, char **envp, char c);
 char	*createTmpFile(void);

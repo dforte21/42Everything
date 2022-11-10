@@ -71,14 +71,16 @@ void	set_fd(t_comms *comms, int flag)
 	}
 }
 
-char	**getPath(void)
+char	**getPath(char **envp)
 {
 	char	**path;
 	char	*env;
 	int		i;
 
 	i = 0;
-	env = getenv("PATH");
+	env = fdGetEnv("PATH", envp);
+	if (!env)
+		return (NULL);
 	path = ft_split(env, ':');
 	while (path[i])
 	{

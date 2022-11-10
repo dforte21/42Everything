@@ -8,6 +8,7 @@ int	ftExecve (t_comms *comms, char **envp)
 	struct stat	filestat;
 
 	r = stat(comms->cargs[0], &filestat);
+	comms->path = getPath(envp);
 	if (S_ISDIR(filestat.st_mode) && r == 0)
 	{
 		errno = EISDIR;
@@ -62,6 +63,8 @@ char	*buildPath(t_comms *comms)
 	int		i;
 
 	i = 0;
+	if (!comms->path)
+		return (NULL);
 	while (comms->path[i])
 	{
 		comms->path[i] = ft_strjoin(comms->path[i], comms->cargs[0]);

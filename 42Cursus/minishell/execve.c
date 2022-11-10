@@ -50,6 +50,8 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 			return (1);
 		}
 	}
+	if (g_exit_status == 130)
+		return (130);
 	return (0);
 }
 

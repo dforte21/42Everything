@@ -87,5 +87,6 @@ char	**getPath(char **envp)
 		path[i] = ft_strjoin(path[i], "/");
 		i++;
 	}
+	free(env);
 	return (path);
 }

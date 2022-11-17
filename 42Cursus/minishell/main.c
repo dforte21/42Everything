@@ -33,6 +33,7 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			add_history(comms.line);
 		if (ft_strlen(comms.line) == 0)
 			continue ;
+		
 		while (comms.line[i])
 		{
 			i = checkMltCmd(&comms, i);

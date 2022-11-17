@@ -10,16 +10,15 @@ int	ft_skip_quotes(char *str, int i, char c)
 	if (str[i] == c || (str[i] == '(' && c == ')'))
 	{
 		i++;
-		while (str[i] != c && str[i])
+		while ((str[i] != c && str[i]) || str[i] == ')')
 		{
-			i++;
 			if (str[i] == '(')
 				count++;
-			if (str[i] == ')' && count > 1)
-			{
+			if (str[i] == ')' && count > 0)
 				count--;
-				i++;
-			}
+			if (str[i] == ')' && count == 0)
+				break ;
+			i++;
 		}
 	}
 	if (str[i] == '\0')
@@ -66,7 +65,6 @@ void	ftExit(t_comms *comms)
 	}
 	free(comms->newenvcp);
 	clear_history();
-	ftFree(comms->path);
 	exit (g_exit_status);
 }
 

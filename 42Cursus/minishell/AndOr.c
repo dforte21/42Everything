@@ -8,6 +8,7 @@ int	checkMltCmd(t_comms *comms, int i)
 	comms->cmdflag = 0;
 	while (comms->line[end])
 	{
+		
 		end = ft_skip_quotes(comms->line, end, '\"');
 		end = ft_skip_quotes(comms->line, end, '\'');
 		end = ft_skip_quotes(comms->line, end, ')');

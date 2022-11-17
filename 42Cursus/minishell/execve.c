@@ -27,6 +27,7 @@ int	ftExecve (t_comms *comms, char **envp)
 		return (ftError(comms->cargs, 3, 0));
 	r = exeFork(comms, envp, path);
 	free(path);
+	//ftFree(comms->path);
 	return (r);
 }
 

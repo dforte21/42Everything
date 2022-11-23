@@ -12,6 +12,7 @@ int	main(int ac, char **av, char **envp)
 		ft_subcommand(av, envp, &comms);
 		ftExit(&comms);
 	}
+	ft_ctrlc(envp);
 	incrementShlvl(envp, &comms);
 	ftProcess(comms, envp, 0);
 	ftExit(&comms);
@@ -33,15 +34,19 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			add_history(comms.line);
 		if (ft_strlen(comms.line) == 0)
 			continue ;
-		
 		while (comms.line[i])
 		{
+			if (ft_check_char(comms.line, '|') || ft_check_char(comms.line, '&')
+				|| ft_check_syntax(comms.line) || ft_check_char(comms.line, '>')
+					|| ft_check_char(comms.line, '<'))
+				break ;
 			i = checkMltCmd(&comms, i);
 			comms.pipes = ft_smart_split(comms.cmd, '|');
 			comms.pipefd = allocPipe(&comms);
+			comms.redfd = allocRed(&comms);
 			ftParser(&comms, envp);
-			ftFree(comms.pipes);
 			free(comms.cmd);
+			ftFree(comms.pipes);
 			if (!checkFlag(&comms) || comms.exit != 0)
 				break ;
 		}
@@ -51,13 +56,12 @@ void	ftProcess(t_comms comms, char **envp, int i)
 
 void	initArgs(t_comms *comms, char **envp, char **av)
 {
-	ft_ctrlc(envp);
 	g_exit_status = 0;
 	comms->exit = 0;
 	comms->lenv = 0;
 	while (envp[comms->lenv])
 		comms->lenv++;
-	comms->newenvcp = ft_calloc(101, sizeof(char *));
+	comms->newenvcp = ft_calloc(1001, sizeof(char *));
 }
 
 void	incrementShlvl(char **envp, t_comms *comms)
@@ -89,13 +93,12 @@ void	ft_subcommand(char **av, char **envp, t_comms *comms)
 
 	i = 0;
 	comms->line = ft_strdup(av[1]);
-	if (ft_check_syntax(comms->line) || ft_strlen(comms->line) == 0)
-		return ;
 	while (comms->line[i])
 	{
 		i = checkMltCmd(comms, i);
 		comms->pipes = ft_smart_split(comms->cmd, '|');
 		comms->pipefd = allocPipe(comms);
+		comms->redfd = allocRed(comms);
 		ftParser(comms, envp);
 		ftFree(comms->pipes);
 	}

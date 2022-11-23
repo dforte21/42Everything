@@ -33,12 +33,6 @@ int	ft_redirection(char *cmd, int *fd, int caller)
 	int	end;
 
 	i = 0;
-	if (caller == 0)
-	{
-		fd[0] = -1;
-		fd[1] = -1;
-		fd[2] = -1;
-	}
 	while (cmd[i])
 	{
 		i = ft_skip_quotes(cmd, i, '\"');

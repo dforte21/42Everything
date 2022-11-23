@@ -38,3 +38,9 @@ void	ft_signal(void)
 	signal(SIGINT, ft_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+void	ft_quitslash(int sig)
+{
+	(void) sig;
+	exit(131);
+}

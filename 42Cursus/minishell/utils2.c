@@ -7,11 +7,12 @@ void	ftFreePipe(t_comms *comms, int j)
 	i = 0;
 	while (i < j)
 	{
-		close(comms->pipefd[i][0]);
 		free(comms->pipefd[i]);
+		free(comms->redfd[i]);
 		i++;
 	}
 	free(comms->pipefd);
+	free(comms->redfd);
 }
 
 char	*ftRemoveChar(char *str, char c)

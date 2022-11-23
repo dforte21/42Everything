@@ -2,24 +2,13 @@
 
 int	ft_skip_quotes(char *str, int i, char c)
 {
-	int count;
-
-	count = 1;
 	if (i == -1)
 		return (i);
-	if (str[i] == c || (str[i] == '(' && c == ')'))
+	if (str[i] == c)
 	{
 		i++;
-		while ((str[i] != c && str[i]) || str[i] == ')')
-		{
-			if (str[i] == '(')
-				count++;
-			if (str[i] == ')' && count > 0)
-				count--;
-			if (str[i] == ')' && count == 0)
-				break ;
+		while (str[i] != c && str[i])
 			i++;
-		}
 	}
 	if (str[i] == '\0')
 		return (-1);
@@ -57,7 +46,7 @@ void	ftExit(t_comms *comms)
 	int	i;
 
 	i = 0;
-	while (i < 100)
+	while (i < 1000)
 	{
 		if (comms->newenvcp[i])
 			free(comms->newenvcp[i]);

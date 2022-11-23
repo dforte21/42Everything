@@ -35,20 +35,53 @@ int	ft_check_char(char *str, char c)
 			flag = 1;
 		i = ft_skip_quotes(str, i, '\"');
 		i = ft_skip_quotes(str, i, '\'');
+		if (i == -1)
+		{
+			printf("ciao\n");
+			return (ft_syntax_error());
+		}
 		if (str[i] == c)
-			if (flag == 0 || ft_char_error(str, i, c))
-				return (1);
+			if ((flag == 0 && (c != '<' && c != '>')) || ft_char_error(str, i, c))
+				return (ft_syntax_error());
 		i++;
+	}
+	return (0);
+}
+
+int	ft_parparenthesis(char **matrix, int row)
+{
+	int		i;
+	char	*open;
+	char	*close;
+
+	open = NULL;
+	close = NULL;
+	open = ft_skip_strchr(matrix[row], '(');
+	close = ft_skip_strrchr(matrix[row], ')');
+	if (!open || !close)
+	{
+		ftFree(matrix);
+		return (1);
 	}
 	return (0);
 }
 
 int	ft_check_syntax(char *str)
 {
-	if (ft_check_char(str, '|') || ft_check_char(str, '&'))
-	{
-		free(str);
+	char	**matrix;
+	int		row;
+
+	matrix = ft_smart_split(str, '|');
+	if (matrix == NULL)
 		return (ft_syntax_error());
+	row = 0;
+	while (matrix[row])
+	{
+		if (ft_skip_strchr(matrix[row], '(') || ft_skip_strchr(matrix[row], ')'))
+			if (ft_parparenthesis(matrix, row))
+				return (ft_syntax_error());
+		row++;
 	}
+	ftFree(matrix);
 	return (0);
 }

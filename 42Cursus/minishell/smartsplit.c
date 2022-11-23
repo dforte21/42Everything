@@ -17,7 +17,9 @@ static int	ft_rowcount(char *str, char c)
 		{
 			i = ft_skip_quotes(str, i, '\'');
 			i = ft_skip_quotes(str, i, '\"');
-			i = ft_skip_quotes(str, i, ')');
+			i = ft_skip_parenthesis(str, i);
+			if (i == -1)
+				return (-1);
 			i++;
 		}
 	}
@@ -40,7 +42,7 @@ static int	ft_rowlen(char *str, char c)
 	{
 		i = ft_skip_quotes(str, i, '\'');
 		i = ft_skip_quotes(str, i, '\"');
-		i = ft_skip_quotes(str, i, ')');
+		i = ft_skip_parenthesis(str, i);
 		if (str[i] == c)
 			break ;
 		i++;
@@ -56,6 +58,8 @@ char	**ft_smart_split(char *s, char c)
 	int		row;
 
 	count = ft_rowcount(s, c);
+	if (count == -1)
+		return (NULL);
 	matrix = (char **) malloc (sizeof(char *) * (count + 1));
 	matrix[count] = NULL;
 	len = 0;

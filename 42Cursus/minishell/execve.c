@@ -23,11 +23,11 @@ int	ftExecve (t_comms *comms, char **envp)
 	}
 	else
 		path = buildPath(comms);
+	ftFree(comms->path);
 	if (!path)
 		return (ftError(comms->cargs, 3, 0));
 	r = exeFork(comms, envp, path);
 	free(path);
-	//ftFree(comms->path);
 	return (r);
 }
 

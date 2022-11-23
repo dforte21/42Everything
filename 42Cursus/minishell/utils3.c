@@ -5,11 +5,11 @@ void	newEnv(t_comms *comms, char *env)
 	int	i;
 
 	i = 0;
-	while (i < 100 && comms->newenvcp[i])
+	while (i < 1000 && comms->newenvcp[i])
 		i++;
-	if (i == 100)
+	if (i == 1000)
 	{
-		free(comms->newenvcp[99]);
+		free(comms->newenvcp[999]);
 		i--;
 	}
 	comms->newenvcp[i] = ft_strdup(env);
@@ -20,7 +20,7 @@ int	delEnv(t_comms *comms, char *env)
 	int	i;
 
 	i = 0;
-	while (i < 100)
+	while (i < 1000)
 	{
 		if (comms->newenvcp[i] && ft_strncmp(env, comms->newenvcp[i], sizeof(comms->newenvcp[i]) + 1) == 0)
 		{

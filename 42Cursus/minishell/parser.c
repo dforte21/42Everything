@@ -72,7 +72,6 @@ void	childExecute(t_comms *comms, char **envp, int i)
 	free(comms->line);
 	ftFree(comms->pipes);
 	clear_history();
-	ftFree(comms->path);
 	exit(g_exit_status);
 }
 

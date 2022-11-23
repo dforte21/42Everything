@@ -11,7 +11,7 @@ int	checkMltCmd(t_comms *comms, int i)
 		
 		end = ft_skip_quotes(comms->line, end, '\"');
 		end = ft_skip_quotes(comms->line, end, '\'');
-		end = ft_skip_quotes(comms->line, end, ')');
+		end = ft_skip_parenthesis(comms->line, end);
 		if (comms->line[end] == '&' || ft_strncmp(&comms->line[end], "||", 2) == 0)
 		{
 			if (comms->line[end] == '&')

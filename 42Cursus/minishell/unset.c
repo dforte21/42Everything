@@ -1,20 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:33:05 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 18:04:19 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int	ftUnset(t_comms *comms, char **envp, int i)
+int	ftunset(t_comms *comms, char **envp, int i)
 {
 	int	j;
 
 	while (comms->cargs[i])
 	{
-		if (checkInput(comms->cargs[1]))
-			return (ftError(comms->cargs, 1, i));
-		j = findEnv(comms->cargs[i], envp);
+		if (checkinput(comms->cargs[1]))
+			return (fterror(comms->cargs, 1, i));
+		j = findenv(comms->cargs[i], envp);
 		if (j == -1)
 		{
 			i++;
 			continue ;
 		}
-		if (delEnv(comms, envp[j]))
+		if (delenv(comms, envp[j]))
 			free(envp[j]);
 		envp[j] = NULL;
 		while (envp[j + 1])
@@ -29,43 +41,44 @@ int	ftUnset(t_comms *comms, char **envp, int i)
 	return (0);
 }
 
-int	checkEnv(char *arg, char **envp, t_comms *comms)
+int	checkenv(char *arg, char **envp, t_comms *comms)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	i = findEnv(arg, envp);
+	i = findenv(arg, envp);
 	if (i == -1)
 		return (0);
-	j = ftStrchr(arg, '=', 0);
+	j = ftstrchr(arg, '=', 0);
 	if (!arg[j])
 		return (-1);
-	if (delEnv(comms, envp[i]))
+	if (delenv(comms, envp[i]))
 		free(envp[i]);
 	envp[i] = NULL;
 	return (1);
 }
 
-int	findEnv(char *arg, char **envp)
+int	findenv(char *arg, char **envp)
 {
 	int	i;
 	int	j;
 
-	i = ftStrchr(arg, '=', 0);
+	i = ftstrchr(arg, '=', 0);
 	j = 0;
 	while (envp[j])
 	{
 		if (ft_strncmp(arg, envp[j], i + 1) == 0)
 			return (j);
-		if (ft_strncmp(arg, envp[j], i) == 0 && (envp[j][i] == '=' || !envp[j][i]))
+		if (ft_strncmp(arg, envp[j], i) == 0
+			&& (envp[j][i] == '=' || !envp[j][i]))
 			return (j);
 		j++;
 	}
 	return (-1);
 }
 
-int	checkInput(char *arg)
+int	checkinput(char *arg)
 {
 	int	i;
 	int	flag;

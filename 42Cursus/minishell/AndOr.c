@@ -1,18 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   AndOr.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 16:39:45 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:11:43 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int	checkMltCmd(t_comms *comms, int i)
+int	checkmltcmd(t_comms *comms, int i)
 {
 	int	end;
 
 	end = i;
 	comms->cmdflag = 0;
+	end = checkspecialcmd(comms, end);
+	while (comms->line[end] && (comms->line[end] == '&'
+			|| comms->line[end] == '|'))
+		end++;
+	comms->cmd = ft_substr(comms->line, i, end - i);
+	comms->cmd = ft_strtrim(comms->cmd, "&&");
+	comms->cmd = ft_strtrim(comms->cmd, " ");
+	return (end);
+}
+
+int	checkspecialcmd(t_comms *comms, int end)
+{
 	while (comms->line[end])
 	{
-		
 		end = ft_skip_quotes(comms->line, end, '\"');
 		end = ft_skip_quotes(comms->line, end, '\'');
 		end = ft_skip_parenthesis(comms->line, end);
-		if (comms->line[end] == '&' || ft_strncmp(&comms->line[end], "||", 2) == 0)
+		if (comms->line[end] == '&'
+			|| ft_strncmp(&comms->line[end], "||", 2) == 0)
 		{
 			if (comms->line[end] == '&')
 				comms->cmdflag = 1;
@@ -22,14 +46,10 @@ int	checkMltCmd(t_comms *comms, int i)
 		}
 		end++;
 	}
-	while (comms->line[end] && (comms->line[end] == '&' || comms->line[end] == '|'))
-		end++;
-	comms->cmd = ft_substr(comms->line, i, end - i);
-	comms->cmd = ft_strtrim(comms->cmd, "&&");
 	return (end);
 }
 
-int	checkFlag(t_comms *comms)
+int	checkflag(t_comms *comms)
 {
 	if (comms->cmdflag == 1 && g_exit_status != 0)
 		return (0);

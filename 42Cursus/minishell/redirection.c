@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:30:09 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:53:07 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ft_heredoc(char *cmd, int *fd)
@@ -39,7 +51,7 @@ int	ft_redirection(char *cmd, int *fd, int caller)
 		i = ft_skip_quotes(cmd, i, '\'');
 		if (cmd[i] == '<' || cmd[i] == '>')
 		{
-			end = execRedirect(cmd, i, fd, caller);
+			end = execredirect(cmd, i, fd, caller);
 			if (end == -1)
 				return (-1);
 			if (caller == 0)
@@ -56,9 +68,9 @@ int	ft_redirection(char *cmd, int *fd, int caller)
 	return (0);
 }
 
-int	execRedirect(char *cmd, int i, int *fd, int caller)
+int	execredirect(char *cmd, int i, int *fd, int caller)
 {
-	int 	end;
+	int		end;
 	int		flag;
 	char	*red;
 
@@ -78,14 +90,14 @@ int	execRedirect(char *cmd, int i, int *fd, int caller)
 	if (ft_strncmp(red, "<<", 2) == 0 && caller == 0)
 		ft_heredoc(red, fd);
 	else if (ft_strncmp(red, "<<", 2) != 0 && caller == 1)
-		flag = createFd(red, fd, cmd, end);
+		flag = createfd(red, fd, cmd, end);
 	free(red);
 	if (flag == -1)
 		return (-1);
 	return (end);
 }
 
-int	createFd(char *cmd, int *fd, char *fullcmd, int j)
+int	createfd(char *cmd, int *fd, char *fullcmd, int j)
 {
 	char	*path[2];
 	int		i;
@@ -97,17 +109,17 @@ int	createFd(char *cmd, int *fd, char *fullcmd, int j)
 	path[0] = ft_strtrim(path[0], " ");
 	path[1] = NULL;
 	if (cmd[0] == '>')
-		outRedirection(cmd, fd, path);
+		outredirection(cmd, fd, path);
 	else if (cmd[0] == '<')
 	{
-		if (inRedirection(cmd, fd, path, checkHD(&fullcmd[j])) == -1)
+		if (inredirection(cmd, fd, path, checkhd(&fullcmd[j])) == -1)
 			return (-1);
 	}
 	free(path[0]);
 	return (0);
 }
 
-int	checkHD(char *cmd)
+int	checkhd(char *cmd)
 {
 	int	i;
 

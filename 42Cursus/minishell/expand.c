@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:23:28 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:50:14 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_dollar(char *src, char **envp, int i)
@@ -11,7 +23,7 @@ char	*ft_dollar(char *src, char **envp, int i)
 		j++;
 	dst = malloc (sizeof(char) * j + 1);
 	ft_strlcpy(dst, &src[i + 1], j);
-	matrix[1] = fdGetEnv(dst, envp);
+	matrix[1] = fdgetenv(dst, envp);
 	matrix[1] = ft_no_quotes(matrix[1]);
 	free(dst);
 	matrix[2] = ft_strdup(&src[i + j]);
@@ -26,7 +38,6 @@ char	*ft_dollar(char *src, char **envp, int i)
 	}
 	return (dst);
 }
-
 
 char	*ft_check_expand(char *src, char **envp, int *i)
 {

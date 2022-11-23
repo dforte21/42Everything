@@ -1,31 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils3.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:36:24 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 18:13:26 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	newEnv(t_comms *comms, char *env)
+void	newenv(t_comms *comms, char *env)
 {
 	int	i;
 
 	i = 0;
-	while (i < 1000 && comms->newenvcp[i])
+	while (i < 1000 && comms->nep[i])
 		i++;
 	if (i == 1000)
 	{
-		free(comms->newenvcp[999]);
+		free(comms->nep[999]);
 		i--;
 	}
-	comms->newenvcp[i] = ft_strdup(env);
+	comms->nep[i] = ft_strdup(env);
 }
 
-int	delEnv(t_comms *comms, char *env)
+int	delenv(t_comms *comms, char *env)
 {
 	int	i;
+	int	len;
 
 	i = 0;
 	while (i < 1000)
 	{
-		if (comms->newenvcp[i] && ft_strncmp(env, comms->newenvcp[i], sizeof(comms->newenvcp[i]) + 1) == 0)
+		if (comms->nep[i])
+			len = ft_strncmp(env, comms->nep[i], ft_strlen(comms->nep[i]) + 1);
+		if (comms->nep[i] && len == 0)
 		{
-			free(comms->newenvcp[i]);
-			comms->newenvcp[i] = NULL;
+			free(comms->nep[i]);
+			comms->nep[i] = NULL;
 			return (1);
 		}
 		i++;
@@ -33,7 +48,7 @@ int	delEnv(t_comms *comms, char *env)
 	return (0);
 }
 
-int		ft_matlen(char **matrix)
+int	ft_matlen(char **matrix)
 {
 	int	row;
 
@@ -58,12 +73,12 @@ char	**ft_delrow(char **src, int del)
 	while (1)
 	{
 		if (src[row + 1] == NULL)
-			break;
+			break ;
 		dst[row] = ft_strdup(src[row + 1]);
 		row++;
 	}
 	dst[row] = NULL;
-	ftFree(src);
+	ftfree(src);
 	return (dst);
 }
 
@@ -81,7 +96,7 @@ char	*ft_multijoin(char **matrix)
 	{
 		dst = ft_strjoin(dst, matrix[row]);
 		free(matrix[row]);
-		row++; 
+		row++;
 	}
 	return (dst);
 }

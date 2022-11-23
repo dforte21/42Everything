@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 15:46:51 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/23 18:17:04 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_comms
 	char	*line;
 	char	*cmd;
 	char	*subsh;
-	char	**newenvcp;
+	char	**nep;
 	char	**pipes;
 	char	**cargs;
 	char	**envcpy;
@@ -54,24 +54,26 @@ typedef struct s_comms
 }					t_comms;
 
 //builtins
-int		ftEcho(t_comms *comms);
-int		ftEnv(t_comms *comms, char **envp);
-int		ftExport(t_comms *comms, char **envp, int i, int flag);
-int		ftUnset(t_comms *comms, char **envp, int i);
-int		ftPwd(t_comms *comms);
-int		ftCd(t_comms *comms);
-int		ftExecve(t_comms *comms, char **envp);
+int		ftecho(t_comms *comms);
+int		ftenv(t_comms *comms, char **envp);
+int		ftexport(t_comms *comms, char **envp, int i, int flag);
+int		ftunset(t_comms *comms, char **envp, int i);
+int		ftpwd(t_comms *comms);
+int		ftcd(t_comms *comms);
+int		ftexecve(t_comms *comms, char **envp);
 int		ft_exit(t_comms *comms);
 
 //pipe&fork
-pid_t	chooseCommand(t_comms *comms, char **envp, int i, int j);
+pid_t	choosecommand(t_comms *comms, char **envp, int i, int j);
+void	switchcmd(t_comms *comms, char **envp);
 void	ftProcess(t_comms comms, char **envp, int i);
-void	ftParser(t_comms *comms, char **envp);
-void	exeCommand(t_comms *comms, char **envp, int i);
-void	childExecute(t_comms *comms, char **envp, int i);
-int		**allocPipe(t_comms *comms);
-int		**allocRed(t_comms *comms);
-int		exeFork(t_comms *comms, char **envp, char *path);
+void	ftparser(t_comms *comms, char **envp);
+void	execommand(t_comms *comms, char **envp, int i);
+void	childexecute(t_comms *comms, char **envp, int i);
+void	checksons(pid_t pid, t_comms *comms, int status, int j);
+int		**allocpipe(t_comms *comms);
+int		**allocred(t_comms *comms);
+int		exefork(t_comms *comms, char **envp, char *path);
 
 //signals
 void	ft_quit130(int sig);
@@ -80,70 +82,80 @@ void	ft_ctrlc(char **envp);
 void	ft_sigint(int sig);
 void	ft_signal(void);
 void	rl_replace_line(const char *text, int clear_undo);
+void	ft_quit131(int sig);
 
 //env
-void	addEnv(char *arg, char **envp, int flag, t_comms *comms);
-void	sortEnv(t_comms *comms, char **envcpy);
-void	newEnv(t_comms *comms, char *env);
+void	addenv(char *arg, char **envp, int flag, t_comms *comms);
+void	sortenv(t_comms *comms, char **envcpy);
+void	newenv(t_comms *comms, char *env);
 char	**ftExpand(char **src, char **envp);
-char	**copyEnv(t_comms *comms, char **envp);
-char	*fdGetEnv(char *str, char **envp);
-char	*createEnv(char *arg);
-int		findEnv(char *arg, char **envp);
-int		checkEnv(char *arg, char **envp, t_comms *comms);
-int		delEnv(t_comms *comms, char *env);
+char	**copyenv(t_comms *comms, char **envp);
+char	*fdgetenv(char *str, char **envp);
+char	*createenv(char *arg);
+int		findenv(char *arg, char **envp);
+int		checkenv(char *arg, char **envp, t_comms *comms);
+int		delenv(t_comms *comms, char *env);
 
 //initializator
 void	initArgs(t_comms *comms, char **envp, char **av);
 void	incrementShlvl(char **envp, t_comms *comms);
-char	*buildPath(t_comms *comms);
+char	*buildpath(t_comms *comms);
 
 //utils
-void	ftFree(char **args);
-void	ftExit(t_comms *comms);
-void	ftStrReplace(char *str, char old, char new);
-void	ftFreePipe(t_comms *comms, int j);
+void	ftfree(char **args);
+void	ftexit(t_comms *comms);
+void	ftstrreplace(char *str, char old, char new);
+void	ftfreepipe(t_comms *comms, int j);
 void	check_status(int exit);
 void	set_fd(t_comms *comms, int flag);
 char	**ft_delrow(char **src, int del);
 char	**ft_remove_quotes(char **matrix);
-char	**getPath(char **envp);
+char	**getpath(char **envp);
 char	*ft_multijoin(char **matrix);
 char	*ft_expand(char *src, char **envp, char c);
 char	*createTmpFile(void);
 char	*ftReplace(char *src, char **envp, int i);
-char	*ftRemoveChar(char *str, char c);
+char	*ftremovechar(char *str, char c);
 char	*ft_skip_strrchr(char *str, char c);
 char	*ft_skip_strchr(char *str, char c);
 int		ft_check_char(char *str, char c);
 int		ft_skip_parenthesis(char *str, int i);
 int		ft_skip_quotes(char *str, int i, char c);
 int		ft_check_syntax(char *str);
-int		ftError(char **arg, int caller, int i);
-int		ftStrchr(char *str, char c, int start);
-int		checkInput(char *arg);
+int		fterror(char **arg, int caller, int i);
+int		fterror2(char **arg, int caller, int i, char *line);
+int		ftstrchr(char *str, char c, int start);
+int		checkinput(char *arg);
 int		ft_matlen(char **matrix);
+int		checkdir(t_comms *comms, struct stat filestat, int r);
 
 //split
 char	**ft_smart_split(char *s, char c);
 char	*ft_no_quotes(char *scr);
 
 //redirection
-void	outRedirection(char *cmd, int *fd, char **path);
-int		inRedirection(char *cmd, int *fd, char **path, int check);
+void	outredirection(char *cmd, int *fd, char **path);
+int		inredirection(char *cmd, int *fd, char **path, int check);
 int		ft_redirection(char *cmd, int *fd, int caller);
-int		createFd(char *cmd, int *fd, char *fullcmd, int i);
-int		execRedirect(char *cmd, int i, int *fd, int caller);
-int		checkHD(char *cmd);
+int		createfd(char *cmd, int *fd, char *fullcmd, int i);
+int		execredirect(char *cmd, int i, int *fd, int caller);
+int		checkhd(char *cmd);
 
 //andorparenthesis
 void	ft_subcommand(char **av, char **envp, t_comms *comms);
 void	ft_subshell(t_comms *comms, char **envp);
 char	*ft_buildss(t_comms *comms, int i);
-int		checkMltCmd(t_comms *comms, int i);
-int		checkFlag(t_comms *comms);
+int		checkmltcmd(t_comms *comms, int i);
+int		checkflag(t_comms *comms);
+int		checkspecialcmd(t_comms *comms, int end);
 
 //wildcards
 char	*ft_asterisk(char *src, int *i);
+char	*ft_wildcard(char *str, char **dir);
+char	**ft_get_dir(int row);
+char	**ft_between(char **wild, char **dir);
+char	**ft_first_last(char *str, char **dir, int flag);
+char	*checkstr(char *str, char **dir);
+int		ft_dirlen(void);
 
 #endif

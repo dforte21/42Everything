@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:17:54 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:49:07 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char	*fdGetEnv(char *str, char **envp)
+char	*fdgetenv(char *str, char **envp)
 {
 	int		row;
 	int		col;
@@ -13,7 +25,7 @@ char	*fdGetEnv(char *str, char **envp)
 		if (!ft_strncmp(str, envp[row], ft_strlen(str)))
 		{
 			col = 0;
-			while(envp[row][col] != '=')
+			while (envp[row][col] != '=')
 				col++;
 			if (col == ft_strlen(str))
 			{
@@ -23,10 +35,10 @@ char	*fdGetEnv(char *str, char **envp)
 		}
 		row++;
 	}
-	return(dst);
+	return (dst);
 }
 
-int	ftEnv(t_comms *comms, char **envp)
+int	ftenv(t_comms *comms, char **envp)
 {
 	char	*env;
 	int		i;
@@ -34,7 +46,7 @@ int	ftEnv(t_comms *comms, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (envp[i][ftStrchr(envp[i], '=', 0)])
+		if (envp[i][ftstrchr(envp[i], '=', 0)])
 		{
 			env = ft_strdup(envp[i]);
 			env = ft_no_quotes(env);
@@ -44,5 +56,5 @@ int	ftEnv(t_comms *comms, char **envp)
 		}
 		i++;
 	}
-	return (0);;
+	return (0);
 }

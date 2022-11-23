@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcards.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:38:45 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:43:17 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int		ft_dirlen(void)
+int	ft_dirlen(void)
 {
 	DIR				*d;
 	struct dirent	*dir;
@@ -11,7 +23,7 @@ int		ft_dirlen(void)
 	row = 0;
 	while (dir != NULL)
 	{
-		if(dir->d_name[0] == '.')
+		if (dir->d_name[0] == '.')
 		{
 			dir = readdir(d);
 			continue ;
@@ -21,36 +33,6 @@ int		ft_dirlen(void)
 	}
 	closedir(d);
 	return (row);
-}
-
-char	**ft_get_dir(void)
-{
-	DIR				*d;
-	struct dirent	*dir;
-	char			**matrix;
-	int				row;
-
-	d = opendir(".");
-	matrix = (char **) malloc (sizeof(char *) * (ft_dirlen() + 1));
-	dir = readdir(d);
-	row = 0;
-	while (dir != NULL)
-	{
-		if(dir->d_name[0] == '.')
-		{
-			dir = readdir(d);
-			continue ;
-		}
-		matrix[row] = (char *) malloc (sizeof(char) * (ft_strlen(dir->d_name) + 2));
-		ft_strlcpy(matrix[row], dir->d_name, ft_strlen(dir->d_name) + 1);
-		matrix[row][ft_strlen(dir->d_name)] = ' ';
-		matrix[row][ft_strlen(dir->d_name) + 1] = '\0';
-		row++;
-		dir = readdir(d);
-	}
-	matrix[row] = NULL;
-	closedir(d);
-	return (matrix);
 }
 
 char	**ft_first_last(char *str, char **dir, int flag)
@@ -108,37 +90,6 @@ char	**ft_between(char **wild, char **dir)
 	return (dir);
 }
 
-char	*ft_wildcard(char *str, char **dir)
-{
-	char	**wild;
-	char	*dst;
-
-	str = ft_no_quotes(str);
-	if (ft_strlen(str) == 1)
-	{
-		free(str);
-		dst = ft_multijoin(dir);
-		free(dir);
-		return (dst);
-	}
-	wild = ft_split(str, '*');
-	if (str[0] != '*')
-		dir = ft_first_last(wild[0], dir, 0);
-	if (str[ft_strlen(str) - 1] != '*')
-		dir = ft_first_last(wild[ft_matlen(wild) - 1], dir, 1);
-	dir = ft_between(wild, dir);
-	ftFree(wild);
-	if (dir[0] == NULL)
-	{
-		free(dir);
-		return (str);
-	}
-	dst = ft_multijoin(dir);
-	free(dir);
-	free(str);
-	return (dst);
-}
-
 char	*ft_asterisk(char *src, int *i)
 {
 	char	*matrix[4];
@@ -152,7 +103,7 @@ char	*ft_asterisk(char *src, int *i)
 	while (src[*i] != ' ' && src[*i])
 		*i += 1;
 	matrix[2] = ft_substr(src, *i, ft_strlen(src));
-	matrix[1] = ft_wildcard(ft_substr(src, j + 1, *i - j - 1), ft_get_dir());
+	matrix[1] = ft_wildcard(ft_substr(src, j + 1, *i - j - 1), ft_get_dir(0));
 	matrix[3] = NULL;
 	dst = ft_multijoin(matrix);
 	return (dst);

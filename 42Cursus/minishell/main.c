@@ -10,12 +10,12 @@ int	main(int ac, char **av, char **envp)
 	{
 		g_exit_status = ft_atoi(av[2]);
 		ft_subcommand(av, envp, &comms);
-		ftExit(&comms);
+		ftexit(&comms);
 	}
 	ft_ctrlc(envp);
 	incrementShlvl(envp, &comms);
 	ftProcess(comms, envp, 0);
-	ftExit(&comms);
+	ftexit(&comms);
 }
 
 void	ftProcess(t_comms comms, char **envp, int i)
@@ -40,14 +40,14 @@ void	ftProcess(t_comms comms, char **envp, int i)
 				|| ft_check_syntax(comms.line) || ft_check_char(comms.line, '>')
 					|| ft_check_char(comms.line, '<'))
 				break ;
-			i = checkMltCmd(&comms, i);
+			i = checkmltcmd(&comms, i);
 			comms.pipes = ft_smart_split(comms.cmd, '|');
-			comms.pipefd = allocPipe(&comms);
-			comms.redfd = allocRed(&comms);
-			ftParser(&comms, envp);
+			comms.pipefd = allocpipe(&comms);
+			comms.redfd = allocred(&comms);
+			ftparser(&comms, envp);
 			free(comms.cmd);
-			ftFree(comms.pipes);
-			if (!checkFlag(&comms) || comms.exit != 0)
+			ftfree(comms.pipes);
+			if (!checkflag(&comms) || comms.exit != 0)
 				break ;
 		}
 		free(comms.line);
@@ -61,7 +61,7 @@ void	initArgs(t_comms *comms, char **envp, char **av)
 	comms->lenv = 0;
 	while (envp[comms->lenv])
 		comms->lenv++;
-	comms->newenvcp = ft_calloc(1001, sizeof(char *));
+	comms->nep = ft_calloc(1001, sizeof(char *));
 }
 
 void	incrementShlvl(char **envp, t_comms *comms)
@@ -72,7 +72,7 @@ void	incrementShlvl(char **envp, t_comms *comms)
 	char	*newlvl;
 
 	input = ft_strdup("SHLVL");
-	shlvl = fdGetEnv(input, envp);
+	shlvl = fdgetenv(input, envp);
 	shlvl = ft_strtrim(shlvl, "\"");
 	lvl = ft_atoi(shlvl);
 	free(shlvl);
@@ -82,9 +82,9 @@ void	incrementShlvl(char **envp, t_comms *comms)
 	comms->cargs[1] = ft_strdup("SHLVL=");
 	comms->cargs[1] = ft_strjoin(comms->cargs[1], newlvl);
 	free(newlvl);
-	ftExport(comms, envp, 0, 0);
+	ftexport(comms, envp, 0, 0);
 	free(input);
-	ftFree(comms->cargs);
+	ftfree(comms->cargs);
 }
 
 void	ft_subcommand(char **av, char **envp, t_comms *comms)
@@ -95,11 +95,11 @@ void	ft_subcommand(char **av, char **envp, t_comms *comms)
 	comms->line = ft_strdup(av[1]);
 	while (comms->line[i])
 	{
-		i = checkMltCmd(comms, i);
+		i = checkmltcmd(comms, i);
 		comms->pipes = ft_smart_split(comms->cmd, '|');
-		comms->pipefd = allocPipe(comms);
-		comms->redfd = allocRed(comms);
-		ftParser(comms, envp);
-		ftFree(comms->pipes);
+		comms->pipefd = allocpipe(comms);
+		comms->redfd = allocred(comms);
+		ftparser(comms, envp);
+		ftfree(comms->pipes);
 	}
 }

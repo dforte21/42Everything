@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:12:33 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:48:15 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int	ftPwd(t_comms *comms)
+int	ftpwd(t_comms *comms)
 {
 	char	line[1000];
 
@@ -9,7 +21,7 @@ int	ftPwd(t_comms *comms)
 	return (0);
 }
 
-int	ftCd(t_comms *comms)
+int	ftcd(t_comms *comms)
 {
 	int		r;
 	char	*home;
@@ -22,6 +34,6 @@ int	ftCd(t_comms *comms)
 	else
 		r = chdir(comms->cargs[1]);
 	if (r == -1)
-		return (ftError(comms->cargs, 2, 1));
+		return (fterror(comms->cargs, 2, 1));
 	return (0);
 }

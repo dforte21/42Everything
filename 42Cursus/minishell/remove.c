@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   remove.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:31:56 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:32:12 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ft_between_quotes(char *s1, char *s2, char c, int *i)
@@ -50,5 +62,5 @@ char	**ft_remove_quotes(char **matrix)
 		matrix[row] = ft_no_quotes(matrix[row]);
 		row++;
 	}
-	return(matrix);
+	return (matrix);
 }

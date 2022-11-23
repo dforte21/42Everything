@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:19:00 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:59:15 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_syntax_error(void)
 {
 	write(STDERR_FILENO, "minishell: syntax error\n", 25);
-	return(1);
+	return (1);
 }
 
 int	ft_char_error(char *str, int i, char c)
@@ -41,7 +53,8 @@ int	ft_check_char(char *str, char c)
 			return (ft_syntax_error());
 		}
 		if (str[i] == c)
-			if ((flag == 0 && (c != '<' && c != '>')) || ft_char_error(str, i, c))
+			if ((flag == 0 && (c != '<' && c != '>'))
+				|| ft_char_error(str, i, c))
 				return (ft_syntax_error());
 		i++;
 	}
@@ -60,7 +73,7 @@ int	ft_parparenthesis(char **matrix, int row)
 	close = ft_skip_strrchr(matrix[row], ')');
 	if (!open || !close)
 	{
-		ftFree(matrix);
+		ftfree(matrix);
 		return (1);
 	}
 	return (0);
@@ -77,11 +90,12 @@ int	ft_check_syntax(char *str)
 	row = 0;
 	while (matrix[row])
 	{
-		if (ft_skip_strchr(matrix[row], '(') || ft_skip_strchr(matrix[row], ')'))
+		if (ft_skip_strchr(matrix[row], '(')
+			|| ft_skip_strchr(matrix[row], ')'))
 			if (ft_parparenthesis(matrix, row))
 				return (ft_syntax_error());
 		row++;
 	}
-	ftFree(matrix);
+	ftfree(matrix);
 	return (0);
 }

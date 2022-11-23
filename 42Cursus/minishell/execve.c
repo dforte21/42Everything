@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execve.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:19:51 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 18:00:18 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int	ftExecve (t_comms *comms, char **envp)
+int	ftexecve(t_comms *comms, char **envp)
 {
 	int			r;
 	int			i;
@@ -8,41 +20,49 @@ int	ftExecve (t_comms *comms, char **envp)
 	struct stat	filestat;
 
 	r = stat(comms->cargs[0], &filestat);
-	comms->path = getPath(envp);
-	if (S_ISDIR(filestat.st_mode) && r == 0)
-	{
-		errno = EISDIR;
-		ftError(comms->cargs, 2, 0);
+	comms->path = getpath(envp);
+	if (checkdir(comms, filestat, r) == 126)
 		return (126);
-	}
-	i = ftStrchr(comms->cargs[0], '/', 0);
+	i = ftstrchr(comms->cargs[0], '/', 0);
 	if (comms->cargs[0][i])
 	{
 		path = ft_strdup(comms->cargs[0]);
 		r = access(path, R_OK);
 	}
 	else
-		path = buildPath(comms);
-	ftFree(comms->path);
+		path = buildpath(comms);
+	ftfree(comms->path);
 	if (!path)
-		return (ftError(comms->cargs, 3, 0));
-	r = exeFork(comms, envp, path);
+		return (fterror(comms->cargs, 3, 0));
+	r = exefork(comms, envp, path);
 	free(path);
 	return (r);
 }
 
-int	exeFork(t_comms *comms, char **envp, char *path)
+int	checkdir(t_comms *comms, struct stat filestat, int r)
+{
+	if (S_ISDIR(filestat.st_mode) && r == 0)
+	{
+		errno = EISDIR;
+		fterror(comms->cargs, 2, 0);
+		return (126);
+	}
+	return (1);
+}
+
+int	exefork(t_comms *comms, char **envp, char *path)
 {
 	int		status;
 	pid_t	pid;
 
+	signal(SIGINT, ft_quit130);
+	signal(SIGQUIT, ft_quit131);
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(path, comms->cargs, envp);
 		exit(errno);
 	}
-	signal(SIGINT, ft_quit130);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{
@@ -57,7 +77,7 @@ int	exeFork(t_comms *comms, char **envp, char *path)
 	return (0);
 }
 
-char	*buildPath(t_comms *comms)
+char	*buildpath(t_comms *comms)
 {
 	char	*path;
 	int		r;

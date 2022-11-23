@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:35:20 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:54:37 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	ftFreePipe(t_comms *comms, int j)
+void	ftfreepipe(t_comms *comms, int j)
 {
 	int	i;
 
@@ -15,7 +27,7 @@ void	ftFreePipe(t_comms *comms, int j)
 	free(comms->redfd);
 }
 
-char	*ftRemoveChar(char *str, char c)
+char	*ftremovechar(char *str, char c)
 {
 	char	**arg;
 	char	*tmp;
@@ -30,11 +42,11 @@ char	*ftRemoveChar(char *str, char c)
 		i++;
 	}
 	free(str);
-	ftFree(arg);
+	ftfree(arg);
 	return (tmp);
 }
 
-int	**allocPipe(t_comms *comms)
+int	**allocpipe(t_comms *comms)
 {
 	int	**fd;
 	int	j;
@@ -72,14 +84,14 @@ void	set_fd(t_comms *comms, int flag)
 	}
 }
 
-char	**getPath(char **envp)
+char	**getpath(char **envp)
 {
 	char	**path;
 	char	*env;
 	int		i;
 
 	i = 0;
-	env = fdGetEnv("PATH", envp);
+	env = fdgetenv("PATH", envp);
 	if (!env)
 		return (NULL);
 	path = ft_split(env, ':');

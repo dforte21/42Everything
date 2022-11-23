@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils4.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:38:14 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 17:38:22 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_skip_strchr(char *str, char c)
@@ -59,10 +71,10 @@ int	ft_skip_parenthesis(char *str, int i)
 	}
 	if (count != 0)
 		return (-1);
-	return (i);
+	return (i - 1);
 }
 
-int	**allocRed(t_comms *comms)
+int	**allocred(t_comms *comms)
 {
 	int	**fd;
 	int	j;

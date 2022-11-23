@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   commands.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:13:09 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 18:16:05 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	exeCommand(t_comms *comms, char **envp, int i)
+void	execommand(t_comms *comms, char **envp, int i)
 {
 	if (ft_redirection(comms->pipes[i], comms->redfd[i], 1) == -1)
 	{
@@ -23,28 +35,33 @@ void	exeCommand(t_comms *comms, char **envp, int i)
 	comms->pipes[i] = ft_expand(comms->pipes[i], envp, '*');
 	comms->cargs = ft_smart_split(comms->pipes[i], ' ');
 	comms->cargs = ft_remove_quotes(comms->cargs);
+	switchcmd(comms, envp);
+}
+
+void	switchcmd(t_comms *comms, char **envp)
+{
 	if (!comms->cargs[0])
 		g_exit_status = 0;
 	else if (ft_strncmp(comms->cargs[0], "exit", 5) == 0)
 		g_exit_status = ft_exit(comms);
 	else if (ft_strncmp(comms->cargs[0], "cd", 3) == 0)
-		g_exit_status = ftCd(comms);
+		g_exit_status = ftcd(comms);
 	else if (ft_strncmp(comms->cargs[0], "export", 7) == 0)
-		g_exit_status = ftExport(comms, envp, 0, 0);
+		g_exit_status = ftexport(comms, envp, 0, 0);
 	else if (ft_strncmp(comms->cargs[0], "unset", 6) == 0)
-		g_exit_status = ftUnset(comms, envp, 1);
+		g_exit_status = ftunset(comms, envp, 1);
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)
-		g_exit_status = ftEcho(comms);
+		g_exit_status = ftecho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)
-		g_exit_status = ftEnv(comms, envp);
+		g_exit_status = ftenv(comms, envp);
 	else if (ft_strncmp(comms->cargs[0], "pwd", 4) == 0)
-		g_exit_status = ftPwd(comms);
+		g_exit_status = ftpwd(comms);
 	else
-		g_exit_status = ftExecve(comms, envp);
-	ftFree(comms->cargs);
+		g_exit_status = ftexecve(comms, envp);
+	ftfree(comms->cargs);
 }
 
-int	ftError(char **arg, int caller, int i)
+int	fterror(char **arg, int caller, int i)
 {
 	char	*line;
 
@@ -61,6 +78,11 @@ int	ftError(char **arg, int caller, int i)
 	{
 		perror(line);
 	}
+	return (fterror2(arg, caller, i, line));
+}
+
+int	fterror2(char **arg, int caller, int i, char *line)
+{
 	if (caller == 3)
 	{
 		line = ft_strjoin(line, ": command not found\n");
@@ -94,7 +116,7 @@ int	ft_exit(t_comms *comms)
 	while (comms->cargs[1][i])
 	{
 		if (!ft_isdigit(comms->cargs[1][i]))
-			return (ftError(comms->cargs, 4, 1));
+			return (fterror(comms->cargs, 4, 1));
 		i++;
 	}
 	n = ft_atoi(comms->cargs[1]);

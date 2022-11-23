@@ -1,36 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/23 17:24:12 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/23 18:03:47 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int	ftExport(t_comms *comms, char **envp, int i, int flag)
+int	ftexport(t_comms *comms, char **envp, int i, int flag)
 {
 	if (comms->cargs[1])
 	{
 		while (comms->cargs[i + 1])
 		{
-			if (checkInput(comms->cargs[i + 1]))
-				return (ftError(comms->cargs, 1, i + 1));
-			flag = checkEnv(comms->cargs[i + 1], envp, comms);
+			if (checkinput(comms->cargs[i + 1]))
+				return (fterror(comms->cargs, 1, i + 1));
+			flag = checkenv(comms->cargs[i + 1], envp, comms);
 			if (flag != -1)
-				addEnv(comms->cargs[i + 1], envp, flag, comms);
+				addenv(comms->cargs[i + 1], envp, flag, comms);
 			i++;
 		}
+		return (0);
 	}
-	else
+	comms->envcpy = copyenv(comms, envp);
+	sortenv(comms, comms->envcpy);
+	while (comms->envcpy[i])
 	{
-		comms->envcpy = copyEnv(comms, envp);
-		sortEnv(comms, comms->envcpy);
-		while (comms->envcpy[i])
-		{
-			printf("declare -x ");
-			printf("%s", comms->envcpy[i]);
-			printf("\n");
-			i++;
-		}
-		ftFree(comms->envcpy);
+		printf("declare -x ");
+		printf("%s", comms->envcpy[i]);
+		printf("\n");
+		i++;
 	}
+	ftfree(comms->envcpy);
 	return (0);
 }
 
-char	**copyEnv(t_comms *comms, char **envp)
+char	**copyenv(t_comms *comms, char **envp)
 {
 	char	**envc;
 	int		i;
@@ -45,7 +55,7 @@ char	**copyEnv(t_comms *comms, char **envp)
 	return (envc);
 }
 
-void	addEnv(char *arg, char **envp, int flag, t_comms *comms)
+void	addenv(char *arg, char **envp, int flag, t_comms *comms)
 {
 	int		i;
 	int		j;
@@ -54,9 +64,9 @@ void	addEnv(char *arg, char **envp, int flag, t_comms *comms)
 	i = 0;
 	while (envp[i])
 		i++;
-	j = ftStrchr(arg, '=', 0);
+	j = ftstrchr(arg, '=', 0);
 	if (arg[j])
-		tmp = createEnv(arg);
+		tmp = createenv(arg);
 	else
 		tmp = ft_strdup(arg);
 	envp[i] = ft_strdup(tmp);
@@ -65,11 +75,11 @@ void	addEnv(char *arg, char **envp, int flag, t_comms *comms)
 		envp[i + 1] = NULL;
 		comms->lenv++;
 	}
-	newEnv(comms, tmp);
+	newenv(comms, tmp);
 	free(tmp);
 }
 
-char	*createEnv(char *arg)
+char	*createenv(char *arg)
 {
 	char	**var;
 	char	*tmp;
@@ -83,11 +93,11 @@ char	*createEnv(char *arg)
 		tmp = ft_strjoin(tmp, var[1]);
 	}
 	tmp = ft_strjoin(tmp, "\"");
-	ftFree(var);
+	ftfree(var);
 	return (tmp);
 }
 
-void	sortEnv(t_comms *comms, char **envcpy)
+void	sortenv(t_comms *comms, char **envcpy)
 {
 	int		i;
 	int		j;

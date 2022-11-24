@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:24:12 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 18:03:47 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:31:39 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ftexport(t_comms *comms, char **envp, int i, int flag)
 		return (0);
 	}
 	comms->envcpy = copyenv(comms, envp);
-	sortenv(comms, comms->envcpy);
+	sortenv(comms->envcpy);
 	while (comms->envcpy[i])
 	{
 		printf("declare -x ");
@@ -97,7 +97,7 @@ char	*createenv(char *arg)
 	return (tmp);
 }
 
-void	sortenv(t_comms *comms, char **envcpy)
+void	sortenv(char **envcpy)
 {
 	int		i;
 	int		j;

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:30:09 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:53:07 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:29:37 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int	createfd(char *cmd, int *fd, char *fullcmd, int j)
 		outredirection(cmd, fd, path);
 	else if (cmd[0] == '<')
 	{
-		if (inredirection(cmd, fd, path, checkhd(&fullcmd[j])) == -1)
+		if (inredirection(fd, path, checkhd(&fullcmd[j])) == -1)
 			return (-1);
 	}
 	free(path[0]);

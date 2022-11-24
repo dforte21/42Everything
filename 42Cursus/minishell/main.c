@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/24 16:18:56 by dforte            #+#    #+#             */
+/*   Updated: 2022/11/24 16:35:33 by dforte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	main(int ac, char **av, char **envp)
 {
 	t_comms	comms;
-	int		i;
 
-	initArgs(&comms, envp, av);
+	ac = 0;
+	initargs(&comms, envp);
 	if (av[1] && av[0][0] != '.')
 	{
 		g_exit_status = ft_atoi(av[2]);
@@ -13,16 +25,15 @@ int	main(int ac, char **av, char **envp)
 		ftexit(&comms);
 	}
 	ft_ctrlc(envp);
-	incrementShlvl(envp, &comms);
-	ftProcess(comms, envp, 0);
+	incrementshlvl(envp, &comms);
+	ftprocess(comms, envp);
 	ftexit(&comms);
 }
 
-void	ftProcess(t_comms comms, char **envp, int i)
+void	ftprocess(t_comms comms, char **envp)
 {
 	while (comms.exit == 0)
 	{
-		i = 0;
 		ft_signal();
 		comms.line = readline("Minishell-1.39$ ");
 		if (!comms.line)
@@ -34,37 +45,35 @@ void	ftProcess(t_comms comms, char **envp, int i)
 			add_history(comms.line);
 		if (ft_strlen(comms.line) == 0)
 			continue ;
-		while (comms.line[i])
-		{
-			if (ft_check_char(comms.line, '|') || ft_check_char(comms.line, '&')
-				|| ft_check_syntax(comms.line) || ft_check_char(comms.line, '>')
-					|| ft_check_char(comms.line, '<'))
-				break ;
-			i = checkmltcmd(&comms, i);
-			comms.pipes = ft_smart_split(comms.cmd, '|');
-			comms.pipefd = allocpipe(&comms);
-			comms.redfd = allocred(&comms);
-			ftparser(&comms, envp);
-			free(comms.cmd);
-			ftfree(comms.pipes);
-			if (!checkflag(&comms) || comms.exit != 0)
-				break ;
-		}
+		parsecmdline(&comms, envp);
 		free(comms.line);
 	}
 }
 
-void	initArgs(t_comms *comms, char **envp, char **av)
+void	parsecmdline(t_comms *comms, char **envp)
 {
-	g_exit_status = 0;
-	comms->exit = 0;
-	comms->lenv = 0;
-	while (envp[comms->lenv])
-		comms->lenv++;
-	comms->nep = ft_calloc(1001, sizeof(char *));
+	int	i;
+
+	i = 0;
+	while (comms->line[i])
+	{
+		if (ft_check_char(comms->line, '|') || ft_check_char(comms->line, '&')
+			|| ft_check_syntax(comms->line) || ft_check_char(comms->line, '>')
+			|| ft_check_char(comms->line, '<'))
+			break ;
+		i = checkmltcmd(comms, i);
+		comms->pipes = ft_smart_split(comms->cmd, '|');
+		comms->pipefd = allocpipe(comms);
+		comms->redfd = allocred(comms);
+		ftparser(comms, envp);
+		free(comms->cmd);
+		ftfree(comms->pipes);
+		if (!checkflag(comms) || comms->exit != 0)
+			break ;
+	}
 }
 
-void	incrementShlvl(char **envp, t_comms *comms)
+void	incrementshlvl(char **envp, t_comms *comms)
 {
 	int		lvl;
 	char	*input;

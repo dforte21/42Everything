@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:19:00 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:59:15 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:31:49 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,7 @@ int	ft_check_char(char *str, char c)
 		i = ft_skip_quotes(str, i, '\"');
 		i = ft_skip_quotes(str, i, '\'');
 		if (i == -1)
-		{
-			printf("ciao\n");
 			return (ft_syntax_error());
-		}
 		if (str[i] == c)
 			if ((flag == 0 && (c != '<' && c != '>'))
 				|| ft_char_error(str, i, c))
@@ -63,7 +60,6 @@ int	ft_check_char(char *str, char c)
 
 int	ft_parparenthesis(char **matrix, int row)
 {
-	int		i;
 	char	*open;
 	char	*close;
 

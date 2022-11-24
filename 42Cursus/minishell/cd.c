@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:12:33 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:48:15 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:33:05 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ftpwd(t_comms *comms)
+int	ftpwd(void)
 {
 	char	line[1000];
 

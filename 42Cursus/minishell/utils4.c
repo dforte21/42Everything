@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:38:14 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:38:22 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:28:35 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,14 @@ int	**allocred(t_comms *comms)
 		i++;
 	}
 	return (fd);
+}
+
+void	initargs(t_comms *comms, char **envp)
+{
+	g_exit_status = 0;
+	comms->exit = 0;
+	comms->lenv = 0;
+	while (envp[comms->lenv])
+		comms->lenv++;
+	comms->nep = ft_calloc(1001, sizeof(char *));
 }

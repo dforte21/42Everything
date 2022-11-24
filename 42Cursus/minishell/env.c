@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:17:54 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:49:07 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:32:44 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*fdgetenv(char *str, char **envp)
 			col = 0;
 			while (envp[row][col] != '=')
 				col++;
-			if (col == ft_strlen(str))
+			if (col == (int)ft_strlen(str))
 			{
 				dst = ft_strdup(&envp[row][col + 1]);
 				break ;
@@ -38,7 +38,7 @@ char	*fdgetenv(char *str, char **envp)
 	return (dst);
 }
 
-int	ftenv(t_comms *comms, char **envp)
+int	ftenv(char **envp)
 {
 	char	*env;
 	int		i;

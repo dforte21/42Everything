@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:27:30 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 18:17:04 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:33:14 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,19 @@ typedef struct s_comms
 
 //builtins
 int		ftecho(t_comms *comms);
-int		ftenv(t_comms *comms, char **envp);
+int		ftenv(char **envp);
 int		ftexport(t_comms *comms, char **envp, int i, int flag);
 int		ftunset(t_comms *comms, char **envp, int i);
-int		ftpwd(t_comms *comms);
+int		ftpwd(void);
 int		ftcd(t_comms *comms);
 int		ftexecve(t_comms *comms, char **envp);
 int		ft_exit(t_comms *comms);
 
 //pipe&fork
-pid_t	choosecommand(t_comms *comms, char **envp, int i, int j);
+pid_t	choosecommand(t_comms *comms, char **envp, int i);
 void	switchcmd(t_comms *comms, char **envp);
-void	ftProcess(t_comms comms, char **envp, int i);
+void	parsecmdline(t_comms *comms, char **envp);
+void	ftprocess(t_comms comms, char **envp);
 void	ftparser(t_comms *comms, char **envp);
 void	execommand(t_comms *comms, char **envp, int i);
 void	childexecute(t_comms *comms, char **envp, int i);
@@ -86,7 +87,7 @@ void	ft_quit131(int sig);
 
 //env
 void	addenv(char *arg, char **envp, int flag, t_comms *comms);
-void	sortenv(t_comms *comms, char **envcpy);
+void	sortenv(char **envcpy);
 void	newenv(t_comms *comms, char *env);
 char	**ftExpand(char **src, char **envp);
 char	**copyenv(t_comms *comms, char **envp);
@@ -97,8 +98,8 @@ int		checkenv(char *arg, char **envp, t_comms *comms);
 int		delenv(t_comms *comms, char *env);
 
 //initializator
-void	initArgs(t_comms *comms, char **envp, char **av);
-void	incrementShlvl(char **envp, t_comms *comms);
+void	initargs(t_comms *comms, char **envp);
+void	incrementshlvl(char **envp, t_comms *comms);
 char	*buildpath(t_comms *comms);
 
 //utils
@@ -135,7 +136,7 @@ char	*ft_no_quotes(char *scr);
 
 //redirection
 void	outredirection(char *cmd, int *fd, char **path);
-int		inredirection(char *cmd, int *fd, char **path, int check);
+int		inredirection(int *fd, char **path, int check);
 int		ft_redirection(char *cmd, int *fd, int caller);
 int		createfd(char *cmd, int *fd, char *fullcmd, int i);
 int		execredirect(char *cmd, int i, int *fd, int caller);

@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 16:39:45 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:11:43 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:33:38 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	checkflag(t_comms *comms)
 
 char	*ft_buildss(t_comms *comms, int i)
 {
-	pid_t	pid;
 	int		j;
 	char	*cmd;
 

@@ -4,7 +4,7 @@ FLG = -Wall -Wextra -Werror
 
 $(NAME):
 		make -C libft
-		gcc $(SRC) -o $(NAME) libft/libft.a -lreadline -L/usr/include -lreadline -L$$HOME/.brew/opt/readline/lib -I $$HOME/.brew/opt/readline/include/readline
+		gcc $(FLG) $(SRC) -o $(NAME) libft/libft.a -lreadline -L/usr/include -lreadline -L$$HOME/.brew/opt/readline/lib -I $$HOME/.brew/opt/readline/include/readline
 
 clean:
 		make clean -C libft
@@ -15,7 +15,4 @@ fclean:	clean
 
 all:	$(NAME)
 
-temp:	
-		rm -rf $(NAME)
-
-re:		temp all
+re:		fclean all

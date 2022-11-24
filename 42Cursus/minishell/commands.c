@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:13:09 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 18:16:05 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:33:18 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void	switchcmd(t_comms *comms, char **envp)
 	else if (ft_strncmp(comms->cargs[0], "echo", 5) == 0)
 		g_exit_status = ftecho(comms);
 	else if (ft_strncmp(comms->cargs[0], "env", 4) == 0)
-		g_exit_status = ftenv(comms, envp);
+		g_exit_status = ftenv(envp);
 	else if (ft_strncmp(comms->cargs[0], "pwd", 4) == 0)
-		g_exit_status = ftpwd(comms);
+		g_exit_status = ftpwd();
 	else
 		g_exit_status = ftexecve(comms, envp);
 	ftfree(comms->cargs);

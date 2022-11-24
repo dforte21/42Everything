@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 17:31:06 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/23 17:53:14 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/24 16:29:20 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	outredirection(char *cmd, int *fd, char **path)
 	}
 }
 
-int	inredirection(char *cmd, int *fd, char **path, int check)
+int	inredirection(int *fd, char **path, int check)
 {
 	if (fd[2] != -1)
 		close(fd[2]);

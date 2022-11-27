@@ -1,46 +1,49 @@
-#include "micropaint.h"
+#include "header.h"
 
 int main(int ac, char **av)
 {
-	FILE	*fd;
-	t_backg back;
-	t_shape shape;
-	char	**map;
-	int 	count = 0;
+	FILE *fd;
+	t_back back;
 
 	if (ac != 2)
-	{
-		write(1, "Error: argument\n", 16);
-		return (1);
-	}
-	if (!(fd = fopen(av[1], "r")))
-	{
-		write(1, "Error: Operation file corrupted\n", 32);
-		return (1);
-	}
-	if (checkArg(av[1]) || readBack(&back, fd))
-	{
-		write(1, "Error: Operation file corrupted\n", 32);
-		return (closereturn(fd));
-	}
-	map = fillMap(&back);
-	count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.schar);
-	while (count != -1)
-	{		
-		arrotonda(&shape, &back);
-		drawrect(map, &shape);
-		count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.schar);
-	}
-	for (int i = 0; map[i]; i++)
-		printf("%s\n", map[i]);
-	ftFree(map);
-	fclose(fd);
+		return (error("Error: argument\n"));
+	if (!(fd = fopen(av[1], "r")) || !getinfo(fd, &back))
+		return(error("Error: Operation file corrupted\n"));
+	if (!process(fd, &back))
+		return (error("Error: Operation file corrupted\n"));
 	return (0);
 }
 
-void	drawrect(char **map, t_shape *shape)
+int	process(FILE *fd, t_back *back)
 {
-	
+	char **map;
+	t_shape shape;
+	int count = 0;
+
+	map = fillMap(back);
+	count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.shapec);
+	while (count != -1)
+	{
+		if (count != 6 || shape.bx <= 0.0 || shape.by <= 0.0 || (shape.def != 'r' && shape.def != 'R'))
+		{
+			ftFree(map);
+			return (0);
+		}
+		arrotonda(&shape);
+		draw(&shape, map);
+		count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.shapec);
+	}
+	for (int i = 0; map[i]; i++)
+	{
+		write(1, map[i], ftlen(map[i]));
+		write(1, "\n", 1);
+	}
+	ftFree(map);
+	return (1);
+}
+
+void	draw(t_shape *shape, char **map)
+{
 	if (shape->def == 'r')
 	{
 		for (int i = 0; map[i]; i++)
@@ -49,107 +52,84 @@ void	drawrect(char **map, t_shape *shape)
 			{
 				if (i < shape->ty || i > shape->by || j < shape->tx || j > shape->bx)
 					continue ;
-				if (i == shape->ty || i == shape->by || j == shape->tx || j == shape->bx)
-					map[i][j] = shape->schar;
+				if (i == shape->by || i == shape->ty || j == shape->tx || j == shape->bx)
+					map[i][j] = shape->shapec;
 			}
 		}
-		return ;
 	}
 	if (shape->def == 'R')
-	{
-		for (int i = 0; map[i]; i++)
-		{
-			for (int j = 0; map[i][j]; j++)
-			{
-				if (i < shape->ty || i > shape->by || j < shape->tx || j > shape->bx)
-					continue ;
-				if ((j >= shape->tx && j <= shape->bx) && (i >= shape->ty && i <= shape->by))
-					map[i][j] = shape->schar;
-			}
-		}
-	}
+    {
+        for (int i = 0; map[i]; i++)
+        {
+            for (int j = 0; map[i][j]; j++)
+            {
+                if (i < shape->ty || i > shape->by || j < shape->tx || j > shape->bx)
+                    continue ;
+                if (i <= shape->by && i >= shape->ty && j >= shape->tx && j <= shape->bx)
+                    map[i][j] = shape->shapec;
+            }
+        }
+    }
 }
 
-void	arrotonda(t_shape *shape, t_backg *back)
+void	arrotonda(t_shape *shape)
 {
-	shape->bx = shape->tx + shape->bx;
-	shape->by = shape->ty + shape->by;
-	if ((shape->tx > (int)shape->tx) || (shape->tx < 0 && shape->tx < (int)shape->tx))
-		shape->tx = shape->tx + 1;
-	if ((shape->ty > (int)shape->ty) || (shape->ty < 0 && shape->ty < (int)shape->ty))
-		shape->ty = shape->ty + 1;
-	if (shape->bx > back->width)
-		shape->bx += 1;
-	if (shape->by > back->height)
-		shape->by += 1;
-	if (shape->tx < 0)
-		shape->tx -= 1;
-	if (shape->ty < 0)
-		shape->ty -= 1;
-	shape->bx = floor(shape->bx);
-	shape->by = floor(shape->by);
-	shape->tx = floor(shape->tx);
-	shape->ty = floor(shape->ty);
-	
+	shape->bx = floorf(shape->tx + shape->bx);
+	shape->by = floorf(shape->ty + shape->by);
+	if (shape->tx > (int)shape->tx || (shape->tx < 0.0 && shape->tx < (int)shape->tx))
+		shape->tx += 1;
+	if (shape->tx < 0.0)
+        shape->tx -= 1;
+	if (shape->ty > (int)shape->ty || (shape->ty < 0.0 && shape->ty < (int)shape->ty))
+        shape->ty += 1;
+	if (shape->ty < 0.0)
+        shape->ty -= 1;
+	shape->tx = floorf(shape->tx);
+	shape->ty = floorf(shape->ty);
 }
 
 void	ftFree(char **map)
 {
-	for (int i = 0; map[i]; i++)
+	for(int i = 0; map[i]; i++)
 		free(map[i]);
 	free(map);
 }
 
-int	readBack(t_backg *back, FILE *fd)
+char	**fillMap(t_back *back)
 {
-	int count;
+	char **map;
 
-	count = fscanf(fd, "%d %d %c\n", &back->width, &back->height, &back->backc);
-	if (back->width < 1 || back->width > 300 || back->height < 1 || back->height > 300)
-		return (1);
-	return (0);
-}
-
-char **fillMap(t_backg *back)
-{
-	int	i = 0, j;
-	char	**map;
-	
 	map = calloc(back->height + 1, sizeof(char *));
-	for(;i < back->height; i++)
+	for (int i = 0; i < back->height; i++)
 	{
 		map[i] = calloc(back->width + 1, 1);
-		for (j = 0; j < back->width; j++)
-			map[i][j] = back->backc;
+		for (int j = 0; j < back->width; j++)
+			map[i][j] = back->mapc;
 	}
 	return (map);
 }
 
-int	checkArg(char *path)
+int	getinfo(FILE *fd, t_back *back)
 {
-	FILE *fd;
-	t_backg back;
-	t_shape shape;
-	int 	count;
+	int count = 0;
 
-	fd = fopen(path, "r");
-	count = fscanf(fd, "%d %d %c\n", &back.width, &back.height, &back.backc);
-	if (count != 3)
-		return (1);
-	count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.schar);
-	while (count != -1)
-	{
-		if (count != 6)
-			return (1);
-		if ((shape.bx <= 0.0 || shape.by <= 0.0) || (shape.def != 'r' && shape.def != 'R'))
-			return (1);	
-		count = fscanf(fd, "%c %f %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.bx, &shape.by, &shape.schar);
-	}
-	return (0);
+	count = fscanf(fd, "%d %d %c\n", &back->width, &back->height, &back->mapc);
+	if (count != 3 || back->width < 1 || back->width > 300 || back->height < 1 || back->height > 300)
+		return (0);
+	return (1);
 }
 
-int	closereturn(FILE *fd)
+int	error(char *msg)
 {
-	fclose(fd);
+	write(1, msg, ftlen(msg));
 	return (1);
+}
+
+int ftlen(char *str)
+{
+	int i = 0;
+
+	while (str[i])
+		i++;
+	return (i);
 }

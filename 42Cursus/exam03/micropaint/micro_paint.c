@@ -6,11 +6,12 @@ int main(int ac, char **av)
 	t_back back;
 
 	if (ac != 2)
-		return (error("Error: argument\n"));
+		return (error("Error: argument\n", NULL));
 	if (!(fd = fopen(av[1], "r")) || !getinfo(fd, &back))
-		return(error("Error: Operation file corrupted\n"));
+		return(error("Error: Operation file corrupted\n", fd));
 	if (!process(fd, &back))
-		return (error("Error: Operation file corrupted\n"));
+		return (error("Error: Operation file corrupted\n", fd));
+	fclose (fd);
 	return (0);
 }
 
@@ -119,9 +120,11 @@ int	getinfo(FILE *fd, t_back *back)
 	return (1);
 }
 
-int	error(char *msg)
+int	error(char *msg, FILE *fd)
 {
 	write(1, msg, ftlen(msg));
+	if (fd)
+		fclose(fd);
 	return (1);
 }
 

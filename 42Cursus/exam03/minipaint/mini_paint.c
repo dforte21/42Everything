@@ -1,45 +1,57 @@
-#include "head.h"
+#include "header.h"
 
 int main(int ac, char **av)
 {
-	FILE	*fd;
-	t_backg back;
-	t_shape shape;
-	char	**map;
-	int 	count = 0;
+	FILE *fd;
+	t_back back;
 
 	if (ac != 2)
-	{
-		write(1, "Error: argument\n", 16);
-		return (1);
-	}
-	if (!(fd = fopen(av[1], "r")))
-	{
-		write(1, "Error: Operation file corrupted\n", 32);
-		return (1);
-	}
-	if (checkArg(av[1]) || readBack(&back, fd))
-	{
-		write(1, "Error: Operation file corrupted\n", 32);
-		return (closereturn(fd));
-	}
-	map = fillMap(&back);
-	count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.radius, &shape.schar);
-	while (count != -1)
-	{
-		drawrect(map, &shape);
-		count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.radius, &shape.schar);
-	}
-	for (int i = 0; map[i]; i++)
-		printf("%s\n", map[i]);
-	ftFree(map);
+		return (error("Error: argument\n", NULL));
+	if (!(fd = fopen(av[1], "r")) || !getinfo(fd, &back))
+		return (error("Error: Operation file corrupted\n", fd));
+	if (!process(fd, &back))
+		return (error("Error: Operation file corrupted\n", fd));
 	fclose(fd);
 	return (0);
 }
 
-void	drawrect(char **map, t_shape *shape)
+int	process(FILE *fd, t_back *back)
 {
-	float	dist;
+	char **map;
+	t_shape shape;
+	int	count = 0;
+
+	map = fillMap(back);
+	count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.cx, &shape.cy, &shape.rad, &shape.shapec);
+	while (count != -1)
+	{
+		if (count != 5 || shape.rad <= 0.0 || (shape.def != 'c' && shape.def != 'C'))
+		{
+			ftFree(map);
+			return (0);
+		}
+		circle(&shape, map);
+		count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.cx, &shape.cy, &shape.rad, &shape.shapec);
+	}
+	for (int i = 0; map[i]; i++)
+	{
+		write(1, map[i], ftlen(map[i]));
+		write(1, "\n", 1);
+	}
+	ftFree(map);
+	return (1);
+}
+
+void ftFree(char **map)
+{
+	for (int i = 0; map[i]; i++)
+		free(map[i]);
+	free(map);
+}
+
+void	circle(t_shape *shape, char **map)
+{
+	float dist;
 
 	if (shape->def == 'c')
 	{
@@ -47,84 +59,63 @@ void	drawrect(char **map, t_shape *shape)
 		{
 			for (int j = 0; map[i][j]; j++)
 			{
-				dist = sqrt(powf(i - shape->ty, 2.0) + powf(j - shape->tx, 2.0));
-				if ((shape->radius - dist) >= 0.0 && (shape->radius - dist) < 1.0)
-					map[i][j] = shape->schar;
+				dist = sqrtf(powf(shape->cx - j, 2) + powf(shape->cy - i, 2));
+				if ((shape->rad - dist) >= 0.0 && (shape->rad - dist) < 1.0)
+					map[i][j] = shape->shapec;
 			}
 		}
-		return ;
 	}
 	if (shape->def == 'C')
-	{
-		for (int i = 0; map[i]; i++)
-		{
-			for (int j = 0; map[i][j]; j++)
-			{
-				dist = sqrt(powf(i - shape->ty, 2.0) + powf(j - shape->tx, 2.0));
-				if ((shape->radius - dist) >= 0.0 && (shape->radius - dist) <= shape->radius)
-					map[i][j] = shape->schar;
-			}
-		}
-	}
+    {
+        for (int i = 0; map[i]; i++)
+        {
+            for (int j = 0; map[i][j]; j++)
+            {
+                dist = sqrtf(powf(shape->cx - j, 2) + powf(shape->cy - i, 2));
+                if ((shape->rad - dist) >= 0.0 && (shape->rad - dist) <= shape->rad)
+                    map[i][j] = shape->shapec;
+            }
+        }
+    }
 }
 
-void	ftFree(char **map)
+char	**fillMap(t_back *back)
 {
-	for (int i = 0; map[i]; i++)
-		free(map[i]);
-	free(map);
-}
+	char **map;
 
-int	readBack(t_backg *back, FILE *fd)
-{
-	int count;
-
-	count = fscanf(fd, "%d %d %c\n", &back->width, &back->height, &back->backc);
-	if (back->width < 1 || back->width > 300 || back->height < 1 || back->height > 300)
-		return (1);
-	return (0);
-}
-
-char **fillMap(t_backg *back)
-{
-	int	i = 0, j;
-	char	**map;
-	
 	map = calloc(back->height + 1, sizeof(char *));
-	for(;i < back->height; i++)
+	for (int i = 0; i < back->height; i++)
 	{
 		map[i] = calloc(back->width + 1, 1);
-		for (j = 0; j < back->width; j++)
-			map[i][j] = back->backc;
+		for (int j = 0; j < back->width; j++)
+			map[i][j] = back->mapc;
 	}
 	return (map);
 }
 
-int	checkArg(char *path)
+int	getinfo(FILE *fd, t_back *back)
 {
-	FILE *fd;
-	t_backg back;
-	t_shape shape;
-	int 	count;
+	int count = 0;
 
-	fd = fopen(path, "r");
-	count = fscanf(fd, "%d %d %c\n", &back.width, &back.height, &back.backc);
-	if (count != 3)
-		return (1);
-	count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.radius, &shape.schar);
-	while (count != -1)
-	{
-		if (count != 5)
-			return (1);
-		if ((shape.radius <= 0.0) || (shape.def != 'c' && shape.def != 'C'))
-			return (1);
-		count = fscanf(fd, "%c %f %f %f %c\n", &shape.def, &shape.tx, &shape.ty, &shape.radius, &shape.schar);
-	}
-	return (0);
+	count = fscanf(fd, "%d %d %c\n", &back->width, &back->height, &back->mapc);
+	if (count != 3 || back->width < 1 || back->width > 300 || back->height < 1 || back->height > 300)
+		return (0);
+	return (1);
 }
 
-int	closereturn(FILE *fd)
+int	error(char *str, FILE *fd)
 {
-	fclose(fd);
+	write(1, str, ftlen(str));
+	if (fd)
+		fclose(fd);
 	return (1);
+}
+
+int ftlen(char *str)
+{
+	int i = 0;
+
+	while (str[i])
+		i++;
+	return (i);
 }

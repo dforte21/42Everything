@@ -6,21 +6,70 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 15:23:35 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:43:44 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:38:21 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
-void	ftAnimations(t_cub3D *data)
+void	ftanimations(t_cub3d *data)
+{
+	hand(data, 384, &data->imgs.hand);
+	face(data, 256, &data->imgs.face);
+}
+
+void	hand(t_cub3d *data, int size, t_img *text)
 {
 	static int	i = 0;
+	static int	texture = 0;
+	int			x;
+	int			y;
+	int			color;
 
-	if (i < 2000)
-		mlx_put_image_to_window(data->mlx, data->win, data->imgs.hand1.img, (1920 - SCREEN_WIDTH / 2 - 256), (1080 - SCREEN_HEIGHT / 2 - 76));
-	else
-		mlx_put_image_to_window(data->mlx, data->win, data->imgs.hand2.img, (1920 - SCREEN_WIDTH / 2 - 256), (1080 - SCREEN_HEIGHT / 2 - 76));
+	y = 0;
+	while (y < size)
+	{
+		x = 0;
+		while (x < size)
+		{
+			color = gettextcolor(x, y + (size * texture), text);
+			if (color >= 0)
+				my_mlx_pixel_put(&data->imgs.win, (screen_width - size) + x, (screen_height - size) + y, color);
+			x++;
+		}
+		y++;
+	}
 	i++;
-	if (i == 2200)
-		i = 0;
+	if (i % 30 == 0)
+		texture++;
+	if (texture == 2)
+		texture = 0;
+}
+
+void	face(t_cub3d *data, int size, t_img *text)
+{
+	static int	i = 0;
+	static int	texture = 0;
+	int			x;
+	int			y;
+	int			color;
+
+	y = 0;
+	while (y < size)
+	{
+		x = 0;
+		while (x < size)
+		{
+			color = gettextcolor(x, y + (size * texture), text);
+			if (color >= 0)
+				my_mlx_pixel_put(&data->imgs.win, x, (screen_height - size) + y, color);
+			x++;
+		}
+		y++;
+	}
+	i++;
+	if (i % 30 == 0)
+		texture++;
+	if (texture == 7)
+		texture = 0;
 }

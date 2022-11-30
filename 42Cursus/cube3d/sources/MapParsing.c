@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:13:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:43:51 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:58:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
-void	read_file(char *path, t_cub3D *data)
+void	read_file(char *path, t_cub3d *data)
 {
 	int		fd;
 	char	*row;
@@ -22,33 +22,33 @@ void	read_file(char *path, t_cub3D *data)
 	while (row)
 	{
 		if (row[0] == 'N' || row[0] == 'E' || row[0] == 'W' || row[0] == 'S')
-			getPath(row, data);
+			getpath(row, data);
 		if (row[0] == 'F')
-			data->F = getColor(&row[2]);
+			data->f = getcolor(&row[2]);
 		if (row[0] == 'C')
-			data->C = getColor(&row[2]);
+			data->c = getcolor(&row[2]);
 		if (row[0] == '1' || row[0] == ' ')
 			data->height++;
 		free(row);
 		row = get_next_line(fd);
 	}
-	data->bGround = ft_strdup("./sprites/background.xpm");
+	data->bground = ft_strdup("./sprites/background.xpm");
 	close(fd);
 }
 
-void	getPath(char *row, t_cub3D *data)
+void	getpath(char *row, t_cub3d *data)
 {
 	if (row[0] == 'N')
-		data->NO = ft_strdup(&row[3]);
+		data->no = ft_strdup(&row[3]);
 	if (row[0] == 'S')
-		data->SO = ft_strdup(&row[3]);
+		data->so = ft_strdup(&row[3]);
 	if (row[0] == 'E')
-		data->EA = ft_strdup(&row[3]);
+		data->ea = ft_strdup(&row[3]);
 	if (row[0] == 'W')
-		data->WE = ft_strdup(&row[3]);
+		data->we = ft_strdup(&row[3]);
 }
 
-char	**loadMap(char *path, t_cub3D *data)
+char	**loadmap(char *path, t_cub3d *data)
 {
 	int		fd;
 	int		i;
@@ -78,7 +78,7 @@ char	**loadMap(char *path, t_cub3D *data)
 	return (map2);
 }
 
-void	initPlayer(t_cub3D *data)
+void	initplayer(t_cub3d *data)
 {
 	int	i;
 	int	j;
@@ -105,10 +105,10 @@ void	initPlayer(t_cub3D *data)
 	data->p.d = 0;
 	data->p.left = 0;
 	data->p.right = 0;
-	getAngle(data);
+	getangle(data);
 }
 
-void	getAngle(t_cub3D *data)
+void	getangle(t_cub3d *data)
 {
 	int	x;
 	int	y;
@@ -116,11 +116,11 @@ void	getAngle(t_cub3D *data)
 	x = data->p.x;
 	y = data->p.y;
 	if (data->map[y][x] == 'N')
-		data->p.pAngle = 270;
+		data->p.pangle = 270;
 	if (data->map[y][x] == 'E')
-		data->p.pAngle = 0;
+		data->p.pangle = 0;
 	if (data->map[y][x] == 'S')
-		data->p.pAngle = 90;
+		data->p.pangle = 90;
 	if (data->map[y][x] == 'W')
-		data->p.pAngle = 180;
+		data->p.pangle = 180;
 }

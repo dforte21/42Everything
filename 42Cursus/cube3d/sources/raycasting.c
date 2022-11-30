@@ -6,132 +6,132 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:43:57 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:52:08 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
-int	ftDisplay(t_cub3D *data)
+int	ftdisplay(t_cub3d *data)
 {
 	t_ray	ray;
 
 	data->ray = &ray;
-	ray.rayAngle = data->p.pAngle - 30;
-	ray.wY = 0;
-	ray.wX = 0;
-	ftMovements(data);
-	rayCasting(data, &ray);
-	ftDraw(data, &ray);
-	ftMiniMap(data);
+	ray.rayangle = data->p.pangle - 30;
+	ray.wy = 0;
+	ray.wx = 0;
+	ftmovements(data);
+	raycasting(data, &ray);
+	ftdraw(data, &ray);
+	ftminimap(data);
+	ftanimations(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->imgs.background.img, 0, 0);
-	mlx_put_image_to_window(data->mlx, data->win, data->imgs.mMap.img, 0, 0);
-	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, (960 - SCREEN_WIDTH / 2), (540 - SCREEN_HEIGHT / 2));
-	ftAnimations(data);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.mmap.img, 0, 0);
+	mlx_put_image_to_window(data->mlx, data->win, data->imgs.win.img, (960 - screen_width / 2), (540 - screen_height / 2));
 	return (0);
 }
 
-void	rayCasting(t_cub3D *data, t_ray *ray)
+void	raycasting(t_cub3d *data, t_ray *ray)
 {
 	int	i;
 
 	i = 0;
-	while (i < SCREEN_WIDTH)
+	while (i < screen_width)
 	{
-		ray->rayX[i] = data->p.x;
-		ray->rayY[i] = data->p.y;
-		ray->rayCos[i] = cos(degreeToRadians(ray->rayAngle)) / 256;
-		ray->raySin[i] = sin(degreeToRadians(ray->rayAngle)) / 256;
-		while (data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != '1' && data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] != 'D')
+		ray->rayx[i] = data->p.x;
+		ray->rayy[i] = data->p.y;
+		ray->raycos[i] = cos(degreetoradians(ray->rayangle)) / 256;
+		ray->raysin[i] = sin(degreetoradians(ray->rayangle)) / 256;
+		while (data->map[(int)ray->rayy[i]][(int)ray->rayx[i]] != '1' && data->map[(int)ray->rayy[i]][(int)ray->rayx[i]] != 'D')
 		{
-			ray->rayX[i] += ray->rayCos[i];
-			ray->rayY[i] += ray->raySin[i];
-			if (i == SCREEN_WIDTH / 2 - 1)
+			ray->rayx[i] += ray->raycos[i];
+			ray->rayy[i] += ray->raysin[i];
+			if (i == screen_width / 2 - 1)
 			{
-				if ((data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'd' || data->map[(int)ray->rayY[i]][(int)ray->rayX[i]] == 'D'))
+				if ((data->map[(int)ray->rayy[i]][(int)ray->rayx[i]] == 'D' || data->map[(int)ray->rayy[i]][(int)ray->rayx[i]] == 'd'))
 				{
-					ray->wY = ray->rayY[i];
-					ray->wX = ray->rayX[i];
+					ray->wy = ray->rayy[i];
+					ray->wx = ray->rayx[i];
 				}
 			}
 		}
-		ray->distance[i] = (sqrt(pow(data->p.x - ray->rayX[i], 2) + pow(data->p.y - ray->rayY[i], 2)));
-		ray->distance[i] *= cos(degreeToRadians(ray->rayAngle) - degreeToRadians(data->p.pAngle));
-		ray->rayAngle += 60.0 / SCREEN_WIDTH;
+		ray->distance[i] = (sqrt(pow(data->p.x - ray->rayx[i], 2) + pow(data->p.y - ray->rayy[i], 2)));
+		ray->distance[i] *= cos(degreetoradians(ray->rayangle) - degreetoradians(data->p.pangle));
+		ray->rayangle += 60.0 / screen_width;
 		i++;
 	}
 }
 
-void	ftDraw(t_cub3D *data, t_ray  *ray)
+void	ftdraw(t_cub3d *data, t_ray  *ray)
 {
 	int		i;
 	double	dist;
 
 	i = 0;
-	while (i < SCREEN_WIDTH)
+	while (i < screen_width)
 	{
 		dist = ray->distance[i];
 		if (dist < 1)
 			dist = 1;
-		ray->wallHeight = SCREEN_HEIGHT / 2 / dist;
-		drawLine(i, ray, data);
+		ray->wallheight = screen_height / 2 / dist;
+		drawline(i, ray, data);
 		i++;
 	}
 }
 
-void	drawLine(int x, t_ray *ray, t_cub3D *data)
+void	drawline(int x, t_ray *ray, t_cub3d *data)
 {
 	int			y;
 	double		d;
-	double		yIncrementer;
+	double		yincrementer;
 
 	y = 0;
-	getTextStart(ray, x, &yIncrementer);
-	while (y < SCREEN_HEIGHT / 2 - ray->wallHeight)
+	gettextstart(ray, x, &yincrementer);
+	while (y < screen_height / 2 - ray->wallheight)
 	{
-		my_mlx_pixel_put(&data->imgs.win, x, y, data->C);
+		my_mlx_pixel_put(&data->imgs.win, x, y, data->c);
 		y++;
 	}
 	d = y;
-	while (y < SCREEN_HEIGHT / 2 + ray->wallHeight)
+	while (y < screen_height / 2 + ray->wallheight)
 	{	
-		d += yIncrementer;
+		d += yincrementer;
 		while (y < d)
 		{
-			if (data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == '1' || data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == 'd')
-				getWallOrient(data, ray, x, y);
-			else if (data->map[(int)ray->rayY[x]][(int)ray->rayX[x]] == 'D')
-				my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.door, x));
+			if (data->map[(int)ray->rayy[x]][(int)ray->rayx[x]] == '1' || data->map[(int)ray->rayy[x]][(int)ray->rayx[x]] == 'd')
+				getwallorient(data, ray, x, y);
+			else if (data->map[(int)ray->rayy[x]][(int)ray->rayx[x]] == 'D')
+				my_mlx_pixel_put(&data->imgs.win, x, y, printwallpixel(ray, &data->imgs.door, x));
 			y++;
 		}
-		ray->iTexture++;
+		ray->itexture++;
 	}
-	while (y < SCREEN_HEIGHT)
+	while (y < screen_height)
 	{
-		my_mlx_pixel_put(&data->imgs.win, x, y, data->F);
+		my_mlx_pixel_put(&data->imgs.win, x, y, data->f);
 		y++;
 	}
 }
 
-void	getWallOrient(t_cub3D *data, t_ray *ray, int x, int y)
+void	getwallorient(t_cub3d *data, t_ray *ray, int x, int y)
 {
-	int wallX;
-	int wallY;
-	int	floorX;
-	int floorY;
+	int wallx;
+	int wally;
+	int	floorx;
+	int floory;
 
-	wallX = (int)ray->rayX[x];
-	wallY = (int)ray->rayY[x];
-	floorX = (int)(ray->rayX[x] - ray->rayCos[x]);
-	floorY = (int)(ray->rayY[x] - ray->raySin[x]);
-	if (floorY > wallY && floorX == wallX)
-		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.sWall, x));
-	else if (floorY < wallY && floorX == wallX)
-		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.nWall, x));
-	else if (floorX > wallX && floorY == wallY)
-		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.eWall, x));
-	else if (floorX < wallX && floorY == wallY)
-		my_mlx_pixel_put(&data->imgs.win, x, y, printWallPixel(ray, &data->imgs.wWall, x));
+	wallx = (int)ray->rayx[x];
+	wally = (int)ray->rayy[x];
+	floorx = (int)(ray->rayx[x] - ray->raycos[x]);
+	floory = (int)(ray->rayy[x] - ray->raysin[x]);
+	if (floory > wally && floorx == wallx)
+		my_mlx_pixel_put(&data->imgs.win, x, y, printwallpixel(ray, &data->imgs.swall, x));
+	else if (floory < wally && floorx == wallx)
+		my_mlx_pixel_put(&data->imgs.win, x, y, printwallpixel(ray, &data->imgs.nwall, x));
+	else if (floorx > wallx && floory == wally)
+		my_mlx_pixel_put(&data->imgs.win, x, y, printwallpixel(ray, &data->imgs.ewall, x));
+	else if (floorx < wallx && floory == wally)
+		my_mlx_pixel_put(&data->imgs.win, x, y, printwallpixel(ray, &data->imgs.wwall, x));
 	else
 		my_mlx_pixel_put(&data->imgs.win, x, y, 0);
 }

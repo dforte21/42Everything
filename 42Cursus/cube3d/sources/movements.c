@@ -6,47 +6,47 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:43:54 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:04:13 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
-int	ftMouse(int key, int wX, int wY, t_cub3D *data)
+int	ftmouse(int key, int wx, int wy, t_cub3d *data)
 {
 	int	i;
 
-	i = SCREEN_WIDTH / 2 - 1;
-	wX = data->ray->wX;
-	wY = data->ray->wY;
+	i = screen_width / 2 - 1;
+	wx = data->ray->wx;
+	wy = data->ray->wy;
 	if (key == 1)
 	{
-		if (wX == (int)(data->p.x) && ((wY - (int)(data->p.y)) == 1 || (wY - (int)(data->p.y)) == -1))
+		if (wx == (int)(data->p.x) && ((wy - (int)(data->p.y)) == 1 || (wy - (int)(data->p.y)) == -1))
 		{
-			if (data->map[wY][wX] == 'D')
-				data->map[wY][wX] = 'd';
-			else if (data->map[wY][wX] == 'd')
-				data->map[wY][wX] = 'D';
+			if (data->map[wy][wx] == 'D')
+				data->map[wy][wx] = 'd';
+			else if (data->map[wy][wx] == 'd')
+				data->map[wy][wx] = 'D';
 		}
-		else if (((wX - (int)(data->p.x)) == 1 || (wX - (int)(data->p.x)) == -1) && wY == (int)(data->p.y))
+		else if (((wx - (int)(data->p.x)) == 1 || (wx - (int)(data->p.x)) == -1) && wy == (int)(data->p.y))
 			{
-			if (data->map[wY][wX] == 'D')
-				data->map[wY][wX] = 'd';
-			else if (data->map[wY][wX] == 'd')
-				data->map[wY][wX] = 'D';
+			if (data->map[wy][wx] == 'D')
+				data->map[wy][wx] = 'd';
+			else if (data->map[wy][wx] == 'd')
+				data->map[wy][wx] = 'D';
 			}
 	}
 	if (key == 5)
-		data->p.pAngle -= 5;
+		data->p.pangle -= 5;
 	if (key == 4)
-		data->p.pAngle += 5;
+		data->p.pangle += 5;
 	return (0);
 }
 
-int	ft_on(int keycode, t_cub3D *data)
+int	ft_on(int keycode, t_cub3d *data)
 {
 	if (keycode == ESC)
-		ftExit(data);
+		ftexit(data);
 	if (keycode == W)
 		data->p.w = 1;
 	if (keycode == A)
@@ -62,10 +62,10 @@ int	ft_on(int keycode, t_cub3D *data)
 	return (0);
 }
 
-int	ft_off(int keycode, t_cub3D *data)
+int	ft_off(int keycode, t_cub3d *data)
 {
 	if (keycode == ESC)
-		ftExit(data);
+		ftexit(data);
 	if (keycode == W)
 		data->p.w = 0;
 	 if (keycode == A)
@@ -81,23 +81,23 @@ int	ft_off(int keycode, t_cub3D *data)
 	return (0);
 }
 
-void	ftMovements(t_cub3D *data)
+void	ftmovements(t_cub3d *data)
 {
 	if (data->p.left == 1)
-		data->p.pAngle -= 2;
+		data->p.pangle -= 2;
 	if (data->p.right == 1)
-		data->p.pAngle += 2;
+		data->p.pangle += 2;
 	if (data->p.w == 1)
-		ftMove(degreeToRadians((double)data->p.pAngle), data);
+		ftmove(degreetoradians((double)data->p.pangle), data);
 	if (data->p.a == 1)
-		ftMove(degreeToRadians((double)data->p.pAngle - 90), data);
+		ftmove(degreetoradians((double)data->p.pangle - 90), data);
 	if (data->p.s == 1)
-		ftMove(degreeToRadians((double)data->p.pAngle - 180), data);
+		ftmove(degreetoradians((double)data->p.pangle - 180), data);
 	if (data->p.d == 1)
-		ftMove(degreeToRadians((double)data->p.pAngle + 90), data);
+		ftmove(degreetoradians((double)data->p.pangle + 90), data);
 }
 
-void	ftMove(double angle, t_cub3D *data)
+void	ftmove(double angle, t_cub3d *data)
 {
 	double rcos;
 	double rsin;

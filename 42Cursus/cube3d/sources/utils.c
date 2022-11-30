@@ -6,13 +6,13 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/09/21 17:44:04 by dforte           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:49:50 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
-int	getColor(char *str)
+int	getcolor(char *str)
 {
 	char	**rgb;
 	int		rgbint[3];
@@ -28,9 +28,9 @@ int	getColor(char *str)
 	return (rgbint[0] + rgbint[1] + rgbint[2]);
 }
 
-double	degreeToRadians(double degree)
+double	degreetoradians(double degree)
 {
-	return (degree * PI / 180);
+	return (degree * pi / 180);
 }
 
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
@@ -41,13 +41,13 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-int	ftExit(t_cub3D *data)
+int	ftexit(t_cub3d *data)
 {
-	freeAll(data);
+	freeall(data);
 	exit(0);
 }
 
-int	getTextColor(int x, int y, t_img *text)
+int	gettextcolor(int x, int y, t_img *text)
 {
 	int 	color;
 	char	*dst;

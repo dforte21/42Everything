@@ -8,17 +8,17 @@
 
 typedef struct s_cmd
 {
-	int	pipe[2];
-	int stdoutcpy;
-	int	stdincpy;
+	int	fd[2];
+	int outcpy;
+	int	incpy;
 	int	flag;
 	char *cmd[1000];
 }	t_cmd;
 
 void	ftcommand(char **av, int j, t_cmd *cmd, char **envp);
-int	 ftstrlen(char *str);
 void	ftcd(t_cmd *cmd);
-void	error(char *str, int caller, char *arg);
+void	error(int caller, char *str, char *arg);
 void	ftpipe(char **av, int j, t_cmd *cmd, char **envp);
+int	 	ftstrlen(char *str);
 
 #endif

@@ -3,7 +3,7 @@ SRC = *.cpp
 FLG = -Wall -Wextra -Werror -std=c++98
 
 $(NAME):
-		c++ $(SRC) -o $(NAME)
+		c++ $(FLG) $(SRC) -o $(NAME)
 
 clean:
 		rm *.o

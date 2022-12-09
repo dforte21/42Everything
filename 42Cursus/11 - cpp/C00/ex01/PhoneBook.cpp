@@ -1,4 +1,5 @@
 #include "PhoneBook.hpp"
+#include <limits>
 
 PhoneBook::PhoneBook(void){
 
@@ -23,19 +24,22 @@ PhoneBook::~PhoneBook(void){
 
 void    PhoneBook::menu(void){
 
-    char choice;
+    char choice[100];
 
     while (1)
     {
-        std::cout << "Scelte disponibili:\n\n\t0 - ADD\n\t1 - SEARCH\n\t2 - EXIT\n\n->";
-        std::cin >> choice;
-        switch(choice)
+        memset(choice, 0, 100);
+        std::cout << "\nScelte disponibili:\n\n\t0 - ADD\n\t1 - SEARCH\n\t2 - EXIT\n\n->";
+        std::cin.getline(choice, 100);
+        if (strlen(choice) > 1)
+            choice[0] = '3';
+        switch(choice[0])
         {
             case ADD:
-                this->add(this->contact);
+                this->add();
                 break ;
             case SEARCH:
-                this->search(this->contact);
+                this->search();
                 break ;
             case EXIT:
                 return ;
@@ -45,28 +49,43 @@ void    PhoneBook::menu(void){
     }
 }
 
-void    PhoneBook::add(Contact *contact)
+void    PhoneBook::add(void)
 {
     this->contact[this->index % 8].index = this->index + 1 ;
     this->contact[this->index % 8].initinfo();
     std::cout << "First name: ";
-    std::cin >> this->contact[this->index % 8].info[0] ;
+    std::cin.getline(this->contact[this->index % 8].info[0], 1000);
+    this->checkStr(0);
     std::cout << "Last name: ";
-    std::cin >> this->contact[this->index % 8].info[1] ;
+    std::cin.getline(this->contact[this->index % 8].info[1], 1000);
+    this->checkStr(1);
     std::cout << "Nickname: ";
-    std::cin >> this->contact[this->index % 8].info[2] ;
+    std::cin.getline(this->contact[this->index % 8].info[2], 1000);
+    this->checkStr(2);
     std::cout << "Phone number: ";
-    std::cin >> this->contact[this->index % 8].info[3] ;
+    std::cin.getline(this->contact[this->index % 8].info[3], 1000);
+    this->checkStr(3);
     std::cout << "Darkest secret: ";
-    std::cin >> this->contact[this->index % 8].info[4] ;
+    std::cin.getline(this->contact[this->index % 8].info[4], 1000);
+    this->checkStr(4);
     this->index++;
 }
 
-void    PhoneBook::search(Contact *contact)
+void    PhoneBook::checkStr(int i){
+
+    while (strlen(this->contact[this->index % 8].info[i]) == 0)
+    {
+        std::cout << "Empty string not allowed: " ;
+        std::cin.getline(this->contact[this->index % 8].info[i], 1000);
+    }
+}
+
+void    PhoneBook::search(void)
 {
-    int k, len, nlen = 0;
+    int i, search = 0, k, len, nlen = 0;
+    char info[100];
     
-    for (int i = 0; this->contact[i].index != 0 && i < 8; i++)
+    for (i = 0; this->contact[i].index != 0 && i < 8; i++)
     {
         nlen = 0;
         for (int num = this->contact[i].index; num > 0; num /= 10)
@@ -86,4 +105,17 @@ void    PhoneBook::search(Contact *contact)
         }
         std::cout << std::endl ;
     }
+    if (i > 0)
+    {
+        memset(info, 0, 100);
+        std::cout << "\nInserisci l'indice del contatto che vuoi visualizzare: " ;
+        std::cin.getline(info, 100);
+        search = atoi(info);
+        if (this->contact[(search - 1) % 8].index == search && search >= 1)
+            std::cout << "\nFirst name: " << this->contact[(search - 1) % 8].info[0] << "\nLast name: " << this->contact[(search - 1) % 8].info[1] << "\nNickname: " << this->contact[(search - 1) % 8].info[2] << "\nPhone number: " << this->contact[(search - 1) % 8].info[3] << "\nDarkes secreat: " << this->contact[(search - 1) % 8].info[4] << std::endl;
+        else
+            std::cout << "\nError, contact not found\n";
+    }
+    else
+        std::cout << "\nError, there are no contacts\n" ;
 }

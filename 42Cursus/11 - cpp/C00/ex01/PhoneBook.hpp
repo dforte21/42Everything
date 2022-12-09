@@ -15,8 +15,9 @@ class PhoneBook {
         ~PhoneBook(void);
 
         void menu(void);
-        void add(Contact *contact);
-        void search(Contact *contact);
+        void add(void);
+        void search(void);
+        void checkStr(int i);
 };
 
 #endif

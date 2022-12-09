@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:13:50 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 17:58:53 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 21:03:35 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3d.h"
+#include "../includes/cub3d.h"
 
 void	read_file(char *path, t_cub3d *data)
 {
@@ -21,17 +21,24 @@ void	read_file(char *path, t_cub3d *data)
 	row = get_next_line(fd);
 	while (row)
 	{
-		if (row[0] == 'N' || row[0] == 'E' || row[0] == 'W' || row[0] == 'S')
+		if ((row[0] == 'N' || row[0] == 'E' || row[0] == 'W' || row[0] == 'S') && data->height == 0)
 			getpath(row, data);
-		if (row[0] == 'F')
-			data->f = getcolor(&row[2]);
-		if (row[0] == 'C')
-			data->c = getcolor(&row[2]);
-		if (row[0] == '1' || row[0] == ' ')
+		else if (row[0] == 'F' && data->height == 0)
+			data->f = getcolor(&row[2], data);
+		else if (row[0] == 'C' && data->height == 0)
+			data->c = getcolor(&row[2], data);
+		else if (row[0] == '1' || row[0] == ' ' || row[0] == '0')
 			data->height++;
+		else if (row[0] != '\n')
+		{
+			free (row);
+			ft_error("infos", data);
+		}
 		free(row);
 		row = get_next_line(fd);
 	}
+	if (data->height == 0)
+		ft_error("infos", data);
 	data->bground = ft_strdup("./sprites/background.xpm");
 	close(fd);
 }
@@ -56,7 +63,7 @@ char	**loadmap(char *path, t_cub3d *data)
 	char	**map2;
 
 	fd = open(path, O_RDONLY);
-	map2 = malloc(data->height * sizeof(char *));
+	map2 = ft_calloc(data->height + 1, sizeof(char *));
 	row = get_next_line(fd);
 	i = 0;
 	while (row[0] != '1' && row[0] != ' ')

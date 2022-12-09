@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cube3d.h                                           :+:      :+:    :+:   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:20:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 17:53:12 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 20:34:51 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,13 @@ typedef	struct s_cub3d
 	t_ray		*ray;
 }				t_cub3d;
 
+//checks
+void	ft_check_file(char *file_name, t_cub3d *data);
+void	ft_check_info(t_cub3d *data);
+void	ft_check_map(char **map, t_cub3d *data);
+void	ft_error(char *str, t_cub3d *data);
+void	ft_check_color(char *str, t_cub3d *data);
+
 double	degreetoradians(double degree);
 char	**loadmap(char *path, t_cub3d *data);
 void	freeall(t_cub3d *data);
@@ -130,11 +137,10 @@ void	checkcoords(int *x, int *y, t_cub3d *data);
 void	ftplayer(t_cub3d *data, int tiles);
 void	hand(t_cub3d *data, int size, t_img *text);
 void	face(t_cub3d *data, int size, t_img *text);
-int		getcolor(char *str);
+int		getcolor(char *str, t_cub3d *data);
 int		ftdisplay(t_cub3d *data);
 int		ft_on(int keycode, t_cub3d *data);
 int		ft_off(int keycode, t_cub3d *data);
-int		ftopendoor(int key, t_cub3d *data);
 int		ftmouse(int key, int x, int y, t_cub3d *data);
 int		ftexit(t_cub3d *data);
 int		gettextcolor(int x, int y, t_img *text);

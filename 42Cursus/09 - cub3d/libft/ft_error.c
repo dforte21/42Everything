@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabasset <mabasset@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 18:58:40 by mabasset          #+#    #+#             */
-/*   Updated: 2022/06/06 18:13:41 by mabasset         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:38:08 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_error(char *str)
-{
-	int	i;
+//void	ft_error(char *str)
+//{
+//	int	i;
 
-	i = 0;
-	while (str[i] != '\0')
-	{
-		write(2, &str[i], 1);
-		i++;
-	}
-	write (2, " error\n", 7);
-	exit(1);
-}
+//	i = 0;
+//	while (str[i] != '\0')
+//	{
+//		write(2, &str[i], 1);
+//		i++;
+//	}
+//	write (2, " error\n", 7);
+//	exit(1);
+//}

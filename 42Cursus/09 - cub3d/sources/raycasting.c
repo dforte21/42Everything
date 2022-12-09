@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 17:50:51 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 17:52:08 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 19:49:21 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3d.h"
+#include "../includes/cub3d.h"
 
 int	ftdisplay(t_cub3d *data)
 {

@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 18:04:13 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 19:31:15 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3d.h"
+#include "../includes/cub3d.h"
 
 int	ftmouse(int key, int wx, int wy, t_cub3d *data)
 {

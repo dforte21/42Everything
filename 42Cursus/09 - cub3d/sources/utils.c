@@ -6,26 +6,38 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 17:49:50 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 20:42:17 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3d.h"
+#include "../includes/cub3d.h"
 
-int	getcolor(char *str)
+int	getcolor(char *str, t_cub3d *data)
 {
-	char	**rgb;
-	int		rgbint[3];
+	char	**matrix;
+	int		color;
+	int		i;
 
-	rgb = ft_split(str, ',');
-	rgbint[0] = ft_atoi(rgb[0]) * 65536;
-	rgbint[1] = ft_atoi(rgb[1]) * 256;
-	rgbint[2] = ft_atoi(rgb[2]);
-	free(rgb[0]);
-	free(rgb[1]);
-	free(rgb[2]);
-	free(rgb);
-	return (rgbint[0] + rgbint[1] + rgbint[2]);
+	ft_check_color(str, data);
+	matrix = ft_split(str, ',');
+	color = 0;
+	i = 0;
+	while (matrix[i] != NULL)
+	{
+		if (ft_atoi(matrix[i]) < 0 || ft_atoi(matrix[i]) > 255)
+			ft_error("Color", data);
+		else if (i == 0)
+			color += ft_atoi(matrix[i]) * 65536;
+		else if (i == 1)
+			color += ft_atoi(matrix[i]) * 256;
+		else
+			color += ft_atoi(matrix[i]);
+		i++;
+	}
+	ft_free_matrix((void **) matrix);
+	if (i != 3 || matrix[2][0] == '\n')
+		ft_error("Color", data);
+	return (color);
 }
 
 double	degreetoradians(double degree)
@@ -44,6 +56,7 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 int	ftexit(t_cub3d *data)
 {
 	freeall(data);
+	mlx_destroy_window(data->mlx, data->win);
 	exit(0);
 }
 

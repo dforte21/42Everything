@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabasset <mabasset@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 15:29:40 by mabasset          #+#    #+#             */
-/*   Updated: 2022/06/17 17:15:32 by mabasset         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:44:36 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int		ft_printf(const char *str, ...);
 char	*get_next_line(int fd);
-void	ft_error(char *str);
 void	ft_free_matrix(void	**matrix);
 
 #endif

@@ -6,11 +6,11 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:05:21 by dforte            #+#    #+#             */
-/*   Updated: 2022/11/30 18:03:04 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/09 20:57:25 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3d.h"
+#include "../includes/cub3d.h"
 
 int main(int ac, char **av)
 {
@@ -19,8 +19,11 @@ int main(int ac, char **av)
 	if (ac != 2)
 		return (1);
 	data.height = 0;
+	ft_check_file(av[1], &data);
 	read_file(av[1], &data);
+	ft_check_info(&data);
 	data.map = loadmap(av[1], &data);
+	ft_check_map(data.map, &data);
 	initplayer(&data);
 	data.mlx = mlx_init();
 	data.win = mlx_new_window(data.mlx, 1920, 1080, "cub3d");
@@ -39,8 +42,6 @@ void	loadimages(t_cub3d *data)
 	int	wdth;
 	int	hght;
 
-	wdth = 128;
-	hght = 128;
 	data->imgs.win.img = mlx_new_image(data->mlx, screen_width, screen_height);
 	data->imgs.win.addr = mlx_get_data_addr(data->imgs.win.img,
 			&data->imgs.win.bpp, &data->imgs.win.ll, &data->imgs.win.e);
@@ -64,8 +65,6 @@ void	loadimages(t_cub3d *data)
 			"./sprites/door.xpm", &wdth, &hght);
 	data->imgs.door.addr = mlx_get_data_addr(data->imgs.door.img,
 			&data->imgs.door.bpp, &data->imgs.door.ll, &data->imgs.door.e);
-	wdth = 1920;
-	hght = 1080;
 	data->imgs.background.img = mlx_xpm_file_to_image(data->mlx,
 			data->bground, &wdth, &hght);
 	data->imgs.background.addr = mlx_get_data_addr(data->imgs.background.img,
@@ -94,14 +93,10 @@ void	load_mmaptiles(t_cub3d *data, int wdth, int hght)
 			"./sprites/mMapDoorO.xpm", &wdth, &hght);
 	data->imgs.mmapdooro.addr = mlx_get_data_addr(data->imgs.mmapdooro.img,
 			&data->imgs.mmapdooro.bpp, &data->imgs.mmapdooro.ll, &data->imgs.mmapdooro.e);
-	wdth = 384;
-	hght = 384 * 2;
 	data->imgs.hand.img = mlx_xpm_file_to_image(data->mlx,
 			"./sprites/gun.xpm", &wdth, &hght);
 	data->imgs.hand.addr = mlx_get_data_addr(data->imgs.hand.img,
 			&data->imgs.hand.bpp, &data->imgs.hand.ll, &data->imgs.hand.e);
-	wdth = 384;
-	hght = 384 * 7;
 	data->imgs.face.img = mlx_xpm_file_to_image(data->mlx,
 			"./sprites/face.xpm", &wdth, &hght);
 	data->imgs.face.addr = mlx_get_data_addr(data->imgs.face.img,
@@ -113,16 +108,22 @@ void	freeall(t_cub3d *data)
 	int	i;
 
 	i = 0;
-	mlx_destroy_window(data->mlx, data->win);
-	free(data->no);
-	free(data->we);
-	free(data->ea);
-	free(data->so);
-	free(data->bground);
+	if (data->no)
+		free(data->no);
+	if (data->we)
+		free(data->we);
+	if (data->ea)
+		free(data->ea);
+	if (data->so)
+		free(data->so);
+	if (data->bground)
+		free(data->bground);
 	while (i < data->height)
 	{
-		free(data->map[i]);
+		if (data->map && data->map[i])
+			free(data->map[i]);
 		i++;
 	}
-	free(data->map);
+	if (data->map)
+		free(data->map);
 }

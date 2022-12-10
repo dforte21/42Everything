@@ -16,7 +16,7 @@ int main(int ac, char **av)
 {
 	t_cub3d data;
 
-	if (ac != 2)
+	if (ac != 1)
 		return (1);
 	data.height = 0;
 	ft_check_file(av[1], &data);

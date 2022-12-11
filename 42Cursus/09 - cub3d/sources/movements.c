@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 18:48:26 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/11 14:24:56 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 15:54:08 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ int	ftmouse(int key, int wx, int wy, t_cub3d *data)
 	if (key == 1)
 		check_wall(wx, wy, data);
 	else if (key == 5)
-		data->p.pangle -= 5;
+		data->p.pangle -= 8;
 	else if (key == 4)
-		data->p.pangle += 5;
+		data->p.pangle += 8;
 	return (0);
 }
 

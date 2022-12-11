@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 14:34:01 by mabasset          #+#    #+#             */
-/*   Updated: 2022/09/28 17:50:17 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 14:49:50 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int		i;
 	int		j;
 
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
 	str = (char *) malloc (sizeof(char) * (len + 1));
 	if (str == NULL)

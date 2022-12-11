@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 17:26:28 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/09 19:31:20 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 14:47:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,23 @@ int	printwallpixel(t_ray *ray, t_img *text, int x)
 {
 	int	textx;
 
-	textx = (((ray->rayx[x] + ray->rayy[x]) * 128.0) - ((int)(ray->rayx[x] + ray->rayy[x]) * 128));
+	textx = (((ray->rayx[x] + ray->rayy[x]) * 128.0)
+			- ((int)(ray->rayx[x] + ray->rayy[x]) * 128));
 	return (gettextcolor(textx, ray->itexture, text));
 }
 
 void	gettextstart(t_ray *ray, int x, double *yincrementer)
 {
-	int wheigt;
+	int	wheigt;
 
-	wheigt = screen_height / 2 / ray->distance[x];
+	wheigt = SCREEN_HEIGHT / 2 / ray->distance[x];
 	*yincrementer = (wheigt * 2) / 128.0;
 	if (ray->distance[x] >= 1)
 	{
 		ray->itexture = 0;
 		return ;
 	}
-	ray->itexture = (wheigt - screen_height / 2) / *yincrementer;
+	ray->itexture = (wheigt - SCREEN_HEIGHT / 2) / *yincrementer;
 	*yincrementer = (ray->wallheight * 2) / (128.0 - ray->itexture * 2);
 }
 
@@ -47,16 +48,7 @@ void	ftminimap(t_cub3d *data)
 	tiles = 0;
 	while (tiles < 81)
 	{
-		if (data->map[y][x] == '1')
-			ftputtiles(data, tiles, &data->imgs.mmapw);
-		else if (data->map[y][x] == 'D')
-			ftputtiles(data, tiles, &data->imgs.mmapdoorc);
-		else if (data->map[y][x] == 'd')
-			ftputtiles(data, tiles, &data->imgs.mmapdooro);
-		else
-			ftputtiles(data, tiles, &data->imgs.mmapf);
-		if (x == (int)data->p.x && y == (int)data->p.y)
-			ftplayer(data, tiles);
+		draw_minimap(data, x, y, tiles);
 		x++;
 		tiles++;
 		if (tiles % 9 == 0)
@@ -86,7 +78,8 @@ void	ftputtiles(t_cub3d *data, int tiles, t_img *img)
 		tx = 0;
 		while (mmx < (((tiles % 9) + 1) * 20))
 		{
-			my_mlx_pixel_put(&data->imgs.mmap, mmx, mmy, gettextcolor(tx, ty, img));
+			my_mlx_pixel_put(&data->imgs.mmap, mmx, mmy,
+				gettextcolor(tx, ty, img));
 			mmx++;
 			tx++;
 		}

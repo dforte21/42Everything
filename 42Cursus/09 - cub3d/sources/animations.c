@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 15:23:35 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/09 19:28:45 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 14:48:41 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	hand(t_cub3d *data, int size, t_img *text)
 		{
 			color = gettextcolor(x, y + (size * texture), text);
 			if (color >= 0)
-				my_mlx_pixel_put(&data->imgs.win, (screen_width - size) + x, (screen_height - size) + y, color);
+				my_mlx_pixel_put(&data->imgs.win, (SCREEN_WIDTH - size) + x,
+					(SCREEN_HEIGHT - size) + y, color);
 			x++;
 		}
 		y++;
@@ -62,7 +63,8 @@ void	face(t_cub3d *data, int size, t_img *text)
 		{
 			color = gettextcolor(x, y + (size * texture), text);
 			if (color >= 0)
-				my_mlx_pixel_put(&data->imgs.win, x, (screen_height - size) + y, color);
+				my_mlx_pixel_put(&data->imgs.win, x,
+					(SCREEN_HEIGHT - size) + y, color);
 			x++;
 		}
 		y++;

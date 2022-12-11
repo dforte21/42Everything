@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:44:31 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/09 20:42:17 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 14:27:31 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	getcolor(char *str, t_cub3d *data)
 
 double	degreetoradians(double degree)
 {
-	return (degree * pi / 180);
+	return (degree * PI / 180);
 }
 
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
@@ -62,7 +62,7 @@ int	ftexit(t_cub3d *data)
 
 int	gettextcolor(int x, int y, t_img *text)
 {
-	int 	color;
+	int		color;
 	char	*dst;
 
 	dst = text->addr + (y * text->ll + x * (text->bpp / 8));

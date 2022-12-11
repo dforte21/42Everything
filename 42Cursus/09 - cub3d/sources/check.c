@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 19:28:23 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/11 14:49:09 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 15:16:53 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_check_file(char *file_name, t_cub3d *data)
 {
 	if (ft_strlen(file_name) < 5)
 		ft_error("Map name", data);
-	if (ft_memcmp(&file_name[ft_strlen(file_name) - 4], ".cup", 4) != 0)
+	if (ft_memcmp(&file_name[ft_strlen(file_name) - 4], ".cub", 4) != 0)
 		ft_error("Map extension", data);
 	ft_check_fd(file_name, "Map", data);
 }

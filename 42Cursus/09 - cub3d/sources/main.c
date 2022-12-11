@@ -6,7 +6,7 @@
 /*   By: dforte <dforte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 16:05:21 by dforte            #+#    #+#             */
-/*   Updated: 2022/12/11 14:56:19 by dforte           ###   ########.fr       */
+/*   Updated: 2022/12/11 15:16:43 by dforte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int ac, char **av)
 	t_cub3d	data;
 
 	if (ac != 2)
-		return (1);
+		ft_error("Arg", &data);
 	data.height = 0;
 	ft_check_file(av[1], &data);
 	read_file(av[1], &data);

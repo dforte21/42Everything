@@ -1,4 +1,4 @@
-NAME = megaphone
+NAME = moarBrainz
 SRC = *.cpp
 FLG = -Wall -Wextra -Werror -std=c++98
 

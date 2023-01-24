@@ -1,16 +1,22 @@
-NAME = megaphone
-SRC = *.cpp
-FLG = -Wall -Wextra -Werror -std=c++98
+NAME = Harl_2.0
+SOURCES = main.cpp Harl.cpp
+OBJECT = $(SOURCE:.cpp=.o)
+FLAGS = -Wall -Wextra -Werror -std=c++98 
 
-$(NAME):
-		c++ $(FLG) $(SRC) -o $(NAME)
+all: $(NAME)
+
+%.o: %.cpp
+	c++ $(FLAGS) -c $< -o $@
+
+$(NAME): $(OBJECT)
+	@c++ $(SOURCES) $(FLAGS) $(OBJECT) -o $(NAME)
 
 clean:
-		rm *.o
+	@rm -f $(OBJECT)
 
-fclean:
-		rm -rf $(NAME)
+fclean: clean
+	@rm -f $(NAME)
 
-all:	$(NAME)
+re: fclean all
 
-re:		fclean all
+.PHONY: all clean fclean re

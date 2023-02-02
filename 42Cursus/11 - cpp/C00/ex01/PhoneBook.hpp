@@ -6,11 +6,12 @@ enum menu { ADD = '0', SEARCH = '1', EXIT = '2'};
 
 class PhoneBook {
     
-    public:
-
+    private:
         int         index;
         Contact     contact[8];
 
+
+    public:
         PhoneBook(void);
         ~PhoneBook(void);
 

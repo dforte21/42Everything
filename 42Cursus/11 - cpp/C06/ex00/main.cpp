@@ -56,7 +56,7 @@ int main(int ac, char **av)
 		else
 			std::cout << "float: " << in << "\ndouble: " << in << std::endl;
 	}
-	else if (!isNumber(in) && in.length() != 1)
+	else if (!isNumber(in) || in.length() != 1)
 		std::cerr << "Error:\t input is not a char/number\n";
 	else
 		convert(in);

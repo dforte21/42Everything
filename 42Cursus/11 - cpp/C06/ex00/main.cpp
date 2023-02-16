@@ -23,17 +23,21 @@ bool	checkSpecial(std::string s[5], std::string input){
 
 void	convert(std::string in){
 	int			n;
-	float		f = std::stof(in);
-	double		d = std::stod(in);
+    float		f;
+    double		d;
 	char		c;
 
 	try{
 		n = std::stoi(in);
+        f = std::stof(in);
+        d = std::stod(in);
 	}
 	catch (const std::invalid_argument&){
 		n = static_cast<int>(in[0]);
+        f = static_cast<float>(n);
+        d = static_cast<double>(n);
 	}
-	c = n;
+    c = static_cast<char>(n);
 	if (c >= 32 && c != 127)
 		std::cout << "char: \'" << c << "\'\n";
 	else
@@ -56,7 +60,7 @@ int main(int ac, char **av)
 		else
 			std::cout << "float: " << in << "\ndouble: " << in << std::endl;
 	}
-	else if (!isNumber(in) || in.length() != 1)
+	else if (!isNumber(in) && in.length() != 1)
 		std::cerr << "Error:\t input is not a char/number\n";
 	else
 		convert(in);

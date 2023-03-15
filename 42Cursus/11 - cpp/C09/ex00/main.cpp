@@ -22,7 +22,7 @@ int main(int ac, char **av){
 	}
 
 	try{
-		BTC b(data);
+		Btc b(data);
 		std::string in;
 		std::getline(input, in);
 		while (std::getline(input, in))

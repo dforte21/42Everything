@@ -6,17 +6,18 @@
 #include <sstream>
 #include <fstream>
 #include <exception>
+#include <string>
 
-class BTC{
+class Btc{
 	private:
 		std::map<std::string, double> val;
 	public:
-		BTC();
-		BTC(std::ifstream &file);
-		BTC( const BTC &c );
-		~BTC();
+		Btc();
+		Btc(std::ifstream &file);
+		Btc( const Btc &c );
+		~Btc();
 
-		BTC	&operator=( const BTC &c );
+		Btc	&operator=( const Btc &c );
 
 		void	checkData(std::string data);
 		void	convert(std::string input);

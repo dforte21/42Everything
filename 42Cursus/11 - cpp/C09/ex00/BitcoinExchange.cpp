@@ -1,8 +1,8 @@
 #include "BitcoinExchange.hpp"
 
-BTC::BTC(){}
+Btc::Btc(){}
 
-BTC::BTC(std::ifstream &file){
+Btc::Btc(std::ifstream &file){
 	std::string	line, data, value;
 	double		valu;
 
@@ -22,7 +22,7 @@ BTC::BTC(std::ifstream &file){
 			if (!std::isdigit(value[i]) && value[i] != '-' && value[i] != '.')
 				throw incorrectValue();
 		try{
-			valu = stod(value);
+			valu = std::stod(value);
 		}
 		catch(std::invalid_argument &e){
 			throw incorrectValue();
@@ -33,13 +33,15 @@ BTC::BTC(std::ifstream &file){
 	}
 }
 
-BTC::BTC( const BTC &c ){
+Btc::Btc( const Btc &c ){
 	*this = c;
 }
 
-BTC::~BTC(){}
+Btc::~Btc(){
+	this->val.clear();
+}
 
-BTC	&BTC::operator=( const BTC &c ){
+Btc	&Btc::operator=( const Btc &c ){
 	if (this == &c)
 		return (*this);
 	this->val.clear();
@@ -47,7 +49,7 @@ BTC	&BTC::operator=( const BTC &c ){
 	return (*this);
 }
 
-void	BTC::checkData(std::string data){
+void	Btc::checkData(std::string data){
 	int			anno, mese, giorno;
 	std::string	value, year, month, day;
 
@@ -63,9 +65,9 @@ void	BTC::checkData(std::string data){
 		if (!std::isdigit(month[i]) || !std::isdigit(day[i]))
 			throw incorrectData();
 	try{
-		anno = stoi(year);
-		mese = stoi(month);
-		giorno = stoi(day);
+		anno = std::stoi(year);
+		mese = std::stoi(month);
+		giorno = std::stoi(day);
 	}
 	catch(std::invalid_argument &e){
 		throw incorrectData();
@@ -79,7 +81,7 @@ void	BTC::checkData(std::string data){
 		throw incorrectData();
 }
 
-void	BTC::convert(std::string input){
+void	Btc::convert(std::string input){
 	std::stringstream	sinput(input);
 	std::string			data, amount;
 	double				damount;
@@ -94,8 +96,6 @@ void	BTC::convert(std::string input){
 
 	ssize_t startpos = amount.find_first_not_of(" ");
     amount = amount.substr(startpos);
-
-	//std::cout << data << "|" << amount << "\n";
 
 	try{
 		checkData(data);
@@ -112,7 +112,7 @@ void	BTC::convert(std::string input){
 		}
 
 	try{
-		damount = stoi(amount);
+		damount = std::stoi(amount);
 	}
 	catch(std::invalid_argument &e){
 		std::cout << "Error: bad input => " << input << std::endl;
@@ -123,7 +123,7 @@ void	BTC::convert(std::string input){
 		return ;
 	}
 
-	damount = stod(amount);
+	damount = std::stod(amount);
 
 	if (damount < 0.0)
 	{

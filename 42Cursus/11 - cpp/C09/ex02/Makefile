@@ -1,4 +1,4 @@
-NAME = easyfind
+NAME = PmergeMe
 SRC = *.cpp
 FLG = -Wall -Wextra -Werror -std=c++98
 

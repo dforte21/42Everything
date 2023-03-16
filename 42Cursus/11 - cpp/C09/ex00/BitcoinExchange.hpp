@@ -8,16 +8,16 @@
 #include <exception>
 #include <string>
 
-class Btc{
+class BitcoinExchange{
 	private:
 		std::map<std::string, double> val;
 	public:
-		Btc();
-		Btc(std::ifstream &file);
-		Btc( const Btc &c );
-		~Btc();
+		BitcoinExchange();
+		BitcoinExchange(std::ifstream &file);
+		BitcoinExchange( const BitcoinExchange &c );
+		~BitcoinExchange();
 
-		Btc	&operator=( const Btc &c );
+		BitcoinExchange	&operator=( const BitcoinExchange &c );
 
 		void	checkData(std::string data);
 		void	convert(std::string input);

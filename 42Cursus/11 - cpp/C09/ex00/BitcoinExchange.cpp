@@ -1,8 +1,8 @@
 #include "BitcoinExchange.hpp"
 
-Btc::Btc(){}
+BitcoinExchange::BitcoinExchange(){}
 
-Btc::Btc(std::ifstream &file){
+BitcoinExchange::BitcoinExchange(std::ifstream &file){
 	std::string	line, data, value;
 	double		valu;
 
@@ -33,15 +33,15 @@ Btc::Btc(std::ifstream &file){
 	}
 }
 
-Btc::Btc( const Btc &c ){
+BitcoinExchange::BitcoinExchange( const BitcoinExchange &c ){
 	*this = c;
 }
 
-Btc::~Btc(){
+BitcoinExchange::~BitcoinExchange(){
 	this->val.clear();
 }
 
-Btc	&Btc::operator=( const Btc &c ){
+BitcoinExchange	&BitcoinExchange::operator=( const BitcoinExchange &c ){
 	if (this == &c)
 		return (*this);
 	this->val.clear();
@@ -49,7 +49,7 @@ Btc	&Btc::operator=( const Btc &c ){
 	return (*this);
 }
 
-void	Btc::checkData(std::string data){
+void	BitcoinExchange::checkData(std::string data){
 	int			anno, mese, giorno;
 	std::string	value, year, month, day;
 
@@ -81,7 +81,7 @@ void	Btc::checkData(std::string data){
 		throw incorrectData();
 }
 
-void	Btc::convert(std::string input){
+void	BitcoinExchange::convert(std::string input){
 	std::stringstream	sinput(input);
 	std::string			data, amount;
 	double				damount;

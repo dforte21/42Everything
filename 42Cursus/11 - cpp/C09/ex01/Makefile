@@ -1,4 +1,4 @@
-NAME = RPM
+NAME = RPN
 SRC = *.cpp
 FLG = -Wall -Wextra -Werror -std=c++98
 

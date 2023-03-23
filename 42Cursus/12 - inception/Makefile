@@ -1,4 +1,7 @@
-all : up
+all : up start
+
+fclean : stop down
+		./clean
 
 up : 
 	@docker-compose -f ./srcs/docker-compose.yml up --d

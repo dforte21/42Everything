@@ -2,6 +2,8 @@ all : up start
 
 fclean : stop down
 		./clean
+		rm -rf /home/dforte/data/wordpress/*
+		rm -rf /home/dforte/data/mariadb/*
 
 up : 
 	@docker-compose -f ./srcs/docker-compose.yml up --d

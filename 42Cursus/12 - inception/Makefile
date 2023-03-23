@@ -5,23 +5,23 @@ clean : stop down
 
 fclean : stop down
 		./clean
-		sudo rm -rf /home/dforte/data/wordpress/*
-		sudo rm -rf /home/dforte/data/mariadb/*
+		rm -rf /home/dforte/data/wordpress/*
+		rm -rf /home/dforte/data/mariadb/*
 
 up : 
-	@sudo docker-compose -f ./srcs/docker-compose.yml up --d
+	@docker-compose -f ./srcs/docker-compose.yml up --d
 
 down : 
-	@sudo docker-compose -f ./srcs/docker-compose.yml down
+	@docker-compose -f ./srcs/docker-compose.yml down
 
 stop : 
-	@sudo docker-compose -f ./srcs/docker-compose.yml stop
+	@docker-compose -f ./srcs/docker-compose.yml stop
 
 start : 
-	@sudo docker-compose -f ./srcs/docker-compose.yml start
+	@docker-compose -f ./srcs/docker-compose.yml start
 
 status : 
-	@sudo docker ps
+	@docker ps
 	
 host:
 	@ sudo echo "127.0.0.1 dforte.42.fr" >> /etc/hosts

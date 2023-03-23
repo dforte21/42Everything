@@ -29,14 +29,11 @@ _EOF_
 #Flush privileges allow to your sql tables to be updated automatically when you modify it
 #mysql -uroot launch mysql command line client
 echo "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot
+echo "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';" | mysql -uroot
 
 #Create database and user in the database for wordpress
 
 echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -u root
-
-#delete root user
-echo "REVOKE ALL PRIVILEGES ON *.* FROM 'root'@'%';" | mysql -u root
-echo "DROP USER 'root'@'%';" | mysql -u root
 
 #Import database in the mysql command line
 mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /usr/local/bin/wordpress.sql

@@ -1,5 +1,8 @@
 all : up start
 
+clean : stop down
+		./clean
+
 fclean : stop down
 		./clean
 		rm -rf /home/dforte/data/wordpress/*

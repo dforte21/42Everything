@@ -1,2 +1,2 @@
-docker exec -it mariadb mysql -udforte
+docker exec -it mariadb mysql -udforte -pnew1234
 docker exec -it redis redis-cli

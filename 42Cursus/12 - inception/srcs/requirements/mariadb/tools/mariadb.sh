@@ -28,13 +28,13 @@ _EOF_
 #Add a root user on 127.0.0.1 to allow remote connexion 
 #Flush privileges allow to your sql tables to be updated automatically when you modify it
 #mysql -uroot launch mysql command line client
-echo "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_PASSWORD
+echo "USE mysql; FLUSH PRIVILEGES; DELETE FROM	mysql.user WHERE User=''; DROP DATABASE test; DELETE FROM mysql.db WHERE Db='test'; DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
 
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_PASSWORD
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
 
 #Create database and user in the database for wordpress
 
-echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_PASSWORD
+echo "CREATE DATABASE $MYSQL_DATABASE CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE USER '$MYSQL_USER'@'%' IDENTIFIED by '$MYSQL_PASSWORD'; GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
 
 #Import database in the mysql command line
 mysql -udforte -p$MYSQL_PASSWORD $MYSQL_DATABASE < /usr/local/bin/wordpress.sql

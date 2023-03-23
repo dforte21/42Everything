@@ -1,8 +1,0 @@
-sudo apt install -y git docker docker.io docker-compose
-sudo service docker restart
-
-sudo service mariadb stop
-sudo docker image rm <image_id>
-sudo docker system prune -a   
-
-dforte.42.fr/wp-login.php

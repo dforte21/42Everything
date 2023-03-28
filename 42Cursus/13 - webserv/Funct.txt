@@ -1,0 +1,18 @@
+Spiegazione breve di tutte le funzioni
+
+htons: prende come input un intero in formato corto (es, 0x1234) e lo trasforma da formato host a formato server (se host utilizza architettura little endian il risultato sarà 0x3421, se usa formato big endian sarà 0x1234)
+
+htonl: stessa cosa di htons ma prende in input numeri interi in formato lungo (es. 0x12345678)
+
+ntohs: l'opposto di htons
+
+ntohl: l'opposto di htonl
+
+select: monitora un insieme di file descriptor e restituisce il numero di file descriptor pronti per la lettura, o per la scrittura o per i quali si è verificato un errore,
+		prende 5 argomenti in input, Quanti filedesc deve monitorare; un puntatore ad un insieme di filedesc sola lettura; un puntatore ad un insieme di filedesc sola scrittura; puntatore a filedesc da monitorare per eventuali errori; tempo in ms di timeout;
+		se ci sono filedesc che hanno generato errori restituirà un valore negativo
+
+poll:	fa la stessa cosa di select ma prende in input solo due argomenti
+		un array di strutture pollfd, ogni elemento dell'array contiene un filedesc da monitorare; la dimensione dell'array
+		la struttura pollfd contiene 3 campi; un FD da monitorare; una maschera di bit EVENTS che indica gli eventi che triggerano la funzione (lettura, scrittura o errore); REVENTS è una maschera di bits che indica gli eventi che si sono verificati;
+

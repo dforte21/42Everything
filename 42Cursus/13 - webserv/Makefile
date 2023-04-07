@@ -1,16 +1,18 @@
 NAME = webserv
 FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC_FOL = sources/
-SRC_FIL = $(SRC_FOL)/main.cpp
+SRC_FIL = $(addprefix sources/,main.cpp Server.cpp)
+OBJS = $(SRC_FIL:.cpp=.o)
 
 $(NAME):
-		c++ $(FLAGS) $(SRC_FIL) -o $(NAME)
+		c++ -c $(FLAGS) $(SRC_FIL) && mv *.o sources 
+		c++ $(OBJS) -o $(NAME)
 
 all:
 		$(NAME)
 
 clean:
-		rm -rf *.o
+		rm -rf $(OBJS)
 
 fclean:	clean
 		rm -rf webserv

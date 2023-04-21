@@ -4,7 +4,7 @@ SRC_FOL = sources/
 SRC_FIL = $(addprefix sources/,main.cpp Server.cpp)
 OBJS = $(SRC_FIL:.cpp=.o)
 
-$(NAME):
+$(NAME): $(SRC_FIL)
 		c++ -c $(FLAGS) $(SRC_FIL) && mv *.o sources 
 		c++ $(OBJS) -o $(NAME)
 

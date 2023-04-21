@@ -17,7 +17,9 @@ class Server {
 	public:
 		Server();
 		~Server();
-		int					_fd;
+
 	private:
+		void	startListening();
+		int					_fd;
 		struct	sockaddr_in _addr;
 };

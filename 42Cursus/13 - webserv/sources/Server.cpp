@@ -1,6 +1,10 @@
 #include "../includes/Server.hpp"
 
 Server::Server() {
+	this->startListening();
+}
+
+void	Server::startListening() {
 	std::cout << "server" << std::endl;
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_fd < 0)
@@ -15,7 +19,7 @@ Server::Server() {
 	int new_fd;
 	struct sockaddr_storage client_addr;
 	std::cout << "ciao\n";
-	for (;;) {
+	while (1) {
 		std::cout << "ciao1\n";
 		socklen_t sin_size = sizeof(client_addr);
 		new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);

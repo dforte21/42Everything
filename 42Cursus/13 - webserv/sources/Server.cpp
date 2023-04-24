@@ -1,12 +1,13 @@
 #include "../includes/Server.hpp"
 
 Server::Server() {
+	
 	this->startListening();
 }
 
 void	Server::startListening() {
-	std::cout << "server" << std::endl;
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
+	//fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
@@ -18,15 +19,13 @@ void	Server::startListening() {
 		throw std::runtime_error("Listen error");
 	int new_fd;
 	struct sockaddr_storage client_addr;
-	std::cout << "ciao\n";
 	while (1) {
-		std::cout << "ciao1\n";
 		socklen_t sin_size = sizeof(client_addr);
-		new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
 		std::cout << "Server is waiting...\n";
+		new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
 		if (!fork()){
 			close (_fd);
-			if (send(new_fd, "Hello, world!", 13, 0) == -1)
+			if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
 				std::cout << "Send error!\n";
 			close (new_fd);
 			exit (0);

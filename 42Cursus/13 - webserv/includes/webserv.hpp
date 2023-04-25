@@ -15,5 +15,6 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <fstream>
+#include <poll.h>
 
 #endif

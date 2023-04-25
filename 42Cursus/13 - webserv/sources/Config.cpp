@@ -6,9 +6,9 @@ Config::Config(char *filename){
 
 	if (!configFile.is_open())
 		exit(1);
-	while (getline(configFile, line)){
-		std::cout<< line << std::endl;
-	}
+	//while (getline(configFile, line)){
+	//	std::cout<< line << std::endl;
+	//}
 	//else
 	//	die("Error opening file. Aborting");
 }

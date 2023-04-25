@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]){
 	//Server *obj = new Server();
-	Config parser(argv[1]);
+	//Config parser(argv[1]);
 	Server obj;
 	(void)obj;
 	(void)argc;

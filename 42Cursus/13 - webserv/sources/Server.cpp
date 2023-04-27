@@ -5,14 +5,21 @@ Server::Server() {
 	this->startListening();
 }
 
+Server::~Server(){
+	std::cout << "Addios\n";
+}
+
 void	Server::startListening() {
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
-	//fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
+	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(8080); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	int yes = 1;
+	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
+		throw std::runtime_error("Unable to reuse port");
 	if (bind(_fd,(struct sockaddr *)&_addr, sizeof(_addr)) < 0)
 		throw std::runtime_error("Unable to bind socket");
 	if (listen(_fd, 1000) < 0)
@@ -33,14 +40,39 @@ void	Server::startListening() {
 			throw std::runtime_error("Poll error");
 		 for(int i = 0; i < fd_count; i++) {
 			if (pfds[i].revents & POLLIN) {
-				if (i == 0) {
-					
+				if (i == 0) { //listener
 					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
                         throw std::runtime_error("Accept error");
 					else {
-						//add_to_pfds();
+						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
 						printf("pollserver: new connection on socket %d\n", new_fd);
+						if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+							std::cout << "Send error!\n";
+					}
+				}
+				else { //client
+					char buf[256];
+					int nbytes = recv(pfds[i].fd, buf, sizeof buf, 0);
+
+					if (nbytes == 0) {
+					std::cout << "Connection from " << pfds[i].fd << "closed.\n";
+					close(pfds[i].fd);
+					del_from_pfds(pfds, i, &fd_count);
+					}
+					else if (nbytes < 0){
+						close(pfds[i].fd);
+                        del_from_pfds(pfds, i, &fd_count);
+						throw std::runtime_error("Recv error");
+					}
+					else {
+						for(int j = 0; j < fd_count; j++) { 
+                            // Except the listener and ourselves
+                            if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+                                if (send(pfds[j].fd, buf, nbytes, 0) == -1)
+                                    std::cout << "Send error!\n";
+							}
+						}
 					}
 				}
 			}
@@ -64,6 +96,18 @@ void	Server::startListening() {
 	//}
 }
 
-Server::~Server(){
-	std::cout << "Addios\n";
+void	Server::add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size){
+	if (*fd_count == *fd_size){
+		*fd_size *= 2;
+		pfds = (struct pollfd *) realloc (pfds, sizeof(struct pollfd) * (*fd_size));
+	}
+	pfds[*fd_count].fd = new_fd;
+	pfds[*fd_count].events = POLLIN;
+	(*fd_count)++;
+	//std::cout << "nuovo socket allocato, grandezza:" << *fd_size << " count: " << *fd_count << std::endl;
+}
+
+void	Server::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
+	pfds[i] = pfds[*fd_count - 1];
+	(*fd_count)--;
 }

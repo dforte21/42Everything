@@ -1,3 +1,6 @@
+test:
+	nc localhost 8080
+
 Spiegazione breve di tutte le funzioni
 
 htons: prende come input un intero in formato corto (es, 0x1234) e lo trasforma da formato host a formato server (se host utilizza architettura little endian il risultato sarà 0x3421, se usa formato big endian sarà 0x1234)

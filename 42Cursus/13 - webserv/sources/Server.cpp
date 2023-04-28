@@ -1,12 +1,11 @@
 #include "../includes/Server.hpp"
 
-Server::Server() {
-	
+Server::Server(Config &config) {
 	this->startListening();
 }
 
-Server::~Server(){
-	std::cout << "Addios\n";
+Server::~Server(void) {
+
 }
 
 void	Server::startListening() {
@@ -111,3 +110,4 @@ void	Server::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
 	pfds[i] = pfds[*fd_count - 1];
 	(*fd_count)--;
 }
+

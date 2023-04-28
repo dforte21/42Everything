@@ -1,17 +1,14 @@
-#include "../includes/webserv.hpp"
-#include "../includes/Server.hpp"
-#include "../includes/Config.hpp"
+#include "../includes/Cluster.hpp"
 
 int main(int argc, char *argv[]){
-	//Server *obj = new Server();
-	//Config parser(argv[1]);
+	if (argc != 2)
+		return 1;
 	try {
-		Server obj;
+		Cluster	cluster(argv[1]);
 	}
 	catch(std::exception &e) {
 		std::cout << e.what() << std::endl;
+		return 1;
 	}
-	(void)argc;
-	(void)argv;
-	//delete (&obj);
+	return 0;
 }

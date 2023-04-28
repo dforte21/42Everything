@@ -61,15 +61,16 @@ void	Server::startListening() {
 					}
 					else if (nbytes < 0){
 						close(pfds[i].fd);
-                        del_from_pfds(pfds, i, &fd_count);
-						throw std::runtime_error("Recv error");
+						del_from_pfds(pfds, i, &fd_count);
+						std::cout << "Recv error\n";
 					}
 					else {
 						for(int j = 0; j < fd_count; j++) { 
-                            // Except the listener and ourselves
-                            if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
-                                if (send(pfds[j].fd, buf, nbytes, 0) == -1)
-                                    std::cout << "Send error!\n";
+							// Except the listener and ourselves
+						if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+
+							if (sendall(pfds[j].fd, buf, &nbytes) == -1)
+									std::cout << "Send error!\n";
 							}
 						}
 					}
@@ -111,3 +112,18 @@ void	Server::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
 	(*fd_count)--;
 }
 
+int Server::sendall(int fd,char *buf, int *len){
+	int total = 0;
+	int bytesleft = *len;
+	int n;
+
+	while(total < *len) {
+		n = send(fd, buf+total, bytesleft, 0);
+		if (n == -1)
+			return -1;
+		total += n;
+		bytesleft -= n;
+	}	
+	*len = total;
+	return 0;
+}

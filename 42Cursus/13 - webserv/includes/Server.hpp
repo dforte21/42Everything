@@ -18,6 +18,7 @@ class Server {
 		void	startListening();
 		void	add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size);
 		void	del_from_pfds(struct pollfd *, int i, int *fd_count);
+		int		sendall(int fd,char *buf, int *len);
 	public:
 		Server(Config &config);
 		~Server();

@@ -4,12 +4,15 @@ Cluster::Cluster() {
 
 }
 
-Cluster::Cluster(const char *filePath) {
+Cluster::Cluster(const char *filePath){
 	std::ifstream		configFile;
 	std::string			line;
 	std::stringstream	serverConfig;
 
-	configFile.open(filePath);
+	if (filePath == NULL)
+		configFile.open("default.conf");
+	else
+		configFile.open(filePath);
 	if (!configFile.is_open())
 		throw wrongFilePath();
 	std::getline(configFile, line);

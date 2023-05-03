@@ -55,16 +55,18 @@ void	Server::startListening() {
 					int nbytes = recv(pfds[i].fd, buf, sizeof buf, 0);
 
 					if (nbytes == 0) {
-					std::cout << "Connection from " << pfds[i].fd << "closed.\n";
+					std::cout << "Connection from " << pfds[i].fd << " closed.\n";
 					close(pfds[i].fd);
 					del_from_pfds(pfds, i, &fd_count);
 					}
 					else if (nbytes < 0){
+						std::cout << "Recv error\n";
 						close(pfds[i].fd);
 						del_from_pfds(pfds, i, &fd_count);
-						std::cout << "Recv error\n";
+						std::cout << "Connection from " << pfds[i].fd << " closed.\n";
 					}
 					else {
+							std::cout << "Ho ricevuto da socket " << pfds[i].fd <<buf<< std::endl;
 						for(int j = 0; j < fd_count; j++) { 
 							// Except the listener and ourselves
 						if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {

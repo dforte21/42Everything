@@ -11,14 +11,20 @@
 class Cluster {
 	private:
 		std::vector<Server> _serverVec;
-		//std::vector<Config> _configVec;
+		std::vector<Config> _configVec;
 		Cluster(void);
 
 	public:
 		Cluster(const char *filePath);
 		~Cluster(void);
 
+		void	setConfigVec(std::string &fileContent);
+
 		struct	wrongFilePath : public std::exception {
+			virtual const char *what() const throw();
+		};
+
+		struct badConfigFile : public std::exception {
 			virtual const char *what() const throw();
 		};
 };

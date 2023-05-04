@@ -1,14 +1,6 @@
 #include "../includes/Server.hpp"
 
 Server::Server(Config &config) {
-	this->startListening();
-}
-
-Server::~Server(void) {
-
-}
-
-void	Server::startListening() {
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
@@ -23,7 +15,14 @@ void	Server::startListening() {
 		throw std::runtime_error("Unable to bind socket");
 	if (listen(_fd, 1000) < 0)
 		throw std::runtime_error("Listen error");
+	this->startListening();
+}
 
+Server::~Server(void) {
+
+}
+
+void	Server::startListening() {
 	int fd_count = 1;
     int fd_size = 5;
 	struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);

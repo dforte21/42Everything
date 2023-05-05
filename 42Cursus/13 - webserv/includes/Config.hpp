@@ -15,8 +15,12 @@ class Config {
 			Config(void);
 
 	public:
-			Config(std::string str);
+			Config(std::string &configStr);
 			~Config(void);
+
+			struct badConfigFile : public std::exception {
+				virtual const char *what() const throw();
+			};
 };
 
 #endif

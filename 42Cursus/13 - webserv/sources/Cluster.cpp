@@ -15,9 +15,11 @@ Cluster::Cluster(const char *filePath) {
 		throw wrongFilePath();
 	std::getline(configFile, fileContent, '\0');
 	//std::cout << fileContent << std::endl;
-	this->setConfigVec(fileContent);
+	//this->setConfigVec(fileContent);
 	// for(std::vector<Config>::iterator it = _configVec.begin(); it != _configVec.end(); it++)
 	// 	_serverVec.push_back(*it);
+	Config config(filePath);
+	Server server(config);
 }
 
 Cluster::~Cluster(void) {

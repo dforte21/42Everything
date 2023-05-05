@@ -7,6 +7,7 @@
 #include "unistd.h"
 #include <poll.h>
 #include <fcntl.h>
+#include <map>
 
 class Server {
 	private:
@@ -16,6 +17,7 @@ class Server {
 		Server();
 
 		void	startListening();
+		std::map<std::string, std::string> parse_request(std::string request);
 		void	add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size);
 		void	del_from_pfds(struct pollfd *, int i, int *fd_count);
 		int		sendall(int fd,char *buf, int *len);

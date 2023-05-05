@@ -5,7 +5,7 @@ int main(int argc, char *argv[]){
 		Cluster	cluster(argv[1]);
 	}
 	catch(std::exception &e) {
-		std::cout << e.what() << std::endl;
+		std::cout << "ERROR: "<< e.what() << std::endl;
 		return 1;
 	}
 	return 0;

@@ -51,50 +51,69 @@ void	Server::startListening() {
 				}
 				else { //client
 					char buf[256];
-					int nbytes = recv(pfds[i].fd, buf, 256, 0);
-					buf[nbytes] = 0;
-					if (nbytes == 0) {
-					std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-					close(pfds[i].fd);
-					del_from_pfds(pfds, i, &fd_count);
-					}
-					else if (nbytes < 0){
-						std::cout << "Recv error\n";
-						close(pfds[i].fd);
-						del_from_pfds(pfds, i, &fd_count);
-						std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-					}
-					else {
-						std::cout<< buf << std::endl;
-						for(int j = 0; j < fd_count; j++) { 
-							// Except the listener and ourselves
-						if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+					int nbytes = 1;
+					std::string request;
+					while (nbytes > 0) {
+						nbytes = recv(pfds[i].fd, buf, 256, 0);
+						//buf[nbytes] = 0;
+						if (nbytes == 0) {
+							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
+							close(pfds[i].fd);
+							del_from_pfds(pfds, i, &fd_count);
+						}
+						else if (nbytes < 0){
+							std::cout << "Recv error\n";
+							close(pfds[i].fd);
+							del_from_pfds(pfds, i, &fd_count);
+							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
+						}
+						else {
+							//std::cout<< buf << "\nFINE"<<std::endl;
+							std::string buffer(buf);
+							request.append(buffer);
+							std::cout<< "\n REQUEST:\n "<< request << std::endl;
+							for(int j = 0; j < fd_count; j++) { 
+									// Except the listener and ourselves
+								if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
 
-							if (sendall(pfds[j].fd, buf, &nbytes) == -1)
-									std::cout << "Send error!\n";
+									if (sendall(pfds[j].fd, buf, &nbytes) == -1)
+											std::cout << "Send error!\n";
+									}
 							}
 						}
+					}
+					std::map<std::string, std::string> tok_http = this->parse_request(request);
+					if (tok_http.empty() == true)
+						std::cout<<"Ë vuotoooo\n\n\n";
+					else
+						std::cout<< tok_http.size();
+					for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+							it != tok_http.end(); it++) {
+								std::cout << "first: " << it->first << " second: " << it->second << std::endl;
 					}
 				}
 			}
 		}
 	}
+}
 
-	//int new_fd;
-	//struct sockaddr_storage client_addr;
-	//while (1) {
-	//	socklen_t sin_size = sizeof(client_addr);
-	//	std::cout << "Server is waiting...\n";
-	//	new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
-	//	if (!fork()){
-	//		close (_fd);
-	//		if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
-	//			std::cout << "Send error!\n";
-	//		close (new_fd);
-	//		exit (0);
-	//	}
-	//	close (new_fd);
-	//}
+std::map<std::string, std::string> Server::parse_request(std::string request) {
+	std::size_t first = 0;
+	std::size_t find = 0;
+
+	std::map<std::string, std::string> map;
+	while (find != std::string::npos) {
+	std::cout<<"vivo\n";
+		find = request.find('\n', first);
+		std::string line = request.substr(first, find);
+		std::size_t mid = line.find(':', 0);
+		if (mid != std::string::npos)
+			map[line.substr(0, mid)] = line.substr(mid, line.length());
+		else
+			map[line] = "";
+		first += find + 1;
+	}
+	return map;
 }
 
 void	Server::add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size){

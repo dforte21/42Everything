@@ -71,7 +71,6 @@ void	Server::startListening() {
 							//std::cout<< buf << "\nFINE"<<std::endl;
 							std::string buffer(buf);
 							request.append(buffer);
-							std::cout<< "\n REQUEST:\n "<< request << std::endl;
 							for(int j = 0; j < fd_count; j++) { 
 									// Except the listener and ourselves
 								if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
@@ -82,15 +81,16 @@ void	Server::startListening() {
 							}
 						}
 					}
+					std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
 					if (tok_http.empty() == true)
 						std::cout<<"Ë vuotoooo\n\n\n";
 					else
 						std::cout<< tok_http.size();
-					for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-							it != tok_http.end(); it++) {
-								std::cout << "first: " << it->first << " second: " << it->second << std::endl;
-					}
+					//for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+					//		it != tok_http.end(); it++) {
+					//			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+					//}
 				}
 			}
 		}
@@ -100,18 +100,25 @@ void	Server::startListening() {
 std::map<std::string, std::string> Server::parse_request(std::string request) {
 	std::size_t first = 0;
 	std::size_t find = 0;
+	std::size_t i = 0;
 
+	const char *prova = request.c_str();
 	std::map<std::string, std::string> map;
-	while (find != std::string::npos) {
-	std::cout<<"vivo\n";
-		find = request.find('\n', first);
-		std::string line = request.substr(first, find);
+	std::string line;
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			if (prova[i] != 4)
+				i++;
+			//std::cout<< "line: " << line << "\n";
+			first = i + 1;
+		}
 		std::size_t mid = line.find(':', 0);
-		if (mid != std::string::npos)
-			map[line.substr(0, mid)] = line.substr(mid, line.length());
+		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
+			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
 		else
-			map[line] = "";
-		first += find + 1;
+			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
+		i++;
 	}
 	return map;
 }

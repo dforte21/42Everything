@@ -17,8 +17,6 @@ Cluster::Cluster(const char *filePath) {
 	this->setConfigVec(fileContent);
 	// for(std::vector<Config>::iterator it = _configVec.begin(); it != _configVec.end(); it++)
 	// 	_serverVec.push_back(*it);
-	Config config(filePath);
-	Server server(config);
 }
 
 Cluster::~Cluster(void) {
@@ -50,7 +48,8 @@ void	Cluster::setConfigVec(std::string &fileContent) {
 			throw badConfigFile();
 		if (fileContent.find_first_not_of(" \n", begin + bodyLen) < fileContent.find("server", begin + bodyLen))
 		 	throw badConfigFile();
-		if (fileContent.find("server", begin + bodyLen) != std::string::npos && fileContent.find_first_not_of(" \n", fileContent.find("server", begin + bodyLen) + 6) < fileContent.find_first_of("{", begin + bodyLen))
+		if (fileContent.find("server", begin + bodyLen) != std::string::npos &&
+			fileContent.find_first_not_of(" \n", fileContent.find("server", begin + bodyLen) + 6) < fileContent.find_first_of("{", begin + bodyLen))
 				throw badConfigFile();
 		serverConfig.push_back(fileContent.substr(begin, bodyLen));
 	}

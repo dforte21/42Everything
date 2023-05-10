@@ -4,6 +4,7 @@
 # include <iostream>
 # include <vector>
 # include <map>
+# include <cstdlib>
 
 class Config {
 	private:
@@ -16,6 +17,8 @@ class Config {
 			int							_client_max_body_size;
 			bool	_get;
 			bool	_post;
+			bool	_head;
+			bool	_put;
 			bool	_delete;
 			Config(void);
 

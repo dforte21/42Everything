@@ -32,11 +32,11 @@ void	Server::startListening() {
 	int new_fd;
 	struct sockaddr_storage client_addr;
 	socklen_t sin_size = sizeof(client_addr);
-	while (1) {
+	for (;;) {
 		poll_count = poll(pfds, fd_count, -1);
 		if (poll_count == -1)
 			throw std::runtime_error("Poll error");
-		 for(int i = 0; i < fd_count; i++) {
+		for(int i = 0; i < fd_count; i++) {
 			if (pfds[i].revents & POLLIN) {
 				if (i == 0) { //listener
 					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
@@ -81,16 +81,16 @@ void	Server::startListening() {
 							}
 						}
 					}
-					std::cout<< "\n REQUEST:\n "<< request << std::endl;
+					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
 					if (tok_http.empty() == true)
 						std::cout<<"Ë vuotoooo\n\n\n";
 					else
-						std::cout<< tok_http.size();
-					//for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-					//		it != tok_http.end(); it++) {
-					//			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-					//}
+						std::cout<< tok_http.size() << std::endl;
+					for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+							it != tok_http.end(); it++) {
+								std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+					}
 				}
 			}
 		}
@@ -105,12 +105,28 @@ std::map<std::string, std::string> Server::parse_request(std::string request) {
 	const char *prova = request.c_str();
 	std::map<std::string, std::string> map;
 	std::string line;
+
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			// std::cout << "firstline: " << line << std::endl;
+			std::size_t space = line.find(' ', 0);
+			std::size_t space2 = line.find(' ', space + 1);
+			map.insert(std::pair<std::string, std::string>("HTTP method", line.substr(0, space)));
+			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2)));
+			map.insert(std::pair<std::string, std::string>("protocol version", line.substr(space2 + 1, line.length())));
+			if (prova[i] != 4)
+				i++;
+			first = i + 1;
+			break ;
+		}
+		i++;
+	}
 	while (prova[i] != '\0') {
 		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
 			line = request.substr(first, i - first);
 			if (prova[i] != 4)
 				i++;
-			//std::cout<< "line: " << line << "\n";
 			first = i + 1;
 		}
 		std::size_t mid = line.find(':', 0);

@@ -12,7 +12,6 @@ Config::Config(std::string &configStr)
 	this->setClientMaxBodySize();
 	this->setAllowedMethods();
 	this->displayConfig();
-	this->displayConfig();
 }
 
 Config::~Config(void) {

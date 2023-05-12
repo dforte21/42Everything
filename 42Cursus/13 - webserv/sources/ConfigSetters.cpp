@@ -1,8 +1,9 @@
 #include "../includes/Config.hpp"
 
 void	Config::setListen(void) {
-	size_t	pos;
-	size_t	end;
+	size_t		pos;
+	size_t		end;
+	std::string	listen_str;
 
 	pos = _configStr.find("listen");
 	end = _configStr.find(";", pos);
@@ -11,8 +12,13 @@ void	Config::setListen(void) {
 	pos = _configStr.find_first_not_of(" ", pos + 6);
 	if (pos >= end)
 		throw badConfigFile();
-	_listen = _configStr.substr(pos, end - pos);
-	if(_listen.find_first_not_of("1234567890") != std::string::npos)
+	listen_str = _configStr.substr(pos, end - pos);
+	int	myInt(std::stoi(listen_str));
+	if (myInt <= static_cast<int>(UINT16_MAX) && myInt >=0)
+    	_listen = static_cast<uint16_t>(myInt);
+	else
+		std::cout << "PORT OUT OF RANGE (uint16_t)\n";
+	if(listen_str.find_first_not_of("1234567890") != std::string::npos)
 		throw badConfigFile();
 }
 

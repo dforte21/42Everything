@@ -1,6 +1,6 @@
 #include "../includes/Config.hpp"
 
-std::string	Config::getListen(void) const {
+uint16_t	Config::getListen(void) const {
 	return _listen;
 }
 

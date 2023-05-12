@@ -9,7 +9,7 @@
 class Config {
 	private:
 		std::string					_configStr;
-		std::string					_listen;
+		uint16_t					_listen;
 		std::vector<std::string>	_server_name;
 		std::string					_root;
 		std::vector<std::string>	_index;
@@ -34,7 +34,7 @@ class Config {
 		void	setClientMaxBodySize(void);
 		void	setAllowedMethods(void);
 
-		std::string					getListen(void) const;
+		uint16_t					getListen(void) const;
 		std::vector<std::string>	getServerName(void) const;
 		std::string					getRoot(void) const;
 		std::vector<std::string>	getIndex(void) const;

@@ -1,12 +1,13 @@
 #include "../includes/Server.hpp"
 
 Server::Server(Config &config) {
+	config.displayConfig();
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(8080); //probabilmente da cambiare
+	_addr.sin_port = htons(config.getListen()); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	int yes = 1;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
@@ -113,7 +114,7 @@ std::map<std::string, std::string> Server::parse_request(std::string request) {
 			std::size_t space = line.find(' ', 0);
 			std::size_t space2 = line.find(' ', space + 1);
 			map.insert(std::pair<std::string, std::string>("HTTP method", line.substr(0, space)));
-			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2)));
+			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space)));
 			map.insert(std::pair<std::string, std::string>("protocol version", line.substr(space2 + 1, line.length())));
 			if (prova[i] != 4)
 				i++;
@@ -128,12 +129,12 @@ std::map<std::string, std::string> Server::parse_request(std::string request) {
 			if (prova[i] != 4)
 				i++;
 			first = i + 1;
-		}
 		std::size_t mid = line.find(':', 0);
 		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
 			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
 		else
 			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
+		}
 		i++;
 	}
 	return map;

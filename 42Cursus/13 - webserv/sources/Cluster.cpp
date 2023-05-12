@@ -1,9 +1,5 @@
 #include "../includes/Cluster.hpp"
 
-Cluster::Cluster() {
-
-}
-
 Cluster::Cluster(const char *filePath) {
 	std::ifstream	configFile;
 	std::string		fileContent;

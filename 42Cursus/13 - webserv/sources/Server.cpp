@@ -2,6 +2,7 @@
 
 Server::Server(Config &config) {
 	config.displayConfig();
+	// _config = config;
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
@@ -85,17 +86,21 @@ void	Server::startListening() {
 					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
 					if (tok_http.empty() == true)
-						std::cout<<"Ë vuotoooo\n\n\n";
-					else
-						std::cout<< tok_http.size() << std::endl;
-					for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-							it != tok_http.end(); it++) {
-								std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-					}
+						std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+					// 		it != tok_http.end(); it++) {
+					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+					// }
+					this->handle_request(tok_http);
 				}
 			}
 		}
 	}
+}
+
+void Server::handle_request(std::map<std::string, std::string> http_map) {
+	// if (config.allowed_methods[http_map[HTTP method]] == false)
+	// 	{}
 }
 
 std::map<std::string, std::string> Server::parse_request(std::string request) {

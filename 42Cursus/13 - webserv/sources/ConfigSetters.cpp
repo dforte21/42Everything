@@ -13,12 +13,12 @@ void	Config::setListen(void) {
 	if (pos >= end)
 		throw badConfigFile();
 	listen_str = _configStr.substr(pos, end - pos);
+	if(listen_str.find_first_not_of("1234567890") != std::string::npos)
+		throw badConfigFile();
 	int	myInt(std::stoi(listen_str));
 	if (myInt <= static_cast<int>(UINT16_MAX) && myInt >=0)
     	_listen = static_cast<uint16_t>(myInt);
 	else
-		std::cout << "PORT OUT OF RANGE (uint16_t)\n";
-	if(listen_str.find_first_not_of("1234567890") != std::string::npos)
 		throw badConfigFile();
 }
 

@@ -1,28 +1,18 @@
 #include "../includes/Config.hpp"
 
-Config::Config(std::string &configStr)
-	: _configStr(configStr) {
-	//std::cout << configStr << std::endl;
-	this->initAllowedMethods();
-	this->setListen();
-	this->setServerName();
-	this->setRoot();
-	this->setIndex();
-	this->setErrorPage();
-	this->setClientMaxBodySize();
-	this->setAllowedMethods();
+Config::Config(std::string &configStr) {
+	_listen = this->setListen(configStr);
+	_server_name = this->setServerName(configStr);
+	_root = this->setRoot(configStr);
+	_index = this->setIndex(configStr);
+	_error_page = this->setErrorPage(configStr);
+	_client_max_body_size = this->setClientMaxBodySize(configStr);
+	_allowed_methods = this->setAllowedMethods(configStr);
+	this->displayConfig();
 }
 
 Config::~Config(void) {
 	
-}
-
-void	Config::initAllowedMethods(void) {
-	_allowed_methods.insert(std::pair<std::string, bool>("GET", false));
-	_allowed_methods.insert(std::pair<std::string, bool>("POST", false));
-	_allowed_methods.insert(std::pair<std::string, bool>("HEAD", false));
-	_allowed_methods.insert(std::pair<std::string, bool>("PUT", false));
-	_allowed_methods.insert(std::pair<std::string, bool>("DELETE", false));
 }
 
 void	Config::displayConfig(void) const {

@@ -11,8 +11,8 @@ Cluster::Cluster(const char *filePath) {
 		throw wrongFilePath();
 	std::getline(configFile, fileContent, '\0');
 	this->setConfigVec(fileContent);
-	for(std::vector<Config>::iterator it = _configVec.begin(); it != _configVec.end(); it++)
-		_serverVec.push_back(*it);
+	// for(std::vector<Config>::iterator it = _configVec.begin(); it != _configVec.end(); it++)
+	// 	_serverVec.push_back(*it);
 	// std::string path(filePath);
 	// Config config(path);
 	// Server server(config);

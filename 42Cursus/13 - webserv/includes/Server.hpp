@@ -11,8 +11,10 @@
 
 class Server {
 	private:
-		int					_fd;
-		struct	sockaddr_in _addr;
+		int								_fd;
+		struct	sockaddr_in 			_addr;
+		Config							_serverConfig;
+		std::map<std::string, Config>	_locationConfig;
 
 		Server();
 

@@ -10,8 +10,9 @@
 
 class Cluster {
 	private:
-		std::vector<Server> _serverVec;
-		std::vector<Config> _configVec;
+		std::vector<Server>			_serverVec;
+		std::vector<Config>		_configVec;
+		
 		Cluster(void);
 
 	public:

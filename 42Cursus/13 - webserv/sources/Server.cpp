@@ -1,7 +1,8 @@
 #include "../includes/Server.hpp"
 
-Server::Server(Config &config) {
-	config.displayConfig();
+Server::Server(Config &config)
+	: _serverConfig(config){
+	_serverConfig.displayConfig();
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)

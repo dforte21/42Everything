@@ -1,5 +1,9 @@
 #include "../includes/Config.hpp"
 
+std::string	Config::getConfigStr(void) const {
+	return _configStr;
+}
+
 uint16_t	Config::getListen(void) const {
 	return _listen;
 }
@@ -26,4 +30,20 @@ int	Config::getClientMaxBodySize(void) const {
 
 std::map<std::string, bool>	Config::getAllowedMethods(void) const {
 	return _allowed_methods;
+}
+
+bool	Config::getAutoindex(void) const {
+	return _autoindex;
+}
+
+std::vector<std::string>	Config::getTryFiles(void) const {
+	return _try_files;
+}
+
+std::string	Config::getCgiPass(void) const {
+	return _cgi_pass;
+}
+
+std::vector<std::string>	Config::getExtensionCgi(void) const {
+	return _extension_cgi;
 }

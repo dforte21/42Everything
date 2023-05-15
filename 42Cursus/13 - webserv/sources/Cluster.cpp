@@ -1,8 +1,10 @@
 #include "../includes/Cluster.hpp"
 
 Cluster::Cluster(const char *filePath) {
-	std::ifstream	configFile;
-	std::string		fileContent;
+	std::ifstream				configFile;
+	std::string					fileContent;
+	size_t						pos;
+	std::vector<LocationConfig>	locationVec;
 
 	if (filePath == NULL)
 		filePath = "default.conf";
@@ -10,21 +12,31 @@ Cluster::Cluster(const char *filePath) {
 	if (!configFile.is_open())
 		throw wrongFilePath();
 	std::getline(configFile, fileContent, '\0');
-	this->setConfigVec(fileContent);
-	// for(std::vector<Config>::iterator it = _configVec.begin(); it != _configVec.end(); it++)
-	// 	_serverVec.push_back(*it);
-	// std::string path(filePath);
-	// Config config(path);
-	// Server server(config);
+	for(size_t pos = fileContent.find_first_of("#"); pos != std::string::npos; pos = fileContent.find_first_of("#"))
+		fileContent.erase(pos, fileContent.find_first_of("\n", pos) - pos);
+	this->divideByServer(fileContent);
+	for(std::vector<std::string>::iterator it = _serverConfigVec.begin(); it != _serverConfigVec.end(); it++)
+	{
+		pos = (*it).find("location");
+		if (pos == std::string::npos)
+			throw badConfigFile();
+		fileContent = (*it).substr(0, pos);
+		Config	config(fileContent);
+		fileContent = (*it).substr(pos, std::string::npos);
+		_LocationConfigVec.clear();
+		this->divideByLocation(fileContent);
+		for(std::vector<std::string>::iterator it = _LocationConfigVec.begin(); it != _LocationConfigVec.end(); it++)
+			locationVec.push_back(*it);
+		_serverVec.push_back(Server(config, locationVec));
+	}
 }
 
 Cluster::~Cluster(void) {
 
 }
 
-void	Cluster::setConfigVec(std::string &fileContent) {
+void	Cluster::divideByServer(std::string &fileContent) {
 	size_t						bodyLen;
-	std::vector<std::string>	serverConfig;
 
 	if (fileContent.find_first_not_of(" \n") < fileContent.find("server"))
 		throw badConfigFile();
@@ -50,10 +62,20 @@ void	Cluster::setConfigVec(std::string &fileContent) {
 		if (fileContent.find("server", begin + bodyLen) != std::string::npos &&
 			fileContent.find_first_not_of(" \n", fileContent.find("server", begin + bodyLen) + 6) < fileContent.find_first_of("{", begin + bodyLen))
 				throw badConfigFile();
-		serverConfig.push_back(fileContent.substr(begin, bodyLen));
+		_serverConfigVec.push_back(fileContent.substr(begin, bodyLen));
 	}
-	for (std::vector<std::string>::iterator it = serverConfig.begin(); it != serverConfig.end(); it++)
-		_configVec.push_back(*it);
+}
+
+void	Cluster::divideByLocation(std::string &fileContent) {
+	size_t						end;
+
+	for(size_t begin = fileContent.find("location"); begin != std::string::npos; begin = fileContent.find("location", end))
+	{
+		end = fileContent.find_first_of("}", begin);
+		if (end == std::string::npos)
+			throw badConfigFile();
+		_LocationConfigVec.push_back(fileContent.substr(begin, end - begin));
+	}
 }
 
 const char *Cluster::wrongFilePath::what() const throw() {

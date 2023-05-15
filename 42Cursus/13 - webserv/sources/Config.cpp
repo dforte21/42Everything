@@ -1,5 +1,9 @@
 #include "../includes/Config.hpp"
 
+Config::Config() {
+
+}
+
 Config::Config(std::string &configStr) {
 	_listen = this->setListen(configStr);
 	_server_name = this->setServerName(configStr);
@@ -8,7 +12,6 @@ Config::Config(std::string &configStr) {
 	_error_page = this->setErrorPage(configStr);
 	_client_max_body_size = this->setClientMaxBodySize(configStr);
 	_allowed_methods = this->setAllowedMethods(configStr);
-	this->displayConfig();
 }
 
 Config::~Config(void) {

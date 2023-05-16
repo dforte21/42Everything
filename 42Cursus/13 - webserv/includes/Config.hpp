@@ -7,6 +7,8 @@
 # include <cstdlib>
 
 class Config {
+	friend class Server;
+
 	private:
 		std::string					_configStr;
 		uint16_t					_listen;

@@ -1,6 +1,7 @@
 #include "../includes/Server.hpp"
+#include <sstream>
 
-Server::Server(Config &config) {
+Server::Server(Config &config) : _config(config){
 	config.displayConfig();
 	// _config = config;
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,18 +47,19 @@ void	Server::startListening() {
                         throw std::runtime_error("Accept error");
 					else {
 						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
-						printf("pollserver: new connection on socket %d\n", new_fd);
-						if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
-							std::cout << "Send error!\n";
+						std::cout << "new_fd:" << new_fd << std::endl;
+						// printf("pollserver: new connection on socket %d\n", new_fd);
+						// if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+						// 	std::cout << "Send error!\n";
 					}
 				}
 				else { //client
-					char buf[256];
-					int nbytes = 1;
+					char buf[1024];
+					int nbytes = 0;
 					std::string request;
-					while (nbytes > 0) {
-						nbytes = recv(pfds[i].fd, buf, 256, 0);
-						//buf[nbytes] = 0;
+					// if (nbytes > 0) {
+						if ((nbytes = recv(pfds[i].fd, buf, 1024, 0)) <= 0) {
+						// buf[nbytes] = 0;
 						if (nbytes == 0) {
 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
 							close(pfds[i].fd);
@@ -68,20 +70,20 @@ void	Server::startListening() {
 							close(pfds[i].fd);
 							del_from_pfds(pfds, i, &fd_count);
 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-						}
-						else {
-							//std::cout<< buf << "\nFINE"<<std::endl;
-							std::string buffer(buf);
-							request.append(buffer);
-							for(int j = 0; j < fd_count; j++) { 
-									// Except the listener and ourselves
-								if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
-
-									if (sendall(pfds[j].fd, buf, &nbytes) == -1)
-											std::cout << "Send error!\n";
-									}
 							}
 						}
+						else {
+							std::cout<< buf << "\nFINE"<<std::endl;
+							std::string buffer(buf);
+							request.append(buffer);
+							// for(int j = 0; j < fd_count; j++) { 
+							// 		// Except the listener and ourselves
+							// 	if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+
+							// 		if (sendall(pfds[j].fd, buf, &nbytes) == -1)
+							// 				std::cout << "Send error!\n";
+							// 		}
+							// }
 					}
 					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
@@ -91,16 +93,37 @@ void	Server::startListening() {
 					// 		it != tok_http.end(); it++) {
 					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
 					// }
-					this->handle_request(tok_http);
+					this->handle_request(tok_http, pfds[i].fd);
+					close(pfds[i].fd);
+					del_from_pfds(pfds, i, &fd_count);
 				}
 			}
 		}
 	}
 }
 
-void Server::handle_request(std::map<std::string, std::string> http_map) {
-	// if (config.allowed_methods[http_map[HTTP method]] == false)
-	// 	{}
+void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
+	std::map<std::string, bool>::iterator it = _config._allowed_methods.find(http_map.at("HTTP_method"));
+	std::cout << "fd:" << fd << std::endl;
+	if (it == _config._allowed_methods.end() || it->second == false) {
+		// std::cout<<"Dentro false!\n";
+		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
+		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";
+		std::stringstream ss;
+		ss << tmpBody.size();
+		res.append(ss.str());
+		std::string defBody = "\r\n\r\n";
+		defBody.append(tmpBody);
+		// res.append("\r\n\r\n");
+		res.append(defBody);
+		std::cout<< "res:\n" << res ;
+		if (send(fd, res.c_str(), res.size(), 0) == -1)
+			std::cout << "Send error!\n";
+	}
+	else
+		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+							std::cout << "Send error!\n";
+		
 }
 
 std::map<std::string, std::string> Server::parse_request(std::string request) {
@@ -118,9 +141,9 @@ std::map<std::string, std::string> Server::parse_request(std::string request) {
 			// std::cout << "firstline: " << line << std::endl;
 			std::size_t space = line.find(' ', 0);
 			std::size_t space2 = line.find(' ', space + 1);
-			map.insert(std::pair<std::string, std::string>("HTTP method", line.substr(0, space)));
+			map.insert(std::pair<std::string, std::string>("HTTP_method", line.substr(0, space)));
 			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space)));
-			map.insert(std::pair<std::string, std::string>("protocol version", line.substr(space2 + 1, line.length())));
+			map.insert(std::pair<std::string, std::string>("protocol_version", line.substr(space2 + 1, line.length())));
 			if (prova[i] != 4)
 				i++;
 			first = i + 1;

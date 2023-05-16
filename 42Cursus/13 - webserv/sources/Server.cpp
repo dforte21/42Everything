@@ -1,8 +1,7 @@
 #include "../includes/Server.hpp"
 #include <sstream>
 
-Server::Server(Config &config, std::vector<LocationConfig> &locationVec)
-	: _serverConfig(config), _locationConfig(locationVec) {
+Server::Server(Config &config, std::vector<LocationConfig> &locationVec) : _serverConfig(config), _locationConfig(locationVec) {
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
@@ -57,7 +56,7 @@ void	Server::startListening() {
 					int nbytes = 0;
 					std::string request;
 					// if (nbytes > 0) {
-						if ((nbytes = recv(pfds[i].fd, buf, 1024, 0)) <= 0) {
+					if ((nbytes = recv(pfds[i].fd, buf, 1024, 0)) <= 0) {
 						// buf[nbytes] = 0;
 						if (nbytes == 0) {
 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
@@ -70,19 +69,18 @@ void	Server::startListening() {
 							del_from_pfds(pfds, i, &fd_count);
 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
 							}
-						}
-						else {
-							std::cout<< buf << "\nFINE"<<std::endl;
-							std::string buffer(buf);
-							request.append(buffer);
-							// for(int j = 0; j < fd_count; j++) { 
-							// 		// Except the listener and ourselves
-							// 	if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
-
-							// 		if (sendall(pfds[j].fd, buf, &nbytes) == -1)
-							// 				std::cout << "Send error!\n";
-							// 		}
-							// }
+					}
+					else {
+						std::cout<< buf << "\nFINE"<<std::endl;
+						std::string buffer(buf);
+						request.append(buffer);
+						// for(int j = 0; j < fd_count; j++) { 
+						// 		// Except the listener and ourselves
+						// 	if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+						// 		if (sendall(pfds[j].fd, buf, &nbytes) == -1)
+						// 				std::cout << "Send error!\n";
+						// 		}
+						// }
 					}
 					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
@@ -102,9 +100,9 @@ void	Server::startListening() {
 }
 
 void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
-	std::map<std::string, bool>::iterator it = _config._allowed_methods.find(http_map.at("HTTP_method"));
+	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
 	std::cout << "fd:" << fd << std::endl;
-	if (it == _config._allowed_methods.end() || it->second == false) {
+	if (it == _serverConfig._allowed_methods.end() || it->second == false) {
 		// std::cout<<"Dentro false!\n";
 		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
 		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";

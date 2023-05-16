@@ -1,7 +1,9 @@
 NAME = webserv
 FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC_FOL = sources/
-SRC_FIL = $(addprefix sources/,main.cpp Cluster.cpp Server.cpp Config.cpp ConfigSetters.cpp ConfigGetters.cpp)
+SRC_FIL = $(addprefix sources/,main.cpp Cluster.cpp Server.cpp Config.cpp \
+			ConfigSetters.cpp ConfigGetters.cpp LocationConfig.cpp \
+				LocationConfigSetters.cpp LocationConfigGetters.cpp)
 OBJS = $(SRC_FIL:.cpp=.o)
 
 $(NAME): $(SRC_FIL)

@@ -10,32 +10,33 @@ class Config {
 	friend class Server;
 
 	private:
-		std::string					_configStr;
-		uint16_t					_listen;
-		std::vector<std::string>	_server_name;
-		std::string					_root;
-		std::vector<std::string>	_index;
-		std::vector<std::string>	_error_page;
-		int							_client_max_body_size;
-		std::map<std::string, bool>	_allowed_methods;
+		std::string						_configStr;
+		uint16_t						_listen;
+		std::vector<std::string>		_server_name;
+		std::string						_root;
+		std::vector<std::string>		_index;
+		std::vector<std::string>		_error_page;
+		int								_client_max_body_size;
+		std::map<std::string, bool>		_allowed_methods;
 
-		Config(void);
 
 	public:
+		Config(void);
 		Config(std::string &configStr);
 		~Config(void);
 
-		void	initAllowedMethods(void);
 		void	displayConfig(void) const;
 
-		void	setListen(void);
-		void	setServerName(void);
-		void	setRoot(void);
-		void	setIndex(void);
-		void	setErrorPage(void);
-		void	setClientMaxBodySize(void);
-		void	setAllowedMethods(void);
+		uint16_t					setListen(std::string &configStr);
+		std::vector<std::string>	setServerName(std::string &configStr);
+		std::string					setRoot(std::string &configStr);
+		std::vector<std::string>	setIndex(std::string &configStr);
+		std::vector<std::string>	setErrorPage(std::string &configStr);
+		int							setClientMaxBodySize(std::string &configStr);
+		std::map<std::string, bool>	setAllowedMethods(std::string &configStr);
 
+
+		std::string					getConfigStr(void) const;
 		uint16_t					getListen(void) const;
 		std::vector<std::string>	getServerName(void) const;
 		std::string					getRoot(void) const;

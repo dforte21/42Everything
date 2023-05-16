@@ -1,143 +1,163 @@
 #include "../includes/Config.hpp"
 
-void	Config::setListen(void) {
+uint16_t	Config::setListen(std::string &configStr) {
 	size_t		pos;
 	size_t		end;
-	std::string	listen_str;
+	int			myInt;
+	std::string	line;
 
-	pos = _configStr.find("listen");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+	pos = configStr.find("listen");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" ", pos + 6);
+	pos = configStr.find_first_not_of(" ", pos + 6);
 	if (pos >= end)
 		throw badConfigFile();
-	listen_str = _configStr.substr(pos, end - pos);
-	if(listen_str.find_first_not_of("1234567890") != std::string::npos)
+	line = configStr.substr(pos, end - pos);
+	if(line.find_first_not_of("1234567890") != std::string::npos)
 		throw badConfigFile();
-	int	myInt(std::stoi(listen_str));
-	if (myInt <= static_cast<int>(UINT16_MAX) && myInt >=0)
-    	_listen = static_cast<uint16_t>(myInt);
-	else
-		throw badConfigFile();
+	myInt = std::stoi(line, 0, 10);
+	if (myInt > static_cast<int>(UINT16_MAX) || myInt <= 0)
+    	throw badConfigFile();
+	return static_cast<uint16_t>(myInt);
 }
 
-void	Config::setServerName(void) {
+std::vector<std::string>	Config::setServerName(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
+	std::vector<std::string> server_name;
 
-	pos = _configStr.find("server_name");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+	pos = configStr.find("server_name");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 11);
+	pos = configStr.find_first_not_of(" \t", pos + 11);
 	if (pos >= end)
 		throw badConfigFile();
-	line = _configStr.substr(pos, end - pos);
+	line = configStr.substr(pos, end - pos);
 	for (pos = 0; pos != std::string::npos; pos = line.find_first_not_of(" \t", end))
 	{
 		end = line.find_first_of(" \t", pos);
-		_server_name.push_back(line.substr(pos, end - pos));
+		server_name.push_back(line.substr(pos, end - pos));
 	}
+	return server_name;
 }
 
-void	Config::setRoot(void) {
+std::string		Config::setRoot(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
+	std::string	root;
 
-	pos = _configStr.find("root");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+	pos = configStr.find("root");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 4);
+	pos = configStr.find_first_not_of(" \t", pos + 4);
 	if (pos >= end)
 		throw badConfigFile();
-	_root = _configStr.substr(pos, end - pos);
-	if (_root.find_first_of(" \t") != std::string::npos)
+	root = configStr.substr(pos, end - pos);
+	if (root.find_first_of(" \t") != std::string::npos)
 		throw badConfigFile();
+	return root;
 }
 
-void	Config::setIndex(void) {
+std::vector<std::string>	Config::setIndex(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
+	std::vector<std::string>	index;
 
-	pos = _configStr.find("index");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+
+	pos = configStr.find("index");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 5);
+	pos = configStr.find_first_not_of(" \t", pos + 5);
 	if (pos >= end)
 		throw badConfigFile();
-	line = _configStr.substr(pos, end - pos);
+	line = configStr.substr(pos, end - pos);
 	for (pos = 0; pos != std::string::npos; pos = line.find_first_not_of(" \t", end))
 	{
 		end = line.find_first_of(" \t", pos);
-		_index.push_back(line.substr(pos, end - pos));
+		index.push_back(line.substr(pos, end - pos));
 	}
+	return index;
 }
 
-void	Config::setErrorPage(void) {
+std::vector<std::string>	Config::setErrorPage(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
+	std::vector<std::string>	error_page;
 
-	pos = _configStr.find("error_page");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+	pos = configStr.find("error_page");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 10);
+	pos = configStr.find_first_not_of(" \t", pos + 10);
 	if (pos >= end)
 		throw badConfigFile();
-	line = _configStr.substr(pos, end - pos);
+	line = configStr.substr(pos, end - pos);
 	for (pos = 0; pos != std::string::npos; pos = line.find_first_not_of(" \t", end))
 	{
 		end = line.find_first_of(" \t", pos);
-		_error_page.push_back(line.substr(pos, end - pos));
+		error_page.push_back(line.substr(pos, end - pos));
 	}
+	return error_page;
 }
 
-void	Config::setClientMaxBodySize(void) {
+int	Config::setClientMaxBodySize(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
+	int		myInt;
 
-	pos = _configStr.find("client_max_body_size");
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+	pos = configStr.find("client_max_body_size");
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 20);
+	pos = configStr.find_first_not_of(" \t", pos + 20);
 	if (pos >= end)
 		throw badConfigFile();
-	line = _configStr.substr(pos, end - pos);
-	if (line.find_first_not_of("0123456789Kk") != std::string::npos)
-		throw badConfigFile();
+	line = configStr.substr(pos, end - pos);
 	pos = line.find_first_of("Kk");
 	if (pos != std::string::npos)
 		line.replace(pos, 1, 3, '0');
-	_client_max_body_size = std::atoi(line.c_str());
+	if (line.find_first_not_of("0123456789Kk") != std::string::npos)
+		throw badConfigFile();
+	myInt = std::stoi(line, 0, 10);
+	if (myInt < 0)
+		throw badConfigFile();
+	return myInt;
 }
 
-void	Config::setAllowedMethods(void) {
+std::map<std::string, bool>	Config::setAllowedMethods(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
+	std::map<std::string, bool>	allowed_methods;
 
-	pos = _configStr.find("allowed_methods");
+	allowed_methods.insert(std::pair<std::string, bool>("GET", false));
+	allowed_methods.insert(std::pair<std::string, bool>("POST", false));
+	allowed_methods.insert(std::pair<std::string, bool>("HEAD", false));
+	allowed_methods.insert(std::pair<std::string, bool>("PUT", false));
+	allowed_methods.insert(std::pair<std::string, bool>("DELETE", false));
+	pos = configStr.find("allowed_methods");
 	if (pos == std::string::npos)
-		return ;
-	end = _configStr.find(";", pos);
-	if (pos == std::string::npos || end == std::string::npos || _configStr.at(end + 1) != '\n')
+		return allowed_methods;
+	end = configStr.find(";", pos);
+	if (pos == std::string::npos || end == std::string::npos || configStr.at(end + 1) != '\n')
 		throw badConfigFile();
-	pos = _configStr.find_first_not_of(" \t", pos + 15);
+	pos = configStr.find_first_not_of(" \t", pos + 15);
 	if (pos >= end)
 		throw badConfigFile();
-	line = _configStr.substr(pos, end - pos);
+	line = configStr.substr(pos, end - pos);
 	for (pos = 0; pos != std::string::npos; pos = line.find_first_not_of(" \t", end))
 	{
-		if(_allowed_methods.find(line) == _allowed_methods.end())
+		if(allowed_methods.find(line) == allowed_methods.end())
 			throw badConfigFile();
-		_allowed_methods[line] = true;
+		allowed_methods[line] = true;
 	}
+	return allowed_methods;
 }

@@ -1,5 +1,9 @@
 #include "../includes/Config.hpp"
 
+std::string	Config::getConfigStr(void) const {
+	return _configStr;
+}
+
 uint16_t	Config::getListen(void) const {
 	return _listen;
 }

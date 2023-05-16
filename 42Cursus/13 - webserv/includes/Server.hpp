@@ -1,19 +1,21 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "Config.hpp"
-#include <iostream>
-#include <netinet/in.h>
-#include "unistd.h"
-#include <poll.h>
-#include <fcntl.h>
-#include <map>
+# include "Config.hpp"
+# include "LocationConfig.hpp"
+# include <iostream>
+# include <netinet/in.h>
+# include "unistd.h"
+# include <poll.h>
+# include <fcntl.h>
+# include <vector>
 
 class Server {
 	private:
-		int					_fd;
-		struct	sockaddr_in _addr;
-		Config				_config;
+		int							_fd;
+		struct	sockaddr_in 		_addr;
+		Config						_serverConfig;
+		std::vector<LocationConfig>	_locationConfig;
 
 		Server();
 
@@ -24,7 +26,7 @@ class Server {
 		void								del_from_pfds(struct pollfd *, int i, int *fd_count);
 		int									sendall(int fd,char *buf, int *len);
 	public:
-		Server(Config &config);
+		Server(Config &config, std::vector<LocationConfig> &locationVec);
 		~Server();
 };
 

@@ -1,5 +1,4 @@
 #include "../includes/Server.hpp"
-#include <sstream>
 
 Server::Server(Config &config, std::vector<LocationConfig> &locationVec) : _serverConfig(config), _locationConfig(locationVec) {
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -22,6 +21,82 @@ Server::Server(Config &config, std::vector<LocationConfig> &locationVec) : _serv
 Server::~Server(void) {
 
 }
+
+// void	Server::startListening() {
+// 	int fd_count = 1;
+//     int fd_size = 5;
+// 	struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);
+// 	pfds[0].fd = _fd;
+// 	pfds[0].events = POLLIN;
+// 	int poll_count = 0;
+// 	int new_fd;
+// 	struct sockaddr_storage client_addr;
+// 	socklen_t sin_size = sizeof(client_addr);
+// 	for (;;) {
+// 		poll_count = poll(pfds, fd_count, -1);
+// 		if (poll_count == -1)
+// 			throw std::runtime_error("Poll error");
+// 		for(int i = 0; i < fd_count; i++) {
+// 			if (pfds[i].revents & POLLIN) {
+// 				if (i == 0) { //listener
+// 					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
+// 					if (new_fd == -1)
+//                         throw std::runtime_error("Accept error");
+// 					else {
+// 						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
+// 						std::cout << "new_fd:" << new_fd << std::endl;
+// 						// printf("pollserver: new connection on socket %d\n", new_fd);
+// 						// if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+// 						// 	std::cout << "Send error!\n";
+// 					}
+// 				}
+// 				else { //client
+// 					char buf[1024];
+// 					int nbytes = 0;
+// 					std::string request;
+// 					// if (nbytes > 0) {
+// 					if ((nbytes = recv(pfds[i].fd, buf, 1024, 0)) <= 0) {
+// 						// buf[nbytes] = 0;
+// 						if (nbytes == 0) {
+// 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
+// 							close(pfds[i].fd);
+// 							del_from_pfds(pfds, i, &fd_count);
+// 						}
+// 						else if (nbytes < 0){
+// 							std::cout << "Recv error\n";
+// 							close(pfds[i].fd);
+// 							del_from_pfds(pfds, i, &fd_count);
+// 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
+// 							}
+// 					}
+// 					else {
+// 						std::cout<< buf << "\nFINE"<<std::endl;
+// 						std::string buffer(buf);
+// 						request.append(buffer);
+// 						// for(int j = 0; j < fd_count; j++) { 
+// 						// 		// Except the listener and ourselves
+// 						// 	if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
+// 						// 		if (sendall(pfds[j].fd, buf, &nbytes) == -1)
+// 						// 				std::cout << "Send error!\n";
+// 						// 		}
+// 						// }
+// 					}
+// 					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
+// 					std::map<std::string, std::string> tok_http = this->parse_request(request);
+// 					if (tok_http.empty() == true)
+// 						std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+// 					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+// 					// 		it != tok_http.end(); it++) {
+// 					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+// 					// }
+// 					this->handle_request(tok_http, pfds[i].fd);
+// 					close(pfds[i].fd);
+// 					del_from_pfds(pfds, i, &fd_count);
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 void	Server::startListening() {
 	int fd_count = 1;
@@ -46,53 +121,52 @@ void	Server::startListening() {
 					else {
 						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
 						std::cout << "new_fd:" << new_fd << std::endl;
-						// printf("pollserver: new connection on socket %d\n", new_fd);
-						// if (send(new_fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
-						// 	std::cout << "Send error!\n";
 					}
 				}
 				else { //client
-					char buf[1024];
+					char buf[256];
 					int nbytes = 0;
 					std::string request;
-					// if (nbytes > 0) {
-					if ((nbytes = recv(pfds[i].fd, buf, 1024, 0)) <= 0) {
-						// buf[nbytes] = 0;
+					// static std::string rest; //da implementare ma é una madonna
+					// if (rest.empty() == false)
+					// 	request + res;
+					while (1) {
+						nbytes += recv(pfds[i].fd, buf, 255, 0);
+						// std::cout<< "nbytes:"<< nbytes << std::endl;
 						if (nbytes == 0) {
-							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-							close(pfds[i].fd);
-							del_from_pfds(pfds, i, &fd_count);
+							// std::cout << "Connection from " << pfds[i].fd << " fine recv(0).\n";
+							break ;
 						}
 						else if (nbytes < 0){
 							std::cout << "Recv error\n";
 							close(pfds[i].fd);
 							del_from_pfds(pfds, i, &fd_count);
 							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-							}
+							break ;
+						}
+						buf[nbytes] = '\0';
+						request += buf;
+						size_t diopo;
+						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
+							// if (diopo + 4 < nbytes)
+							// 	rest = request.substr(diopo + 4, request.size() - (diopo + 4))
+							// else if (rest.empty() == false)
+							// 	rest.clear();
+							break ;
+						}
 					}
-					else {
-						std::cout<< buf << "\nFINE"<<std::endl;
-						std::string buffer(buf);
-						request.append(buffer);
-						// for(int j = 0; j < fd_count; j++) { 
-						// 		// Except the listener and ourselves
-						// 	if (pfds[j].fd != pfds[0].fd && pfds[j].fd != pfds[i].fd) {
-						// 		if (sendall(pfds[j].fd, buf, &nbytes) == -1)
-						// 				std::cout << "Send error!\n";
-						// 		}
-						// }
-					}
-					// std::cout<< "\n REQUEST:\n "<< request << std::endl;
+					// if (request != "")
+					// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
 					std::map<std::string, std::string> tok_http = this->parse_request(request);
-					if (tok_http.empty() == true)
-						std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+					// if (tok_http.empty() == true)
+					// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
 					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
 					// 		it != tok_http.end(); it++) {
 					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
 					// }
 					this->handle_request(tok_http, pfds[i].fd);
-					close(pfds[i].fd);
-					del_from_pfds(pfds, i, &fd_count);
+					// close(pfds[i].fd);
+					// del_from_pfds(pfds, i, &fd_count);
 				}
 			}
 		}
@@ -100,20 +174,15 @@ void	Server::startListening() {
 }
 
 void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
+	if (http_map.empty())
+		return ;
 	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
-	std::cout << "fd:" << fd << std::endl;
 	if (it == _serverConfig._allowed_methods.end() || it->second == false) {
-		// std::cout<<"Dentro false!\n";
 		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
-		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";
-		std::stringstream ss;
-		ss << tmpBody.size();
-		res.append(ss.str());
+		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
 		std::string defBody = "\r\n\r\n";
 		defBody.append(tmpBody);
-		// res.append("\r\n\r\n");
 		res.append(defBody);
-		std::cout<< "res:\n" << res ;
 		if (send(fd, res.c_str(), res.size(), 0) == -1)
 			std::cout << "Send error!\n";
 	}

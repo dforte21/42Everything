@@ -11,9 +11,8 @@
 
 class Cluster {
 	private:
-		std::vector<std::string>	_serverConfigVec;
-		std::vector<std::string>	_LocationConfigVec;
-		std::vector<Server>			_serverVec;
+		std::vector<Config>	_configVec;
+		std::vector<Server>	_serverVec;
 		
 		Cluster(void);
 
@@ -21,8 +20,7 @@ class Cluster {
 		Cluster(const char *filePath);
 		~Cluster(void);
 
-		void	divideByServer(std::string &fileContent);
-		void	divideByLocation(std::string &fileContent);
+		sVec	divideByServer(std::string &fileContent);
 
 		struct	wrongFilePath : public std::exception {
 			virtual const char *what() const throw();

@@ -4,39 +4,39 @@ Config::Config() {
 
 }
 
-Config::Config(std::string &configStr) {
-	_listen = this->setListen(configStr);
-	_server_name = this->setServerName(configStr);
-	_root = this->setRoot(configStr);
-	_index = this->setIndex(configStr);
-	_error_page = this->setErrorPage(configStr);
-	_client_max_body_size = this->setClientMaxBodySize(configStr);
-	_allowed_methods = this->setAllowedMethods(configStr);
+Config::Config(std::string &serverBody) {
+	std::cout << serverBody << std::endl;
 }
 
 Config::~Config(void) {
 	
 }
 
+// std::string	Config::findDirective(std::string &line) const {
+// 	size_t	pos;
+
+	
+// }
+
 void	Config::displayConfig(void) const {
-	std::vector<std::string> vec;
+	sVec vec;
 	std::map<std::string, bool> map;
 
 	std::cout << "listen: " << this->getListen() << std::endl;
 	std::cout << "server_name: ";
 	vec = this->getServerName();
-	for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); it++)
+	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
 		std::cout << *it << ' ';
 	std::cout << std::endl;
 	std::cout << "root: " << this->getRoot() << std::endl;
 	std::cout << "index: ";
 	vec = this->getIndex();
-	for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); it++)
+	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
 		std::cout << *it << ' ';
 	std::cout << std::endl;
 	std::cout << "error_page: ";
 	vec = this->getErrorPage();
-	for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); it++)
+	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
 		std::cout << *it << ' ';
 	std::cout << std::endl;
 	std::cout << "client_max_body_size: " << this->getClientMaxBodySize() << std::endl;

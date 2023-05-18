@@ -22,11 +22,11 @@ uint16_t	Config::setListen(std::string &configStr) {
 	return static_cast<uint16_t>(myInt);
 }
 
-std::vector<std::string>	Config::setServerName(std::string &configStr) {
+sVec	Config::setServerName(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
-	std::vector<std::string> server_name;
+	sVec server_name;
 
 	pos = configStr.find("server_name");
 	end = configStr.find(";", pos);
@@ -62,11 +62,11 @@ std::string		Config::setRoot(std::string &configStr) {
 	return root;
 }
 
-std::vector<std::string>	Config::setIndex(std::string &configStr) {
+sVec	Config::setIndex(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
-	std::vector<std::string>	index;
+	sVec	index;
 
 
 	pos = configStr.find("index");
@@ -85,11 +85,11 @@ std::vector<std::string>	Config::setIndex(std::string &configStr) {
 	return index;
 }
 
-std::vector<std::string>	Config::setErrorPage(std::string &configStr) {
+sVec	Config::setErrorPage(std::string &configStr) {
 	size_t	pos;
 	size_t	end;
 	std::string	line;
-	std::vector<std::string>	error_page;
+	sVec	error_page;
 
 	pos = configStr.find("error_page");
 	end = configStr.find(";", pos);

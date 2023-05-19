@@ -5,7 +5,7 @@ Config::Config() {
 }
 
 Config::Config(std::string &serverBody) {
-	std::cout << serverBody << std::endl;
+	//std::cout << serverBody << std::endl;
 }
 
 Config::~Config(void) {

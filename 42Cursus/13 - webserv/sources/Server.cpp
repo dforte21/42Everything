@@ -6,7 +6,7 @@ Server::Server(Config &config, std::vector<LocationConfig> &locationVec) : _serv
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(config.getListen()); //probabilmente da cambiare
+	_addr.sin_port = htons(12356); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	int yes = 1;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
@@ -104,6 +104,8 @@ void	Server::startListening() {
 	struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);
 	pfds[0].fd = _fd;
 	pfds[0].events = POLLIN;
+	std::vector<std::string> rest;
+	rest.resize(fd_size);
 	int poll_count = 0;
 	int new_fd;
 	struct sockaddr_storage client_addr;
@@ -112,14 +114,17 @@ void	Server::startListening() {
 		poll_count = poll(pfds, fd_count, -1);
 		if (poll_count == -1)
 			throw std::runtime_error("Poll error");
+		int pollin_count = 0;
 		for(int i = 0; i < fd_count; i++) {
-			if (pfds[i].revents & POLLIN) {
+			if (pfds[i].revents & POLLIN){
 				if (i == 0) { //listener
 					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
                         throw std::runtime_error("Accept error");
 					else {
 						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
+						if (rest.capacity() < fd_size)
+							rest.resize(fd_size);
 						std::cout << "new_fd:" << new_fd << std::endl;
 					}
 				}
@@ -127,9 +132,8 @@ void	Server::startListening() {
 					char buf[256];
 					int nbytes = 0;
 					std::string request;
-					// static std::string rest; //da implementare ma é una madonna
-					// if (rest.empty() == false)
-					// 	request + res;
+					if (rest.at(i).empty() == false)
+						request + rest.at(i);
 					while (1) {
 						nbytes += recv(pfds[i].fd, buf, 255, 0);
 						// std::cout<< "nbytes:"<< nbytes << std::endl;
@@ -148,10 +152,10 @@ void	Server::startListening() {
 						request += buf;
 						size_t diopo;
 						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
-							// if (diopo + 4 < nbytes)
-							// 	rest = request.substr(diopo + 4, request.size() - (diopo + 4))
-							// else if (rest.empty() == false)
-							// 	rest.clear();
+							if (diopo + 4 < nbytes)
+								rest.at(i) = request.substr(diopo + 4, request.size() - (diopo + 4));
+							else if (rest.empty() == false)
+								rest.at(i).clear();
 							break ;
 						}
 					}
@@ -168,15 +172,20 @@ void	Server::startListening() {
 					// close(pfds[i].fd);
 					// del_from_pfds(pfds, i, &fd_count);
 				}
+				pollin_count++;
+				if (pollin_count == poll_count)
+					break ;
 			}
 		}
 	}
 }
 
+
 void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
 	if (http_map.empty())
 		return ;
 	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
+	std::cout<< "get allowed?" << it->second << std::endl;
 	if (it == _serverConfig._allowed_methods.end() || it->second == false) {
 		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
 		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";

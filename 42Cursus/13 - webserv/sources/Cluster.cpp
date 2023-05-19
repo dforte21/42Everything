@@ -14,7 +14,7 @@ Cluster::Cluster(const char *filePath) {
 	std::getline(configFile, fileContent, '\0');
 	for(size_t pos = fileContent.find_first_of("#"); pos != std::string::npos; pos = fileContent.find_first_of("#"))
 		fileContent.erase(pos, fileContent.find_first_of("\n", pos) - pos);
-	this->divideByServer(fileContent);
+	serverBodyVec = this->divideByServer(fileContent);
 	for(sVec::iterator it = serverBodyVec.begin(); it != serverBodyVec.end(); it++)
 	{
 		Config	config(*it);

@@ -180,21 +180,52 @@ void	Server::startListening() {
 	}
 }
 
+void	Server::default_error_answer(int err, int fd) {
+	std::string tmpString;
 
-void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
-	if (http_map.empty())
-		return ;
-	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
-	std::cout<< "get allowed?" << it->second << std::endl;
-	if (it == _serverConfig._allowed_methods.end() || it->second == false) {
-		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
-		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
+
+		switch (err)
+	{
+		case 100: tmpString = "100 Continue"; break ;
+		case 200: tmpString = "200 OK"; break ;
+		case 201: tmpString = "201 Created"; break ;
+		case 202: tmpString = "202 Accepted"; break ;
+		case 203: tmpString = "203 Non-Authoritative Information"; break ;
+		case 204: tmpString = "204 No content"; break ;
+		case 205: tmpString = "205 Reset Content"; break ;
+		case 206: tmpString = "206 Partial Content"; break ;
+		case 400: tmpString = "400 Bad Request"; break ;
+		case 401: tmpString = "401 Unauthorized"; break ;
+		case 402: tmpString = "402 Payment Required"; break ;
+		case 403: tmpString = "403 Forbidden"; break ;
+		case 404: tmpString = "404 Not Found"; break ;
+		case 405: tmpString = "405 Method Not Allowed"; break ;
+		case 406: tmpString = "406 Not Acceptable"; break ;
+		case 411: tmpString = "411 Length Required"; break ;
+		case 413: tmpString = "413 Request Entity Too Large"; break ;
+		case 500: tmpString = "500 Internal Server Error"; break ;
+		case 501: tmpString = "501 Not Implemented"; break ;
+		case 510: tmpString = "510 Not Extended"; break ;
+		default: break ;
+	}
+
+	if (err != 100) {
+		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
+		std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
 		std::string defBody = "\r\n\r\n";
 		defBody.append(tmpBody);
 		res.append(defBody);
 		if (send(fd, res.c_str(), res.size(), 0) == -1)
 			std::cout << "Send error!\n";
 	}
+}
+
+void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
+	if (http_map.empty())
+		return ;
+	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
+	if (it == _serverConfig._allowed_methods.end() || it->second == false)
+		this->default_error_answer(405, fd);
 	else
 		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
 							std::cout << "Send error!\n";

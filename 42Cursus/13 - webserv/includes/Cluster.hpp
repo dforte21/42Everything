@@ -14,6 +14,8 @@ class Cluster {
 	private:
 		std::vector<Config>	_configVec;
 		std::vector<Server>	_serverVec;
+		struct pollfd 		*_pfds;
+		int					_pfdsSize;
 		
 		Cluster(void);
 
@@ -23,6 +25,8 @@ class Cluster {
 
 		sVec	divideByServer(std::string &fileContent);
 		void	displayServerConfig(Config &config) const;
+		void	setPfds(void);
+		void	startListening(void);
 
 		struct	wrongFilePath : public std::exception {
 			virtual const char *what() const throw();

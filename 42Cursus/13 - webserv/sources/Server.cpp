@@ -6,7 +6,7 @@ Server::Server(Config &config) : _serverConfig(config) {
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(12356); //probabilmente da cambiare
+	_addr.sin_port = htons(config.getListen()); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	int yes = 1;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
@@ -15,7 +15,7 @@ Server::Server(Config &config) : _serverConfig(config) {
 		throw std::runtime_error("Unable to bind socket");
 	if (listen(_fd, 1000) < 0)
 		throw std::runtime_error("Listen error");
-	this->startListening();
+	//this->startListening();
 }
 
 Server::~Server(void) {
@@ -98,88 +98,6 @@ Server::~Server(void) {
 // 	}
 // }
 
-void	Server::startListening() {
-	int fd_count = 1;
-    int fd_size = 5;
-	struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);
-	pfds[0].fd = _fd;
-	pfds[0].events = POLLIN;
-	std::vector<std::string> rest;
-	rest.resize(fd_size);
-	int poll_count = 0;
-	int new_fd;
-	struct sockaddr_storage client_addr;
-	socklen_t sin_size = sizeof(client_addr);
-	for (;;) {
-		poll_count = poll(pfds, fd_count, -1);
-		if (poll_count == -1)
-			throw std::runtime_error("Poll error");
-		int pollin_count = 0;
-		for(int i = 0; i < fd_count; i++) {
-			if (pfds[i].revents & POLLIN){
-				if (i == 0) { //listener
-					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
-					if (new_fd == -1)
-                        throw std::runtime_error("Accept error");
-					else {
-						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
-						if (rest.capacity() < fd_size)
-							rest.resize(fd_size);
-						std::cout << "new_fd:" << new_fd << std::endl;
-					}
-				}
-				else { //client
-					char buf[256];
-					int nbytes = 0;
-					std::string request;
-					if (rest.at(i).empty() == false)
-						request + rest.at(i);
-					while (1) {
-						nbytes += recv(pfds[i].fd, buf, 255, 0);
-						// std::cout<< "nbytes:"<< nbytes << std::endl;
-						if (nbytes == 0) {
-							// std::cout << "Connection from " << pfds[i].fd << " fine recv(0).\n";
-							break ;
-						}
-						else if (nbytes < 0){
-							std::cout << "Recv error\n";
-							close(pfds[i].fd);
-							del_from_pfds(pfds, i, &fd_count);
-							std::cout << "Connection from " << pfds[i].fd << " closed.\n";
-							break ;
-						}
-						buf[nbytes] = '\0';
-						request += buf;
-						size_t diopo;
-						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
-							if (diopo + 4 < nbytes)
-								rest.at(i) = request.substr(diopo + 4, request.size() - (diopo + 4));
-							else if (rest.empty() == false)
-								rest.at(i).clear();
-							break ;
-						}
-					}
-					// if (request != "")
-					// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
-					std::map<std::string, std::string> tok_http = this->parse_request(request);
-					// if (tok_http.empty() == true)
-					// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
-					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-					// 		it != tok_http.end(); it++) {
-					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-					// }
-					this->handle_request(tok_http, pfds[i].fd);
-					// close(pfds[i].fd);
-					// del_from_pfds(pfds, i, &fd_count);
-				}
-				pollin_count++;
-				if (pollin_count == poll_count)
-					break ;
-			}
-		}
-	}
-}
-
 void	Server::default_error_answer(int err, int fd) {
 	std::string tmpString;
 
@@ -223,8 +141,8 @@ void	Server::default_error_answer(int err, int fd) {
 void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
 	if (http_map.empty())
 		return ;
-	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
-	if (it == _serverConfig._allowed_methods.end() || it->second == false)
+	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
+	if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
 		this->default_error_answer(405, fd);
 	else
 		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)

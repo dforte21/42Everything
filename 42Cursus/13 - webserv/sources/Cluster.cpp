@@ -21,6 +21,8 @@ Cluster::Cluster(const char *filePath) {
 		this->displayServerConfig(config);
 		_serverVec.push_back(config);
 	}
+	this->setPfds();
+	this->startListening();
 }
 
 Cluster::~Cluster(void) {
@@ -70,6 +72,96 @@ void	Cluster::displayServerConfig(Config &config) const {
 	{
 		std::cout << "Name: " << it->first << std::endl;
 		it->second.displayConfig();
+	}
+}
+
+
+void	Cluster::setPfds(void) {
+	_pfdsSize = _serverVec.size() * 2;
+	_pfds = (struct pollfd *)malloc(sizeof _pfds * _pfdsSize);
+	int i = 0;
+	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++, i++)
+	{
+		_pfds[i].fd = it->getServerSocket();
+		_pfds[i].events = POLLIN;
+	}
+}
+
+void	Cluster::startListening() {
+	_pfds[0].events = POLLIN;
+	std::vector<std::string> rest;
+	rest.resize(_pfdsSize);
+	int poll_count = 0;
+	int new_fd;
+	struct sockaddr_storage client_addr;
+	socklen_t sin_size = sizeof(client_addr);
+	for (;;) {
+		poll_count = poll(_pfds, _serverVec.size(), -1);
+		if (poll_count == -1)
+			throw std::runtime_error("Poll error");
+		int pollin_count = 0;
+		for(int i = 0; i < _serverVec.size(); i++) {
+			if (_pfds[i].revents & POLLIN){
+				if (i < _serverVec.size()) { //listener
+					new_fd = accept(_pfds[i].fd, (struct sockaddr *)&client_addr, &sin_size);
+					if (new_fd == -1)
+						throw std::runtime_error("Accept error");
+					else {
+						add_to__pfds(_pfds, new_fd, &_serverVec.size(), &_pfdsSize);
+						if (rest.capacity() < _pfdsSize)
+							rest.resize(_pfdsSize);
+						std::cout << "new_fd:" << new_fd << std::endl;
+					}
+				}
+				else { //client
+					char buf[256];
+					int nbytes = 0;
+					std::string request;
+					if (rest.at(i).empty() == false)
+						request + rest.at(i);
+					while (1) {
+						nbytes += recv(_pfds[i].fd, buf, 255, 0);
+						// std::cout<< "nbytes:"<< nbytes << std::endl;
+						if (nbytes == 0) {
+							// std::cout << "Connection from " << _pfds[i].fd << " fine recv(0).\n";
+							break ;
+						}
+						else if (nbytes < 0){
+							std::cout << "Recv error\n";
+							close(_pfds[i].fd);
+							del_from_pfds(_pfds, i, &_serverVec.size());
+							std::cout << "Connection from " << _pfds[i].fd << " closed.\n";
+							break ;
+						}
+						buf[nbytes] = '\0';
+						request += buf;
+						size_t diopo;
+						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
+							if (diopo + 4 < nbytes)
+								rest.at(i) = request.substr(diopo + 4, request.size() - (diopo + 4));
+							else if (rest.empty() == false)
+								rest.at(i).clear();
+							break ;
+						}
+					}
+					// if (request != "")
+					// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
+					std::map<std::string, std::string> tok_http = this->parse_request(request);
+					// if (tok_http.empty() == true)
+					// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+					// 		it != tok_http.end(); it++) {
+					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+					// }
+					this->handle_request(tok_http, _pfds[i].fd);
+					// close(_pfds[i].fd);
+					// del_from_pfds(pfds, i, &_serverVec.size());
+				}
+				pollin_count++;
+				if (pollin_count == poll_count)
+					break ;
+			}
+		}
 	}
 }
 

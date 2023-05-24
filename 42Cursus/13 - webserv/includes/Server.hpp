@@ -17,7 +17,6 @@ class Server {
 
 		Server();
 
-		void								startListening();
 		void								default_error_answer(int err, int fd);
 		std::map<std::string, std::string>	parse_request(std::string request);
 		void								handle_request(std::map<std::string, std::string>, int fd);
@@ -25,9 +24,12 @@ class Server {
 		void								del_from_pfds(struct pollfd *, int i, int *fd_count);
 		int									sendall(int fd,char *buf, int *len);
 
+
 	public:
 		Server(Config &config);
 		~Server();
+		
+		int									getServerSocket(void) const;
 };
 
 #endif

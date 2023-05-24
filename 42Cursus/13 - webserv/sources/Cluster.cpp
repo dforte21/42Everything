@@ -4,7 +4,7 @@ Cluster::Cluster(const char *filePath) {
 	std::ifstream	configFile;
 	std::string		fileContent;
 	sVec			serverBodyVec;
-	std::vector<LocationConfig> local;
+
 
 	if (filePath == NULL)
 		filePath = "default.conf";
@@ -14,12 +14,12 @@ Cluster::Cluster(const char *filePath) {
 	std::getline(configFile, fileContent, '\0');
 	for(size_t pos = fileContent.find_first_of("#"); pos != std::string::npos; pos = fileContent.find_first_of("#"))
 		fileContent.erase(pos, fileContent.find_first_of("\n", pos) - pos);
-	this->divideByServer(fileContent);
+	serverBodyVec = this->divideByServer(fileContent);
 	for(sVec::iterator it = serverBodyVec.begin(); it != serverBodyVec.end(); it++)
 	{
 		Config	config(*it);
-		local.push_back(*it);
-		Server server(config, local);
+		this->displayServerConfig(config);
+		_serverVec.push_back(config);
 	}
 }
 
@@ -31,9 +31,9 @@ sVec	Cluster::divideByServer(std::string &fileContent) {
 	size_t	bodyLen;
 	sVec	serverBodyVec;
 
-	if (fileContent.find_first_not_of(" \n") < fileContent.find("server"))
+	if (fileContent.find_first_not_of(" \t\n") < fileContent.find("server"))
 		throw badConfigFile();
-	else if (fileContent.find_first_not_of(" \n", (fileContent.find("server") + 6)) < fileContent.find_first_of("{"))
+	else if (fileContent.find_first_not_of(" \t\n", (fileContent.find("server") + 6)) < fileContent.find_first_of("{"))
 		throw badConfigFile();
 	for (int begin = fileContent.find_first_of("{"); begin != std::string::npos; begin = fileContent.find_first_of("{", begin + bodyLen))
 	{
@@ -58,6 +58,19 @@ sVec	Cluster::divideByServer(std::string &fileContent) {
 		serverBodyVec.push_back(fileContent.substr(begin, bodyLen));
 	}
 	return serverBodyVec;
+}
+
+void	Cluster::displayServerConfig(Config &config) const {
+	sCMap 			locationMap;
+
+	std::cout << "Server" << std::endl;
+	config.displayConfig();
+	locationMap = config.getLocationMap();
+	for (sCMap::iterator it = locationMap.begin(); it != locationMap.end(); it++)
+	{
+		std::cout << "Name: " << it->first << std::endl;
+		it->second.displayConfig();
+	}
 }
 
 const char *Cluster::wrongFilePath::what() const throw() {

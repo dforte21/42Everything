@@ -4,23 +4,118 @@ Config::Config() {
 
 }
 
-Config::Config(std::string &serverBody) {
-	std::cout << serverBody << std::endl;
+Config::Config(std::string &serverBody)
+	: _listen(8080), _root("none"), _client_max_body_size(0),
+		_autoindex(false), _cgi_pass("none") {
+	std::string	line;
+	std::string	directive;
+	size_t		pos;
+	std::string	locationName;
+
+	while ((pos = serverBody.find_first_of('\n')) != std::string::npos)
+	{
+		line = serverBody.substr(serverBody.find_first_not_of(" \t\n"), pos);
+		if (this->doDirective(line))
+			this->addLocation(serverBody);
+		else
+			serverBody.erase(0, pos + 1);
+	}
 }
 
 Config::~Config(void) {
 	
 }
 
-// std::string	Config::findDirective(std::string &line) const {
-// 	size_t	pos;
+int	Config::doDirective(std::string &line) {
+	std::string		directive;
+	int				i;
+	std::string		directiveAr[] = {"listen", "server_name", "root", "index", "error_page", 
+		"client_max_body_size", "allowed_methods", "location", "autoindex", "try_files",
+			"cgi_pass", "extension_cgi", "return"};
 
-	
-// }
+	directive = line.substr(0, line.find_first_of(" \t\n"));
+	i = 0;
+	while (i < 13)
+	{
+		if (directive == directiveAr[i])
+			break ;
+		i++;
+	}
+	switch(i)
+	{
+		case 0 :
+			_listen = this->setListen(line);
+			break ;
+		case 1 :
+			_server_name = this->setServerName(line);
+			break ;
+		case 2 :
+			_root = this->setRoot(line);
+			break ;
+		case 3 :
+			_index = this->setIndex(line);
+			break ;
+		case 4 :
+			_error_page = this->setErrorPage(line);
+			break ;
+		case 5 :
+			_client_max_body_size = this->setClientMaxBodySize(line);
+			break ;
+		case 6 :
+			_allowed_methods = this->setAllowedMethods(line);
+			break ;
+		case 7 :
+			return 1;
+		case 8 :
+			_autoindex = this->setAutoindex(line);
+			break ;
+		case 9 :
+			_try_files = this->setTryFiles(line);
+			break ;
+		case 10 :
+			_cgi_pass = this->setCgiPass(line);
+			break ;
+		case 11 :
+			_extension_cgi = this->setExtensionCgi(line);
+			break ;
+		case 12 :
+			_return = this->setReturn(line);
+			break ;
+		default :
+			if (directive.find_first_not_of("{}\n") != std::string::npos)
+				throw badConfigFile();
+	}
+	return 0;
+}
+
+void	Config::addLocation(std::string &serverBody) {
+	size_t		pos;
+	size_t		end;
+	std::string	locationName;
+	std::string	locationBody;
+
+	pos = serverBody.find("location");
+	serverBody.erase(0, pos + 8);
+	pos = serverBody.find_first_not_of(" \t\n");
+	end = serverBody.find("{");
+	if (pos == end || pos == std::string::npos || end == std::string::npos)
+		throw badConfigFile();
+	end -= 1;
+	while (std::isspace(serverBody.at(end)))
+		end--;
+	locationName = serverBody.substr(pos, end);
+	pos = end + 1;
+	end = serverBody.find_first_of("}");
+	locationBody = serverBody.substr(pos, end);
+	Config locationConfig(locationBody);
+	_locationMap.insert(std::pair<std::string, Config>(locationName, locationConfig));
+	serverBody.erase(0, end);
+}
 
 void	Config::displayConfig(void) const {
-	sVec vec;
+	sVec	vec;
 	std::map<std::string, bool> map;
+	iSPair	pair;
 
 	std::cout << "listen: " << this->getListen() << std::endl;
 	std::cout << "server_name: ";
@@ -45,7 +140,22 @@ void	Config::displayConfig(void) const {
 	std::cout << std::boolalpha;
 	for(std::map<std::string, bool>::iterator it = map.begin(); it != map.end(); it++)
 		std::cout << it->first << '=' << it->second << ", ";
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl;
+	std::cout << "autoindex: " << this->getAutoindex() << std::endl;
+	std::cout << "try_files: ";
+	vec = this->getTryFiles();
+	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+	std::cout << "cgi_pass: " << this->getCgiPass() << std::endl;
+	std::cout << "extension_cgi: ";
+	vec = this->getExtensionCgi();
+	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+	pair = this->getReturn();
+	std::cout << "return: " << pair.first << ' ' << pair.second << std::endl;
+	std::cout << std::endl;
 }
 
 const char *Config::badConfigFile::what() const throw() {

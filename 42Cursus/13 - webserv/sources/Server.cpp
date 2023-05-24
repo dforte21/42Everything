@@ -1,6 +1,6 @@
 #include "../includes/Server.hpp"
 
-Server::Server(Config &config, std::vector<LocationConfig> &locationVec) : _serverConfig(config), _locationConfig(locationVec) {
+Server::Server(Config &config) : _serverConfig(config) {
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
@@ -176,8 +176,8 @@ void	Server::startListening() {
 void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
 	if (http_map.empty())
 		return ;
-	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
-	if (it == _serverConfig._allowed_methods.end() || it->second == false) {
+	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
+	if (it == _serverConfig.getAllowedMethods().end() || it->second == false) {
 		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
 		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
 		std::string defBody = "\r\n\r\n";

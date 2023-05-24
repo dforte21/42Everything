@@ -6,8 +6,9 @@
 # include <vector>
 # include <sstream>
 # include "Config.hpp"
-# include "LocationConfig.hpp"
 # include "Server.hpp"
+
+typedef	std::map<std::string, Config> sCMap;
 
 class Cluster {
 	private:
@@ -21,6 +22,7 @@ class Cluster {
 		~Cluster(void);
 
 		sVec	divideByServer(std::string &fileContent);
+		void	displayServerConfig(Config &config) const;
 
 		struct	wrongFilePath : public std::exception {
 			virtual const char *what() const throw();

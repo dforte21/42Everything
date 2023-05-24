@@ -6,7 +6,7 @@ Server::Server(Config &config) : _serverConfig(config) {
 	if (_fd < 0)
 		throw std::runtime_error("Unable to create socket");
 	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(config.getListen()); //probabilmente da cambiare
+	_addr.sin_port = htons(12356); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	int yes = 1;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
@@ -104,6 +104,8 @@ void	Server::startListening() {
 	struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);
 	pfds[0].fd = _fd;
 	pfds[0].events = POLLIN;
+	std::vector<std::string> rest;
+	rest.resize(fd_size);
 	int poll_count = 0;
 	int new_fd;
 	struct sockaddr_storage client_addr;
@@ -112,14 +114,17 @@ void	Server::startListening() {
 		poll_count = poll(pfds, fd_count, -1);
 		if (poll_count == -1)
 			throw std::runtime_error("Poll error");
+		int pollin_count = 0;
 		for(int i = 0; i < fd_count; i++) {
-			if (pfds[i].revents & POLLIN) {
+			if (pfds[i].revents & POLLIN){
 				if (i == 0) { //listener
 					new_fd = accept(_fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
                         throw std::runtime_error("Accept error");
 					else {
 						add_to_pfds(pfds, new_fd, &fd_count, &fd_size);
+						if (rest.capacity() < fd_size)
+							rest.resize(fd_size);
 						std::cout << "new_fd:" << new_fd << std::endl;
 					}
 				}
@@ -127,9 +132,8 @@ void	Server::startListening() {
 					char buf[256];
 					int nbytes = 0;
 					std::string request;
-					// static std::string rest; //da implementare ma é una madonna
-					// if (rest.empty() == false)
-					// 	request + res;
+					if (rest.at(i).empty() == false)
+						request + rest.at(i);
 					while (1) {
 						nbytes += recv(pfds[i].fd, buf, 255, 0);
 						// std::cout<< "nbytes:"<< nbytes << std::endl;
@@ -148,10 +152,10 @@ void	Server::startListening() {
 						request += buf;
 						size_t diopo;
 						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
-							// if (diopo + 4 < nbytes)
-							// 	rest = request.substr(diopo + 4, request.size() - (diopo + 4))
-							// else if (rest.empty() == false)
-							// 	rest.clear();
+							if (diopo + 4 < nbytes)
+								rest.at(i) = request.substr(diopo + 4, request.size() - (diopo + 4));
+							else if (rest.empty() == false)
+								rest.at(i).clear();
 							break ;
 						}
 					}
@@ -168,24 +172,60 @@ void	Server::startListening() {
 					// close(pfds[i].fd);
 					// del_from_pfds(pfds, i, &fd_count);
 				}
+				pollin_count++;
+				if (pollin_count == poll_count)
+					break ;
 			}
 		}
 	}
 }
 
-void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
-	if (http_map.empty())
-		return ;
-	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
-	if (it == _serverConfig.getAllowedMethods().end() || it->second == false) {
-		std::string tmpBody = "<html><head><title>Operation Not Permitted</title></head><body><p>This resource is read-only and cannot be deleted.</p></body></html>";
-		std::string res = "HTTP/1.1 405 Method Not Allowed\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
+void	Server::default_error_answer(int err, int fd) {
+	std::string tmpString;
+
+
+		switch (err)
+	{
+		case 100: tmpString = "100 Continue"; break ;
+		case 200: tmpString = "200 OK"; break ;
+		case 201: tmpString = "201 Created"; break ;
+		case 202: tmpString = "202 Accepted"; break ;
+		case 203: tmpString = "203 Non-Authoritative Information"; break ;
+		case 204: tmpString = "204 No content"; break ;
+		case 205: tmpString = "205 Reset Content"; break ;
+		case 206: tmpString = "206 Partial Content"; break ;
+		case 400: tmpString = "400 Bad Request"; break ;
+		case 401: tmpString = "401 Unauthorized"; break ;
+		case 402: tmpString = "402 Payment Required"; break ;
+		case 403: tmpString = "403 Forbidden"; break ;
+		case 404: tmpString = "404 Not Found"; break ;
+		case 405: tmpString = "405 Method Not Allowed"; break ;
+		case 406: tmpString = "406 Not Acceptable"; break ;
+		case 411: tmpString = "411 Length Required"; break ;
+		case 413: tmpString = "413 Request Entity Too Large"; break ;
+		case 500: tmpString = "500 Internal Server Error"; break ;
+		case 501: tmpString = "501 Not Implemented"; break ;
+		case 510: tmpString = "510 Not Extended"; break ;
+		default: break ;
+	}
+
+	if (err != 100) {
+		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
+		std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
 		std::string defBody = "\r\n\r\n";
 		defBody.append(tmpBody);
 		res.append(defBody);
 		if (send(fd, res.c_str(), res.size(), 0) == -1)
 			std::cout << "Send error!\n";
 	}
+}
+
+void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
+	if (http_map.empty())
+		return ;
+	std::map<std::string, bool>::iterator it = _serverConfig._allowed_methods.find(http_map.at("HTTP_method"));
+	if (it == _serverConfig._allowed_methods.end() || it->second == false)
+		this->default_error_answer(405, fd);
 	else
 		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
 							std::cout << "Send error!\n";

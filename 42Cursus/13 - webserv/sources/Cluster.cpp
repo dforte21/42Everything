@@ -21,6 +21,7 @@ Cluster::Cluster(const char *filePath) {
 		this->displayServerConfig(config);
 		_serverVec.push_back(config);
 	}
+	_serverVecSize = _serverVecSize.size();
 	this->setPfds();
 	this->startListening();
 }
@@ -77,37 +78,54 @@ void	Cluster::displayServerConfig(Config &config) const {
 
 
 void	Cluster::setPfds(void) {
-	_pfdsSize = _serverVec.size() * 2;
-	_pfds = (struct pollfd *)malloc(sizeof _pfds * _pfdsSize);
+	_pfds = (struct pollfd **)malloc(sizeof(*_pfds) * (_serverVecSize + 1));
+	_pfds[_serverVecSize] = NULL;
+	for (int i = 0; i < _serverVecSize; i++)
+	{
+		_pfds[i] = (struct pollfd *)malloc(sizeof(_pfds) * 5);
+		for (int j = 0; j < 5; j++)
+			_pfds[i][j].fd = 0;
+	}
+	
 	int i = 0;
 	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++, i++)
 	{
-		_pfds[i].fd = it->getServerSocket();
-		_pfds[i].events = POLLIN;
+		_pfds[i][0].fd = it->getServerSocket();
+		_pfds[i][0].events = POLLIN;
 	}
 }
 
 void	Cluster::startListening() {
-	_pfds[0].events = POLLIN;
+	
+	
+	for (;;) {
+		for (int i = 0; i < _serverVecSize; i++) {
+			poll_count = poll(_pfds[i], _serverVecSize, -1); //da sistemare
+			if (poll_count == -1)
+				throw std::runtime_error("Poll error");
+			int pollin_count = 0;
+			if (pollin_count > 0)
+				this->listen(_pfds[i]);
+		}
+	}
+}
+
+void	Cluster::listen() {
 	std::vector<std::string> rest;
 	rest.resize(_pfdsSize);
 	int poll_count = 0;
 	int new_fd;
 	struct sockaddr_storage client_addr;
 	socklen_t sin_size = sizeof(client_addr);
-	for (;;) {
-		poll_count = poll(_pfds, _serverVec.size(), -1);
-		if (poll_count == -1)
-			throw std::runtime_error("Poll error");
-		int pollin_count = 0;
-		for(int i = 0; i < _serverVec.size(); i++) {
+	
+		for(int i = 0; i < _serverVecSize; i++) {
 			if (_pfds[i].revents & POLLIN){
-				if (i < _serverVec.size()) { //listener
+				if (i < _serverVecSize) { //listener
 					new_fd = accept(_pfds[i].fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
 						throw std::runtime_error("Accept error");
 					else {
-						add_to__pfds(_pfds, new_fd, &_serverVec.size(), &_pfdsSize);
+						add_to_pfds(_pfds, new_fd, &_serverVecSize, &_pfdsSize);
 						if (rest.capacity() < _pfdsSize)
 							rest.resize(_pfdsSize);
 						std::cout << "new_fd:" << new_fd << std::endl;
@@ -129,7 +147,7 @@ void	Cluster::startListening() {
 						else if (nbytes < 0){
 							std::cout << "Recv error\n";
 							close(_pfds[i].fd);
-							del_from_pfds(_pfds, i, &_serverVec.size());
+							del_from_pfds(_pfds, i, &_serverVecSize);
 							std::cout << "Connection from " << _pfds[i].fd << " closed.\n";
 							break ;
 						}
@@ -155,14 +173,83 @@ void	Cluster::startListening() {
 					// }
 					this->handle_request(tok_http, _pfds[i].fd);
 					// close(_pfds[i].fd);
-					// del_from_pfds(pfds, i, &_serverVec.size());
+					// del_from_pfds(pfds, i, &_serverVecSize);
 				}
 				pollin_count++;
 				if (pollin_count == poll_count)
 					break ;
 			}
 		}
+}
+
+void Cluster::handle_request(std::map<std::string, std::string> http_map, int fd) {
+	if (http_map.empty())
+		return ;
+	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
+	if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
+		this->default_error_answer(405, fd);
+	else
+		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+							std::cout << "Send error!\n";
+		
+}
+
+std::map<std::string, std::string> Cluster::parse_request(std::string request) {
+	std::size_t first = 0;
+	std::size_t find = 0;
+	std::size_t i = 0;
+
+	const char *prova = request.c_str();
+	std::map<std::string, std::string> map;
+	std::string line;
+
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			// std::cout << "firstline: " << line << std::endl;
+			std::size_t space = line.find(' ', 0);
+			std::size_t space2 = line.find(' ', space + 1);
+			map.insert(std::pair<std::string, std::string>("HTTP_method", line.substr(0, space)));
+			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space)));
+			map.insert(std::pair<std::string, std::string>("protocol_version", line.substr(space2 + 1, line.length())));
+			if (prova[i] != 4)
+				i++;
+			first = i + 1;
+			break ;
+		}
+		i++;
 	}
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			if (prova[i] != 4)
+				i++;
+			first = i + 1;
+		std::size_t mid = line.find(':', 0);
+		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
+			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
+		else
+			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
+		}
+		i++;
+	}
+	return map;
+}
+
+void	Cluster::add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size){
+	if (*fd_count == *fd_size){
+		*fd_size *= 2;
+		pfds = (struct pollfd *) realloc (pfds, sizeof(struct pollfd) * (*fd_size));
+	}
+	pfds[*fd_count].fd = new_fd;
+	pfds[*fd_count].events = POLLIN;
+	(*fd_count)++;
+	//std::cout << "nuovo socket allocato, grandezza:" << *fd_size << " count: " << *fd_count << std::endl;
+}
+
+void	Cluster::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
+	pfds[i] = pfds[*fd_count - 1];
+	(*fd_count)--;
 }
 
 const char *Cluster::wrongFilePath::what() const throw() {

@@ -21,8 +21,11 @@ Cluster::Cluster(const char *filePath) {
 		this->displayServerConfig(config);
 		_serverVec.push_back(config);
 	}
-	_serverVecSize = _serverVecSize.size();
-	this->setPfds();
+	_serverVecSize = _serverVec.size();
+	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++) {
+		Pfds pfds(it->getServerSocket());
+		_PfdsVec.push_back(pfds);
+	}
 	this->startListening();
 }
 
@@ -76,58 +79,33 @@ void	Cluster::displayServerConfig(Config &config) const {
 	}
 }
 
-
-void	Cluster::setPfds(void) {
-	_pfds = (struct pollfd **)malloc(sizeof(*_pfds) * (_serverVecSize + 1));
-	_pfds[_serverVecSize] = NULL;
-	for (int i = 0; i < _serverVecSize; i++)
-	{
-		_pfds[i] = (struct pollfd *)malloc(sizeof(_pfds) * 5);
-		for (int j = 0; j < 5; j++)
-			_pfds[i][j].fd = 0;
-	}
-	
-	int i = 0;
-	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++, i++)
-	{
-		_pfds[i][0].fd = it->getServerSocket();
-		_pfds[i][0].events = POLLIN;
-	}
-}
-
 void	Cluster::startListening() {
-	
-	
+	int poll_count;
+
 	for (;;) {
-		for (int i = 0; i < _serverVecSize; i++) {
-			poll_count = poll(_pfds[i], _serverVecSize, -1); //da sistemare
+		for (std::vector<Pfds>::iterator it = _PfdsVec.begin(); it != _PfdsVec.end(); it++) {
+			poll_count = poll(it->getSocketArr(), it->getCount(), -1);
 			if (poll_count == -1)
 				throw std::runtime_error("Poll error");
-			int pollin_count = 0;
-			if (pollin_count > 0)
-				this->listen(_pfds[i]);
+			if (poll_count > 0)
+				this->listen(*it);
 		}
 	}
 }
 
-void	Cluster::listen() {
-	std::vector<std::string> rest;
-	rest.resize(_pfdsSize);
-	int poll_count = 0;
+void	Cluster::listen(Pfds &pfds) {
 	int new_fd;
 	struct sockaddr_storage client_addr;
 	socklen_t sin_size = sizeof(client_addr);
-	
-		for(int i = 0; i < _serverVecSize; i++) {
-			if (_pfds[i].revents & POLLIN){
-				if (i < _serverVecSize) { //listener
-					new_fd = accept(_pfds[i].fd, (struct sockaddr *)&client_addr, &sin_size);
+	struct pollfd *socketArr = pfds.getSocketArr();
+		for(int i = 0; i < pfds.getCount(); i++) {
+			// if (socketArr[i].revents & POLLIN){ // tolta temporaneamente perché poll non aggiorna revents
+				if (i == 0) { //listener
+					new_fd = accept(socketArr[0].fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
 						throw std::runtime_error("Accept error");
 					else {
-						add_to_pfds(_pfds, new_fd, &_serverVecSize, &_pfdsSize);
-						if (rest.capacity() < _pfdsSize)
-							rest.resize(_pfdsSize);
+						pfds.addToPfds(new_fd);
 						std::cout << "new_fd:" << new_fd << std::endl;
 					}
 				}
@@ -135,32 +113,22 @@ void	Cluster::listen() {
 					char buf[256];
 					int nbytes = 0;
 					std::string request;
-					if (rest.at(i).empty() == false)
-						request + rest.at(i);
 					while (1) {
-						nbytes += recv(_pfds[i].fd, buf, 255, 0);
-						// std::cout<< "nbytes:"<< nbytes << std::endl;
-						if (nbytes == 0) {
-							// std::cout << "Connection from " << _pfds[i].fd << " fine recv(0).\n";
+						nbytes += recv(socketArr[i].fd, buf, 255, 0);
+						if (nbytes == 0)
 							break ;
-						}
 						else if (nbytes < 0){
 							std::cout << "Recv error\n";
-							close(_pfds[i].fd);
-							del_from_pfds(_pfds, i, &_serverVecSize);
-							std::cout << "Connection from " << _pfds[i].fd << " closed.\n";
+							close(socketArr[i].fd);
+							pfds.delFromPfds(i);
+							std::cout << "Connection from " << socketArr[i].fd << " closed.\n";
 							break ;
 						}
 						buf[nbytes] = '\0';
 						request += buf;
 						size_t diopo;
-						if ((diopo = request.find("\r\n\r\n")) != std::string::npos){
-							if (diopo + 4 < nbytes)
-								rest.at(i) = request.substr(diopo + 4, request.size() - (diopo + 4));
-							else if (rest.empty() == false)
-								rest.at(i).clear();
+						if (request.find("\r\n\r\n") != std::string::npos)
 							break ;
-						}
 					}
 					// if (request != "")
 					// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
@@ -171,24 +139,22 @@ void	Cluster::listen() {
 					// 		it != tok_http.end(); it++) {
 					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
 					// }
-					this->handle_request(tok_http, _pfds[i].fd);
-					// close(_pfds[i].fd);
-					// del_from_pfds(pfds, i, &_serverVecSize);
+					this->handle_request(tok_http, socketArr[i].fd);
+					// close(pfds[i].fd);
+					// del_frompfds(pfds, i, &_serverVecSize);
 				}
-				pollin_count++;
-				if (pollin_count == poll_count)
-					break ;
-			}
+			// }
 		}
 }
 
 void Cluster::handle_request(std::map<std::string, std::string> http_map, int fd) {
-	if (http_map.empty())
-		return ;
-	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
-	if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
-		this->default_error_answer(405, fd);
-	else
+	// if (http_map.empty())
+	// 	return ;
+	// std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
+	// if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
+	// 	this->default_error_answer(405, fd);
+	// else
+	std::cout<< "fd:" << fd << std::endl;
 		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
 							std::cout << "Send error!\n";
 		
@@ -234,22 +200,6 @@ std::map<std::string, std::string> Cluster::parse_request(std::string request) {
 		i++;
 	}
 	return map;
-}
-
-void	Cluster::add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size){
-	if (*fd_count == *fd_size){
-		*fd_size *= 2;
-		pfds = (struct pollfd *) realloc (pfds, sizeof(struct pollfd) * (*fd_size));
-	}
-	pfds[*fd_count].fd = new_fd;
-	pfds[*fd_count].events = POLLIN;
-	(*fd_count)++;
-	//std::cout << "nuovo socket allocato, grandezza:" << *fd_size << " count: " << *fd_count << std::endl;
-}
-
-void	Cluster::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
-	pfds[i] = pfds[*fd_count - 1];
-	(*fd_count)--;
 }
 
 const char *Cluster::wrongFilePath::what() const throw() {

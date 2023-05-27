@@ -84,7 +84,7 @@ void	Cluster::startListening() {
 
 	for (;;) {
 		for (std::vector<Pfds>::iterator it = _PfdsVec.begin(); it != _PfdsVec.end(); it++) {
-			poll_count = poll(it->getSocketArr(), it->getCount(), -1);
+			poll_count = poll(it->getSocketArr(), it->getCount(), 0);
 			if (poll_count == -1)
 				throw std::runtime_error("Poll error");
 			if (poll_count > 0)
@@ -99,7 +99,7 @@ void	Cluster::listen(Pfds &pfds) {
 	socklen_t sin_size = sizeof(client_addr);
 	struct pollfd *socketArr = pfds.getSocketArr();
 		for(int i = 0; i < pfds.getCount(); i++) {
-			// if (socketArr[i].revents & POLLIN){ // tolta temporaneamente perché poll non aggiorna revents
+			if (socketArr[i].revents & POLLIN){ // tolta temporaneamente perché poll non aggiorna revents
 				if (i == 0) { //listener
 					new_fd = accept(socketArr[0].fd, (struct sockaddr *)&client_addr, &sin_size);
 					if (new_fd == -1)
@@ -140,10 +140,11 @@ void	Cluster::listen(Pfds &pfds) {
 					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
 					// }
 					this->handle_request(tok_http, socketArr[i].fd);
-					// close(pfds[i].fd);
-					// del_frompfds(pfds, i, &_serverVecSize);
+					close(socketArr[i].fd);
+					pfds.delFromPfds(i);
 				}
-			// }
+				socketArr[i].revents = 0;
+			}
 		}
 }
 
@@ -154,10 +155,9 @@ void Cluster::handle_request(std::map<std::string, std::string> http_map, int fd
 	// if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
 	// 	this->default_error_answer(405, fd);
 	// else
-	std::cout<< "fd:" << fd << std::endl;
-		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
-							std::cout << "Send error!\n";
-		
+	std::cout<< "send fd:" << fd << std::endl;
+	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
+		std::cout << "Send error!\n";
 }
 
 std::map<std::string, std::string> Cluster::parse_request(std::string request) {

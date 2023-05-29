@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 # include "Config.hpp"
+#include "Pfds.hpp"
 # include <iostream>
 # include <netinet/in.h>
 # include "unistd.h"
@@ -18,9 +19,11 @@ class Server {
 		Server();
 
 		void	default_error_answer(int err, int fd);
-
+		int		createListenSocket(void);
 
 	public:
+		Pfds						_pollfd;
+
 		Server(Config &config);
 		~Server();
 		

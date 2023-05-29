@@ -15,7 +15,7 @@ class Cluster {
 	private:
 		std::vector<Server>	_serverVec;
 		int					_serverVecSize;
-		std::vector<Pfds>	_PfdsVec;
+		/*std::vector<Pfds>	_PfdsVec;*/
 		
 		Cluster(void);
 

@@ -1,10 +1,12 @@
 #include "../includes/Server.hpp"
 
-Server::Server(Config &config) : _serverConfig(config) {
-	_fd = socket(AF_INET, SOCK_STREAM, 0);
+Server::Server(Config &config) : _serverConfig(config) , _pollfd(this->createListenSocket()) {
+	/*_fd = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
 	if (_fd < 0)
-		throw std::runtime_error("Unable to create socket");
+		throw std::runtime_error("Unable to create socket");*/
+	struct pollfd *cp = _pollfd.getSocketArr();
+	_fd = cp->fd;
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(config.getListen()); //probabilmente da cambiare
 	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -16,6 +18,16 @@ Server::Server(Config &config) : _serverConfig(config) {
 	if (listen(_fd, 1000) < 0)
 		throw std::runtime_error("Listen error");
 	//this->startListening();
+}
+
+int	Server::createListenSocket(void) {
+	int fd;
+ 
+	fd = socket(AF_INET, SOCK_STREAM, 0);
+	fcntl(fd, F_SETFL, O_NONBLOCK); //questo é il non bloccante
+	if (fd < 0)
+		throw std::runtime_error("Unable to create socket");
+	return fd;
 }
 
 Server::~Server(void) {

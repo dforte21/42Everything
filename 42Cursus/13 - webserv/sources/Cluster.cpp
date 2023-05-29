@@ -22,10 +22,11 @@ Cluster::Cluster(const char *filePath) {
 		_serverVec.push_back(config);
 	}
 	_serverVecSize = _serverVec.size();
-	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++) {
+/*	for(std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++) {
+		_serverVec[it].
 		Pfds pfds(it->getServerSocket());
 		_PfdsVec.push_back(pfds);
-	}
+	}*/
 	this->startListening();
 }
 
@@ -85,22 +86,22 @@ void	Cluster::startListening() {
 
 	while (1)
 	{
-		for (std::vector<Pfds>::iterator it = _PfdsVec.begin(); it != _PfdsVec.end(); it++)
+		for (std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++)
 		{
-			socketArr = it->getSocketArr();
-			poll_count = poll(socketArr, it->getCount(), 0);
+			socketArr = it->_pollfd.getSocketArr();
+			poll_count = poll(socketArr, it->_pollfd.getCount(), 0);
 			if (poll_count == -1)
 				throw std::runtime_error("Poll error");
 			if (poll_count == 0)
 				continue ;
-			for(int i = 0; i < it->getCount(); i++)
+			for(int i = 0; i < it->_pollfd.getCount(); i++)
 			{
 				if (socketArr[i].revents & POLLIN)
 				{
 					if (i == 0)
-						this->handleServer(*it);
+						this->handleServer(it->_pollfd);
 					else
-						this->handleClient(*it, i);
+						this->handleClient(it->_pollfd, i);
 					socketArr[i].revents = 0;
 				}
 			}

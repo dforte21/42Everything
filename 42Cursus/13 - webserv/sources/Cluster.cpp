@@ -18,7 +18,7 @@ Cluster::Cluster(const char *filePath) {
 	for(sVec::iterator it = serverBodyVec.begin(); it != serverBodyVec.end(); it++)
 	{
 		Config	config(*it);
-		this->displayServerConfig(config);
+		//this->displayServerConfig(config);
 		_serverVec.push_back(config);
 	}
 	_serverVecSize = _serverVec.size();
@@ -80,72 +80,88 @@ void	Cluster::displayServerConfig(Config &config) const {
 }
 
 void	Cluster::startListening() {
-	int poll_count;
+	int 					poll_count;
+	struct pollfd			*socketArr;
 
-	for (;;) {
-		for (std::vector<Pfds>::iterator it = _PfdsVec.begin(); it != _PfdsVec.end(); it++) {
-			poll_count = poll(it->getSocketArr(), it->getCount(), 0);
+	while (1)
+	{
+		for (std::vector<Pfds>::iterator it = _PfdsVec.begin(); it != _PfdsVec.end(); it++)
+		{
+			socketArr = it->getSocketArr();
+			poll_count = poll(socketArr, it->getCount(), 0);
 			if (poll_count == -1)
 				throw std::runtime_error("Poll error");
-			if (poll_count > 0)
-				this->listen(*it);
+			if (poll_count == 0)
+				continue ;
+			for(int i = 0; i < it->getCount(); i++)
+			{
+				if (socketArr[i].revents & POLLIN)
+				{
+					if (i == 0)
+						this->handleServer(*it);
+					else
+						this->handleClient(*it, i);
+					socketArr[i].revents = 0;
+				}
+			}
 		}
 	}
 }
 
-void	Cluster::listen(Pfds &pfds) {
-	int new_fd;
+void	Cluster::handleServer(Pfds &pfds) {
+	int 					new_fd;
 	struct sockaddr_storage client_addr;
-	socklen_t sin_size = sizeof(client_addr);
-	struct pollfd *socketArr = pfds.getSocketArr();
-		for(int i = 0; i < pfds.getCount(); i++) {
-			if (socketArr[i].revents & POLLIN){ // tolta temporaneamente perché poll non aggiorna revents
-				if (i == 0) { //listener
-					new_fd = accept(socketArr[0].fd, (struct sockaddr *)&client_addr, &sin_size);
-					if (new_fd == -1)
-						throw std::runtime_error("Accept error");
-					else {
-						pfds.addToPfds(new_fd);
-						std::cout << "new_fd:" << new_fd << std::endl;
-					}
-				}
-				else { //client
-					char buf[256];
-					int nbytes = 0;
-					std::string request;
-					while (1) {
-						nbytes += recv(socketArr[i].fd, buf, 255, 0);
-						if (nbytes == 0)
-							break ;
-						else if (nbytes < 0){
-							std::cout << "Recv error\n";
-							close(socketArr[i].fd);
-							pfds.delFromPfds(i);
-							std::cout << "Connection from " << socketArr[i].fd << " closed.\n";
-							break ;
-						}
-						buf[nbytes] = '\0';
-						request += buf;
-						size_t diopo;
-						if (request.find("\r\n\r\n") != std::string::npos)
-							break ;
-					}
-					// if (request != "")
-					// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
-					std::map<std::string, std::string> tok_http = this->parse_request(request);
-					// if (tok_http.empty() == true)
-					// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
-					// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-					// 		it != tok_http.end(); it++) {
-					// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-					// }
-					this->handle_request(tok_http, socketArr[i].fd);
-					close(socketArr[i].fd);
-					pfds.delFromPfds(i);
-				}
-				socketArr[i].revents = 0;
-			}
+	socklen_t				sin_size;
+	struct pollfd			*socketArr;
+
+	sin_size = sizeof(client_addr);
+	socketArr = pfds.getSocketArr();
+	new_fd = accept(socketArr[0].fd, (struct sockaddr *)&client_addr, &sin_size);
+	if (new_fd == -1)
+		throw std::runtime_error("Accept error");
+	pfds.addToPfds(new_fd);
+	std::cout << "new_fd:" << new_fd << std::endl;
+}
+
+void	Cluster::handleClient(Pfds &pfds, int i) {
+	char			buf[256];
+	int				nbytes;
+	std::string		request;
+	struct pollfd	*socketArr;
+
+	nbytes = 0;
+	socketArr = pfds.getSocketArr();
+	while (1)
+	{
+		nbytes += recv(socketArr[i].fd, buf, 255, 0);
+		if (nbytes == 0)
+			break ;
+		else if (nbytes < 0)
+		{
+			std::cout << "Recv error\n";
+			close(socketArr[i].fd);
+			pfds.delFromPfds(i);
+			std::cout << "Connection from " << socketArr[i].fd << " closed.\n";
+			break ;
 		}
+		buf[nbytes] = '\0';
+		request += buf;
+		size_t diopo;
+		if (request.find("\r\n\r\n") != std::string::npos)
+			break ;
+	}
+	// if (request != "")
+	// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
+	std::map<std::string, std::string> tok_http = this->parse_request(request);
+	// if (tok_http.empty() == true)
+	// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+	// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+	// 		it != tok_http.end(); it++) {
+	// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+	// }
+	this->handle_request(tok_http, socketArr[i].fd);
+	close(socketArr[i].fd);
+	pfds.delFromPfds(i);
 }
 
 void Cluster::handle_request(std::map<std::string, std::string> http_map, int fd) {
@@ -153,7 +169,7 @@ void Cluster::handle_request(std::map<std::string, std::string> http_map, int fd
 	// 	return ;
 	// std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
 	// if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
-	// 	this->default_error_answer(405, fd);
+	// 	this->default_error_answer(405, fd);q
 	// else
 	std::cout<< "send fd:" << fd << std::endl;
 	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)

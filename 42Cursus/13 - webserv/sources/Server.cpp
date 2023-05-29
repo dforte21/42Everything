@@ -138,72 +138,56 @@ void	Server::default_error_answer(int err, int fd) {
 	}
 }
 
-//void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
-//	if (http_map.empty())
-//		return ;
-//	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
-//	if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
-//		this->default_error_answer(405, fd);
-//	else
-//		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
-//							std::cout << "Send error!\n";
+// void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
+// 	if (http_map.empty())
+// 		return ;
+// 	std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
+// 	if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
+// 		this->default_error_answer(405, fd);
+// 	else
+// 		if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, 0) == -1)
+// 							std::cout << "Send error!\n";
 		
-//}
+// }
 
-//std::map<std::string, std::string> Server::parse_request(std::string request) {
-//	std::size_t first = 0;
-//	std::size_t find = 0;
-//	std::size_t i = 0;
+// std::map<std::string, std::string> Server::parse_request(std::string request) {
+// 	std::size_t first = 0;
+// 	std::size_t find = 0;
+// 	std::size_t i = 0;
 
-//	const char *prova = request.c_str();
-//	std::map<std::string, std::string> map;
-//	std::string line;
+// 	const char *prova = request.c_str();
+// 	std::map<std::string, std::string> map;
+// 	std::string line;
 
-//	while (prova[i] != '\0') {
-//		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
-//			line = request.substr(first, i - first);
-//			// std::cout << "firstline: " << line << std::endl;
-//			std::size_t space = line.find(' ', 0);
-//			std::size_t space2 = line.find(' ', space + 1);
-//			map.insert(std::pair<std::string, std::string>("HTTP_method", line.substr(0, space)));
-//			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space)));
-//			map.insert(std::pair<std::string, std::string>("protocol_version", line.substr(space2 + 1, line.length())));
-//			if (prova[i] != 4)
-//				i++;
-//			first = i + 1;
-//			break ;
-//		}
-//		i++;
-//	}
-//	while (prova[i] != '\0') {
-//		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
-//			line = request.substr(first, i - first);
-//			if (prova[i] != 4)
-//				i++;
-//			first = i + 1;
-//		std::size_t mid = line.find(':', 0);
-//		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
-//			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
-//		else
-//			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
-//		}
-//		i++;
-//	}
-//	return map;
-//}
-
-//void	Server::add_to_pfds(struct pollfd *pfds, int new_fd, int *fd_count, int *fd_size){
-//	if (*fd_count == *fd_size){
-//		*fd_size *= 2;
-//		pfds = (struct pollfd *) realloc (pfds, sizeof(struct pollfd) * (*fd_size));
-//	}
-//	pfds[*fd_count].fd = new_fd;
-//	pfds[*fd_count].events = POLLIN;
-//	(*fd_count)++;
-//	//std::cout << "nuovo socket allocato, grandezza:" << *fd_size << " count: " << *fd_count << std::endl;
-//}
-
-//void	Server::del_from_pfds(struct pollfd *pfds,int i,int *fd_count){
-//	pfds[i] = pfds[*fd_count - 1];
-//	(*fd_count)--;
-//}
+// 	while (prova[i] != '\0') {
+// 		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+// 			line = request.substr(first, i - first);
+// 			// std::cout << "firstline: " << line << std::endl;
+// 			std::size_t space = line.find(' ', 0);
+// 			std::size_t space2 = line.find(' ', space + 1);
+// 			map.insert(std::pair<std::string, std::string>("HTTP_method", line.substr(0, space)));
+// 			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space)));
+// 			map.insert(std::pair<std::string, std::string>("protocol_version", line.substr(space2 + 1, line.length())));
+// 			if (prova[i] != 4)
+// 				i++;
+// 			first = i + 1;
+// 			break ;
+// 		}
+// 		i++;
+// 	}
+// 	while (prova[i] != '\0') {
+// 		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+// 			line = request.substr(first, i - first);
+// 			if (prova[i] != 4)
+// 				i++;
+// 			first = i + 1;
+// 		std::size_t mid = line.find(':', 0);
+// 		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
+// 			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
+// 		else
+// 			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
+// 		}
+// 		i++;
+// 	}
+// 	return map;
+// }

@@ -25,11 +25,16 @@ class Cluster {
 
 		sVec								divideByServer(std::string &fileContent);
 		void								displayServerConfig(Config &config) const;
+
 		void								setPfds(void);
+
 		void								startListening(void);
-		void								listen(Pfds &pfds);
+		void								handleServer(Pfds &pfds);
+		void								handleClient(Pfds &pfds, int i);
+
 		void								handle_request(std::map<std::string, std::string> http_map, int fd);
 		std::map<std::string, std::string>	parse_request(std::string request);
+
 		struct	wrongFilePath : public std::exception {
 			virtual const char *what() const throw();
 		};

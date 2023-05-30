@@ -1,13 +1,13 @@
 #include "../includes/Pfds.hpp"
 
-Pfds::Pfds(int fd) : _size(5), _count(1) {
-	_socketArr = (struct pollfd *)malloc(sizeof(struct pollfd) * _size);
-	_socketArr[0].fd = fd;
-	_socketArr[0].events = POLLIN;
-}
+Pfds::Pfds(void)
+	: _socketArr(nullptr), _size(0), _count(0) {
+
+	}
 
 Pfds::~Pfds() {
-	//free(_socketArr);
+	// if (_socketArr != nullptr)
+	// 	free(_socketArr);
 }
 
 void	Pfds::addToPfds(int new_fd){

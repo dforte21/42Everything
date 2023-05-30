@@ -5,8 +5,12 @@
 #include <poll.h>
 
 class Pfds {
+	private:
+		struct pollfd	*_socketArr;
+		size_t			_size;
+		size_t			_count;
 	public:
-		Pfds(int fd);
+		Pfds();
 		~Pfds();
 
 		void			addToPfds(int new_fd);
@@ -15,11 +19,6 @@ class Pfds {
 		struct pollfd	*getSocketArr() const;
 		size_t			getSize() const;
 		size_t			getCount() const;
-
-	private:
-		struct pollfd	*_socketArr;
-		size_t			_size;
-		size_t			_count;
 };
 
 #endif

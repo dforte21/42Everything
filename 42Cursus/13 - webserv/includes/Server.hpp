@@ -10,24 +10,29 @@
 # include <fcntl.h>
 # include <vector>
 
+typedef std::map<std::string, Config> sCMap;
+
 class Server {
 	private:
-		int							_fd;
-		struct	sockaddr_in 		_addr;
-		Config						_serverConfig;
+		Pfds	_pfds;
+		Config	_config;
+		sCMap	_locationMap;
 
 		Server();
 
 		void	default_error_answer(int err, int fd);
-		int		createListenSocket(void);
 
 	public:
-		Pfds						_pollfd;
-
-		Server(Config &config);
+		Server(Config &config, sCMap &locationMap);
 		~Server();
 		
-		int		getServerSocket(void) const;
+		void	startListening(void);
+		void	handleServer(void);
+		void	handleClient(int i);
+		void								handle_request(std::map<std::string, std::string> http_map, int fd);
+		std::map<std::string, std::string>	parse_request(std::string request);
+
+		void	displayServerConfig(void);
 };
 
 #endif

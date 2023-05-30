@@ -14,8 +14,6 @@ typedef	std::map<std::string, Config> sCMap;
 class Cluster {
 	private:
 		std::vector<Server>	_serverVec;
-		int					_serverVecSize;
-		/*std::vector<Pfds>	_PfdsVec;*/
 		
 		Cluster(void);
 
@@ -25,15 +23,6 @@ class Cluster {
 
 		sVec								divideByServer(std::string &fileContent);
 		void								displayServerConfig(Config &config) const;
-
-		void								setPfds(void);
-
-		void								startListening(void);
-		void								handleServer(Pfds &pfds);
-		void								handleClient(Pfds &pfds, int i);
-
-		void								handle_request(std::map<std::string, std::string> http_map, int fd);
-		std::map<std::string, std::string>	parse_request(std::string request);
 
 		struct	wrongFilePath : public std::exception {
 			virtual const char *what() const throw();

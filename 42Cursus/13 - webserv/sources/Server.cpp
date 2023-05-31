@@ -93,14 +93,14 @@ void	Server::handleClient(int i) {
 	}
 	// if (request != "")
 	// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
-	std::map<std::string, std::string> tok_http = this->parse_request(request);
-	// if (tok_http.empty() == true)
-	// 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
-	// for (std::map<std::string, std::string>::iterator it = tok_http.begin();
-	// 		it != tok_http.end(); it++) {
-	// 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-	// }
-	this->handle_request(tok_http, socketArr[i].fd);
+	std::map<std::string, std::string> tok_http = this->parseRequest(request);
+/*	 if (tok_http.empty() == true)
+	 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
+	 for (std::map<std::string, std::string>::iterator it = tok_http.begin();
+	 		it != tok_http.end(); it++) {
+	 			std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
+	 }*/
+	this->handleRequest(tok_http, socketArr[i].fd);
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
 }
@@ -154,19 +154,53 @@ void	Server::default_error_answer(int err, int fd) {
 	}
 }
 
-void Server::handle_request(std::map<std::string, std::string> http_map, int fd) {
-	// if (http_map.empty())
-	// 	return ;
-	// std::map<std::string, bool>::iterator it = _serverConfig.getAllowedMethods().find(http_map.at("HTTP_method"));
-	// if (it == _serverConfig.getAllowedMethods().end() || it->second == false)
-	// 	this->default_error_answer(405, fd);q
-	// else
-	std::cout<< "send fd:" << fd << std::endl;
-	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
-		std::cout << "Send error!\n";
+void Server::handleRequest(std::map<std::string, std::string> http_map, int fd) {
+	// if (this->checkRequest(http_map)) {
+		std::string method = http_map["HTTP_method"];
+		if (method == "GET")
+			this->handleGET(http_map, fd);
+		// else if (method == "POST")
+		// else if (method == "DELETE")
+	// }
+
 }
 
-std::map<std::string, std::string> Server::parse_request(std::string request) {
+void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
+		std::ifstream body;
+	sVec indexes = _config.getIndex();
+	std::vector<std::string>::iterator it = indexes.begin();
+	std::string	root = _config.getRoot() + "/";
+	while (1) {
+		body.open(root + (*it));
+		if (body.is_open() == true)
+			break ;
+		else
+			body.close();
+		it++;
+		if (it == indexes.end()) {
+			this->default_error_answer(404, fd);
+			return ;
+		}
+	}
+	std::ostringstream oss;
+	std::string b( (std::istreambuf_iterator<char>(body) ),
+                       (std::istreambuf_iterator<char>()    ) );
+	oss << "HTTP/1.1 200 OK\r\n";
+    oss << "Content-Type: text/html\r\n";
+    oss << "Content-Length: " << b.size() << "\r\n";
+    oss << "Connection: keep-alive\r\n";
+    oss << "\r\n";
+    oss << b;
+	std::string response(oss.str());
+	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
+		std::cout << "Send error!\n";
+	/*std::cout<< "send fd:" << fd << std::endl;
+	std::cout << "root " << _config.getRoot() << " index: " << _config.getIndex().at(0) << std::endl;
+	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
+		std::cout << "Send error!\n";*/
+}
+
+std::map<std::string, std::string> Server::parseRequest(std::string request) {
 	std::size_t first = 0;
 	std::size_t find = 0;
 	std::size_t i = 0;

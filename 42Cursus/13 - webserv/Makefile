@@ -3,10 +3,10 @@ FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC_FOL = sources/
 SRC_FIL = $(addprefix sources/,main.cpp Cluster.cpp Server.cpp Config.cpp \
 			ConfigSetters.cpp ConfigGetters.cpp Pfds.cpp)
-OBJS = $(SRC_FIL:.cpp=.o)
-
+#OBJS = $(SRC_FIL:.cpp=.o)
+OBJS = *.o
 $(NAME): $(SRC_FIL)
-		c++ -c $(SRC_FIL) && mv *.o sources
+		c++ -c $(SRC_FIL)
 		c++ $(OBJS) -o $(NAME)
 
 all: $(NAME)

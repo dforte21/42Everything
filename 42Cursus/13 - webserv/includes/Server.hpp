@@ -9,6 +9,9 @@
 # include <poll.h>
 # include <fcntl.h>
 # include <vector>
+# include <fstream>
+# include <string>
+# include <sstream>
 
 typedef std::map<std::string, Config> sCMap;
 
@@ -21,6 +24,7 @@ class Server {
 		Server();
 
 		void	default_error_answer(int err, int fd);
+		void	handleGET(std::map<std::string, std::string> http_map, int fd);
 
 	public:
 		Server(Config &config, sCMap &locationMap);
@@ -29,9 +33,8 @@ class Server {
 		void	startListening(void);
 		void	handleServer(void);
 		void	handleClient(int i);
-		void								handle_request(std::map<std::string, std::string> http_map, int fd);
-		std::map<std::string, std::string>	parse_request(std::string request);
-
+		std::map<std::string, std::string>	parseRequest(std::string request);
+		void								handleRequest(std::map<std::string, std::string> http_map, int fd);
 		void	displayServerConfig(void);
 };
 

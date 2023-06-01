@@ -19,6 +19,7 @@ Server::Server(Config &config, sCMap &locationMap) : _config(config), _locationM
 	if (listen(listener, 1000) < 0)
 		throw std::runtime_error("Listen error");
 	_pfds.addToPfds(listener);
+	std::cout << "server = " << listener << std::endl;
 }
 
 Server::~Server(void) {
@@ -39,13 +40,13 @@ void	Server::startListening(void) {
 	{
 		if (socketArr[i].revents & POLLIN)
 		{
+			std::cout << socketArr[i].fd << "entro in poll\n";
 			if (i == 0)
 				this->handleServer();
 			else
 				this->handleClient(i);
-			socketArr[i].revents = 0;
 		}
-	}
+	};
 }
 
 
@@ -114,45 +115,6 @@ void	Server::displayServerConfig(void) {
 		it->second.displayConfig();
 	}
 }
-void	Server::default_error_answer(int err, int fd) {
-	std::string tmpString;
-
-
-		switch (err)
-	{
-		case 100: tmpString = "100 Continue"; break ;
-		case 200: tmpString = "200 OK"; break ;
-		case 201: tmpString = "201 Created"; break ;
-		case 202: tmpString = "202 Accepted"; break ;
-		case 203: tmpString = "203 Non-Authoritative Information"; break ;
-		case 204: tmpString = "204 No content"; break ;
-		case 205: tmpString = "205 Reset Content"; break ;
-		case 206: tmpString = "206 Partial Content"; break ;
-		case 400: tmpString = "400 Bad Request"; break ;
-		case 401: tmpString = "401 Unauthorized"; break ;
-		case 402: tmpString = "402 Payment Required"; break ;
-		case 403: tmpString = "403 Forbidden"; break ;
-		case 404: tmpString = "404 Not Found"; break ;
-		case 405: tmpString = "405 Method Not Allowed"; break ;
-		case 406: tmpString = "406 Not Acceptable"; break ;
-		case 411: tmpString = "411 Length Required"; break ;
-		case 413: tmpString = "413 Request Entity Too Large"; break ;
-		case 500: tmpString = "500 Internal Server Error"; break ;
-		case 501: tmpString = "501 Not Implemented"; break ;
-		case 510: tmpString = "510 Not Extended"; break ;
-		default: break ;
-	}
-
-	if (err != 100) {
-		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
-		std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
-		std::string defBody = "\r\n\r\n";
-		defBody.append(tmpBody);
-		res.append(defBody);
-		if (send(fd, res.c_str(), res.size(), 0) == -1)
-			std::cout << "Send error!\n";
-	}
-}
 
 void Server::handleRequest(std::map<std::string, std::string> http_map, int fd) {
 	// if (this->checkRequest(http_map)) {
@@ -188,16 +150,17 @@ void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
 	oss << "HTTP/1.1 200 OK\r\n";
     oss << "Content-Type: text/html\r\n";
     oss << "Content-Length: " << b.size() << "\r\n";
-    oss << "Connection: keep-alive\r\n";
+    // oss << "Connection: keep-alive\r\n";
     oss << "\r\n";
     oss << b;
+	oss << "\r\n\n\r";
 	std::string response(oss.str());
 	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
 		std::cout << "Send error!\n";
-	/*std::cout<< "send fd:" << fd << std::endl;
-	std::cout << "root " << _config.getRoot() << " index: " << _config.getIndex().at(0) << std::endl;
-	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
-		std::cout << "Send error!\n";*/
+// 	std::cout<< "send fd:" << fd << std::endl;
+// 	std::cout << "root " << _config.getRoot() << " index: " << _config.getIndex().at(0) << std::endl;
+// 	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
+// 		std::cout << "Send error!\n";
 }
 
 std::map<std::string, std::string> Server::parseRequest(std::string request) {
@@ -240,4 +203,44 @@ std::map<std::string, std::string> Server::parseRequest(std::string request) {
 		i++;
 	}
 	return map;
+}
+
+void	Server::default_error_answer(int err, int fd) {
+	std::string tmpString;
+
+
+		switch (err)
+	{
+		case 100: tmpString = "100 Continue"; break ;
+		case 200: tmpString = "200 OK"; break ;
+		case 201: tmpString = "201 Created"; break ;
+		case 202: tmpString = "202 Accepted"; break ;
+		case 203: tmpString = "203 Non-Authoritative Information"; break ;
+		case 204: tmpString = "204 No content"; break ;
+		case 205: tmpString = "205 Reset Content"; break ;
+		case 206: tmpString = "206 Partial Content"; break ;
+		case 400: tmpString = "400 Bad Request"; break ;
+		case 401: tmpString = "401 Unauthorized"; break ;
+		case 402: tmpString = "402 Payment Required"; break ;
+		case 403: tmpString = "403 Forbidden"; break ;
+		case 404: tmpString = "404 Not Found"; break ;
+		case 405: tmpString = "405 Method Not Allowed"; break ;
+		case 406: tmpString = "406 Not Acceptable"; break ;
+		case 411: tmpString = "411 Length Required"; break ;
+		case 413: tmpString = "413 Request Entity Too Large"; break ;
+		case 500: tmpString = "500 Internal Server Error"; break ;
+		case 501: tmpString = "501 Not Implemented"; break ;
+		case 510: tmpString = "510 Not Extended"; break ;
+		default: break ;
+	}
+
+	if (err != 100) {
+		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
+		std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
+		std::string defBody = "\r\n\r\n";
+		defBody.append(tmpBody);
+		res.append(defBody);
+		if (send(fd, res.c_str(), res.size(), 0) == -1)
+			std::cout << "Send error!\n";
+	}
 }

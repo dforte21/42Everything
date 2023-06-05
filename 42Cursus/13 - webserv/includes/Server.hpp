@@ -23,8 +23,9 @@ class Server {
 
 		Server();
 
-		void	default_error_answer(int err, int fd);
+		bool	default_error_answer(int err, int fd);
 		void	handleGET(std::map<std::string, std::string> http_map, int fd);
+		bool	checkRequest(std::map<std::string, std::string> http_map, int fd);
 
 	public:
 		Server(Config &config, sCMap &locationMap);

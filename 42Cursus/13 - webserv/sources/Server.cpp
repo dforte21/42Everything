@@ -36,13 +36,15 @@ void	Server::startListening(void) {
 		throw std::runtime_error("Poll error");
 	if (poll_count == 0)
 		return ;
+	std::cout << socketArr[0].fd << " poll count " << poll_count << "\n";
 	for(int i = 0; i < _pfds.getCount(); i++)
 	{
 		if (socketArr[i].revents & POLLIN)
 		{
-			std::cout << socketArr[i].fd << "entro in poll\n";
-			if (i == 0)
+			if (i == 0){
+				std::cout << "(handle server) nuovo socket!\n";
 				this->handleServer();
+				}
 			else
 				this->handleClient(i);
 		}
@@ -92,8 +94,11 @@ void	Server::handleClient(int i) {
 		if (request.find("\r\n\r\n") != std::string::npos)
 			break ;
 	}
-	// if (request != "")
-	// 	std::cout<< "\n REQUEST:\n "<< request << std::endl;
+	/*std::cout<< "\n REQUEST:\n ";
+	if (request != "")
+		std::cout << " NON VUOTA" << std::endl;
+	else
+		std::cout << " VUOTA!\n";*/
 	std::map<std::string, std::string> tok_http = this->parseRequest(request);
 /*	 if (tok_http.empty() == true)
 	 	std::cout<<"Mappa tokenizzata vuota!\n\n\n";
@@ -117,14 +122,21 @@ void	Server::displayServerConfig(void) {
 }
 
 void Server::handleRequest(std::map<std::string, std::string> http_map, int fd) {
-	// if (this->checkRequest(http_map)) {
+	if (this->checkRequest(http_map, fd)) {
 		std::string method = http_map["HTTP_method"];
 		if (method == "GET")
 			this->handleGET(http_map, fd);
 		// else if (method == "POST")
 		// else if (method == "DELETE")
-	// }
+	}
 
+}
+
+bool Server::checkRequest(std::map<std::string, std::string> http_map, int fd) {
+	sBMap alllowed_methods = _config.getAllowedMethods();
+	if (alllowed_methods[http_map["HTTP_method"]] == false)
+		return default_error_answer(405, fd);
+	return true;
 }
 
 void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
@@ -205,7 +217,7 @@ std::map<std::string, std::string> Server::parseRequest(std::string request) {
 	return map;
 }
 
-void	Server::default_error_answer(int err, int fd) {
+bool	Server::default_error_answer(int err, int fd) {
 	std::string tmpString;
 
 
@@ -243,4 +255,5 @@ void	Server::default_error_answer(int err, int fd) {
 		if (send(fd, res.c_str(), res.size(), 0) == -1)
 			std::cout << "Send error!\n";
 	}
+	return false;
 }

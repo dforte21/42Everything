@@ -218,6 +218,27 @@ std::map<std::string, std::string> Server::parseRequest(std::string request) {
 }
 
 bool	Server::default_error_answer(int err, int fd) {
+	sVec errpages = _config.getErrorPage();
+	std::ifstream file;
+
+	if (errpages.size() && err != 500) {
+		std::stringstream temp;
+		temp << err;
+		std::string error = temp.str() + ".html";
+		std::string	root = _config.getRoot() + "/";
+
+		for (sVec::iterator it = errpages.begin(); it != errpages.end(); it++) {
+			if ((*it) == error) {
+				file.open(root + (*it));
+				if (file.is_open())
+					break ;
+				file.close();
+				return default_error_answer(500, fd);
+			}
+
+		}
+	}
+
 	std::string tmpString;
 
 
@@ -246,14 +267,25 @@ bool	Server::default_error_answer(int err, int fd) {
 		default: break ;
 	}
 
-	if (err != 100) {
+	std::stringstream convert;
+	std::string res = "HTTP/1.1 " + tmpString + "\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";
+
+	if (file.is_open()) {
+		convert << file.rdbuf();
+		file.close();
+		std::string body = convert.str();
+		convert.str(std::string());
+		convert << body.size();
+		res.append(convert.str() + "\r\n\r\n" + body);
+	}
+	else if (err != 100) {
 		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
-		std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
+		//std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
 		std::string defBody = "\r\n\r\n";
 		defBody.append(tmpBody);
 		res.append(defBody);
-		if (send(fd, res.c_str(), res.size(), 0) == -1)
-			std::cout << "Send error!\n";
 	}
+	if (send(fd, res.c_str(), res.size(), 0) == -1)
+		std::cout << "Send error!\n";
 	return false;
 }

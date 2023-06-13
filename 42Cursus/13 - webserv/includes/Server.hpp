@@ -23,20 +23,21 @@ class Server {
 
 		Server();
 
-		bool	default_error_answer(int err, int fd);
-		void	handleGET(std::map<std::string, std::string> http_map, int fd);
-		bool	checkRequest(std::map<std::string, std::string> http_map, int fd);
+		bool			default_error_answer(int err, int fd);
+		void			handleGET(std::map<std::string, std::string> http_map, int fd);
+		bool			checkRequest(std::map<std::string, std::string> http_map, int fd);
+		bool			getBody(std::string url, std::ifstream &body, int fd);
 
 	public:
 		Server(Config &config, sCMap &locationMap);
 		~Server();
 		
-		void	startListening(void);
-		void	handleServer(void);
-		void	handleClient(int i);
+		void								startListening(void);
+		void								handleServer(void);
+		void								handleClient(int i);
 		std::map<std::string, std::string>	parseRequest(std::string request);
 		void								handleRequest(std::map<std::string, std::string> http_map, int fd);
-		void	displayServerConfig(void);
+		void								displayServerConfig(void);
 };
 
 #endif

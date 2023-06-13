@@ -11,12 +11,19 @@ $(NAME): $(SRC_FIL)
 
 all: $(NAME)
 
+debug:	
+		c++ -g -O0 $(SRC_FIL) -o $(NAME)
+		mv webserv Debug
+
 clean:
 		rm -rf $(OBJS)
 
 fclean:	clean
 		rm -rf $(NAME)
+		rm -rf Debug/$(NAME)
 
 re:		fclean all
 
-.PHONY:	all clean fclean re
+dre:	fclean debug
+
+.PHONY:	all clean fclean re debug dre

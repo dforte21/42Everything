@@ -94,7 +94,7 @@ void	Server::handleClient(int i) {
 		if (request.find("\r\n\r\n") != std::string::npos)
 			break ;
 	}
-	std::cout << "rec = " << request << std::endl;
+	//std::cout << "rec = " << request << std::endl;
 	/*std::cout<< "\n REQUEST:\n ";
 	if (request != "")
 		std::cout << " NON VUOTA" << std::endl;

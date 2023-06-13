@@ -6,9 +6,15 @@ void Server::handleRequest(std::map<std::string, std::string> http_map, int fd) 
 		if (method == "GET")
 			this->handleGET(http_map, fd);
 		// else if (method == "POST")
-		// else if (method == "DELETE")
+		else if (method == "DELETE")
+
+			this->handleDELETE(http_map, fd);
 	}
 
+}
+
+void	Server::handleDELETE(std::map<std::string, std::string> http_map, int fd) {
+	;
 }
 
 bool Server::checkRequest(std::map<std::string, std::string> http_map, int fd) {
@@ -19,6 +25,7 @@ bool Server::checkRequest(std::map<std::string, std::string> http_map, int fd) {
 }
 
 void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
+	std::cout << "sonoqui\n";
 	std::ifstream body;
     if (!getBody(http_map["URL"], body, fd))
         return ;

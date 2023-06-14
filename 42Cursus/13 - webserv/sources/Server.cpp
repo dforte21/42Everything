@@ -94,8 +94,8 @@ void	Server::handleClient(int i) {
 			break ;
 	}
 	this->parseRequest(request);
-	for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
-		std::cout << "first:" << it->first << " second:" << it->second << std::endl;
+	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
+	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
 	if (this->checkRequest(socketArr[i].fd))
 		handleRequest(socketArr[i].fd);
 	close(socketArr[i].fd);

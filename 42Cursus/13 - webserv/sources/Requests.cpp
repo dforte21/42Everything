@@ -21,7 +21,7 @@ void	Server::parseRequest(std::string request) {
 			std::size_t space = line.find(' ', 0);
 			std::size_t space2 = line.find(' ', space + 1);
 			_requestMap.insert(std::make_pair("HTTP_method", line.substr(0, space)));
-			_requestMap.insert(std::make_pair("URL", line.substr(space + 1, space2 - space)));
+			_requestMap.insert(std::make_pair("URL", line.substr(space + 1, space2 - space - 1)));
 			_requestMap.insert(std::make_pair("protocol_version", line.substr(space2 + 1, line.length())));
 			if (prova[i] != 4)
 				i++;
@@ -96,15 +96,12 @@ void	Server::handleGET(int fd) {
 bool Server::getBody(std::ifstream &body, int fd) {
 	sVec	url;
 
-	url.push_back(_requestMap["URL"] + "/");
-	std::cout << _requestMap["URL"] << '$' << std::endl;
-	if ((_requestMap["URL"]) == "/")
+	url.push_back(_requestMap["URL"]);
+	if (_requestMap["URL"] == "/")
 		url = _config.getIndex();
 	for (sVec::iterator it = url.begin(); it != url.end(); it++)
 	{
-		std::cout << *it << std::endl;
-		std::cout << _config.getRoot() + *it << std::endl;
-		body.open(_config.getRoot() + *it);
+		body.open(_config.getRoot() + "/" + *it);
 		if (body.is_open() == true)
 			return true;
 	}

@@ -16,6 +16,15 @@
 typedef std::map<std::string, Config>		sCMap;
 typedef std::map<std::string, std::string>	sSMap;
 
+typedef	enum {
+	GET,
+	POST,
+	DELETE,
+	HEAD,
+	PUT,
+	ERROR,
+}	requests;
+
 class Server {
 	private:
 		Pfds	_pfds;

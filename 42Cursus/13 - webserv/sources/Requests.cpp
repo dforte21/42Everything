@@ -53,11 +53,15 @@ void Server::handleRequest(int fd) {
 	for (i = 0; i < 5; i++)
 		if (methods[i] == _requestMap["HTTP_method"])
 			break ;
+	std::cout << methods[i] << std::endl;
 	switch(i)
 	{
-		case 0:
+		case GET:
 			this->handleGET(fd);
 			break ;
+		case DELETE:
+			this->handleDELETE(fd);
+			break;
 		default :
 			this->default_error_answer(404, fd);
 			return ;
@@ -65,7 +69,8 @@ void Server::handleRequest(int fd) {
 }
 
 void	Server::handleDELETE(int fd) {
-	;
+	std::string url = _requestMap["URL"];
+	Config		toDeleteLocation = _locationMap[url];
 }
 
 void	Server::handleGET(int fd) {

@@ -93,11 +93,13 @@ void	Server::handleClient(int i) {
 		if (request.find("\r\n\r\n") != std::string::npos)
 			break ;
 	}
+	std::cout << request << std::endl;
 	this->parseRequest(request);
-	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
-	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
+	for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
+		std::cout << "first:" << it->first << " second:" << it->second << std::endl;
 	if (this->checkRequest(socketArr[i].fd))
 		handleRequest(socketArr[i].fd);
+	_requestMap.clear();
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
 }

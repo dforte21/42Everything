@@ -13,32 +13,36 @@
 # include <string>
 # include <sstream>
 
-typedef std::map<std::string, Config> sCMap;
+typedef std::map<std::string, Config>		sCMap;
+typedef std::map<std::string, std::string>	sSMap;
 
 class Server {
 	private:
 		Pfds	_pfds;
 		Config	_config;
 		sCMap	_locationMap;
+		sSMap	_requestMap;
 
 		Server();
-
-		bool			default_error_answer(int err, int fd);
-		void			handleGET(std::map<std::string, std::string> http_map, int fd);
-		void			handleDELETE(std::map<std::string, std::string> http_map, int fd);
-		bool			checkRequest(std::map<std::string, std::string> http_map, int fd);
-		bool			getBody(std::string url, std::ifstream &body, int fd);
 
 	public:
 		Server(Config &config, sCMap &locationMap);
 		~Server();
 		
-		void								startListening(void);
-		void								handleServer(void);
-		void								handleClient(int i);
-		std::map<std::string, std::string>	parseRequest(std::string request);
-		void								handleRequest(std::map<std::string, std::string> http_map, int fd);
-		void								displayServerConfig(void);
+		void	startListening(void);
+		void	handleServer(void);
+		void	handleClient(int i);
+		
+		void	displayServerConfig(void);
+	
+		bool	checkRequest(int fd);
+		void	parseRequest(std::string request);
+		void	handleRequest(int fd);
+		void	handleGET(int fd);
+		void	handleDELETE(int fd);
+		bool	getBody(std::ifstream &body, int fd);
+		
+		bool	default_error_answer(int err, int fd);
 };
 
 #endif

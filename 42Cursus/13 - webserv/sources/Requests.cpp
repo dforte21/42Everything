@@ -1,33 +1,77 @@
 #include "../includes/Server.hpp"
 
-void Server::handleRequest(std::map<std::string, std::string> http_map, int fd) {
-	if (this->checkRequest(http_map, fd)) {
-		std::string method = http_map["HTTP_method"];
-		if (method == "GET")
-			this->handleGET(http_map, fd);
-		// else if (method == "POST")
-		else if (method == "DELETE")
-
-			this->handleDELETE(http_map, fd);
-	}
-
-}
-
-void	Server::handleDELETE(std::map<std::string, std::string> http_map, int fd) {
-	;
-}
-
-bool Server::checkRequest(std::map<std::string, std::string> http_map, int fd) {
+bool	Server::checkRequest(int fd) {
 	sBMap alllowed_methods = _config.getAllowedMethods();
-	if (alllowed_methods[http_map["HTTP_method"]] == false)
+	if (alllowed_methods[_requestMap["HTTP_method"]] == false)
 		return default_error_answer(405, fd);
 	return true;
 }
 
-void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
-	std::cout << "sonoqui\n";
+void	Server::parseRequest(std::string request) {
+	std::size_t first = 0;
+	std::size_t find = 0;
+	std::size_t i = 0;
+
+	const char *prova = request.c_str();
+	std::string line;
+
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			std::size_t space = line.find(' ', 0);
+			std::size_t space2 = line.find(' ', space + 1);
+			_requestMap.insert(std::make_pair("HTTP_method", line.substr(0, space)));
+			_requestMap.insert(std::make_pair("URL", line.substr(space + 1, space2 - space)));
+			_requestMap.insert(std::make_pair("protocol_version", line.substr(space2 + 1, line.length())));
+			if (prova[i] != 4)
+				i++;
+			first = i + 1;
+			break ;
+		}
+		i++;
+	}
+	while (prova[i] != '\0') {
+		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
+			line = request.substr(first, i - first);
+			if (prova[i] != 4)
+				i++;
+			first = i + 1;
+		std::size_t mid = line.find(':', 0);
+		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
+			_requestMap.insert(std::make_pair(line.substr(0, mid), line.substr(mid + 2 , line.length())));
+		else
+			_requestMap.insert(std::make_pair(line.substr(0, line.length()), ""));
+		}
+		i++;
+	}
+}
+
+void Server::handleRequest(int fd) {
+	std::string	methods[5] = {"GET", "POST", "DELETE", "HEAD", "PUT"};
+	int	i;
+
+	for (i = 0; i < 5; i++)
+		if (methods[i] == _requestMap["HTTP_method"])
+			break ;
+	switch(i)
+	{
+		case 0:
+			this->handleGET(fd);
+			break ;
+		default :
+			this->default_error_answer(404, fd);
+			return ;
+	}
+}
+
+void	Server::handleDELETE(int fd) {
+	;
+}
+
+void	Server::handleGET(int fd) {
 	std::ifstream body;
-    if (!getBody(http_map["URL"], body, fd))
+
+    if (!getBody(body, fd))
         return ;
 	std::ostringstream oss;
 	std::string b( (std::istreambuf_iterator<char>(body) ),
@@ -40,6 +84,7 @@ void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
     oss << b;
 	oss << "\r\n\n\r";
 	std::string response(oss.str());
+
 	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
 		std::cout << "Send error!\n";
 // 	std::cout<< "send fd:" << fd << std::endl;
@@ -48,31 +93,21 @@ void	Server::handleGET(std::map<std::string, std::string> http_map, int fd) {
 // 		std::cout << "Send error!\n";
 }
 
-bool Server::getBody(std::string url, std::ifstream &body, int fd) {
-    if (url == "/") {
-        sVec indexes = _config.getIndex();
-	    std::vector<std::string>::iterator it = indexes.begin();
-	    std::string	root = _config.getRoot() + "/";
+bool Server::getBody(std::ifstream &body, int fd) {
+	sVec	url;
 
-	    while (1) {
-	    	body.open(root + (*it));
-	    	if (body.is_open() == true)
-	    		return true;
-	    	else
-	    		body.close();
-	    	it++;
-	    	if (it == indexes.end()) {
-	    		this->default_error_answer(404, fd);
-	    		return false;
-	    	}
-	    }
-    }
-    else {
-        body.open(url);
-        if (body.is_open() == true)
-            return true;
-        body.close();
-        this->default_error_answer(404, fd);
-        return false;
-    }
+	url.push_back(_requestMap["URL"] + "/");
+	std::cout << _requestMap["URL"] << '$' << std::endl;
+	if ((_requestMap["URL"]) == "/")
+		url = _config.getIndex();
+	for (sVec::iterator it = url.begin(); it != url.end(); it++)
+	{
+		std::cout << *it << std::endl;
+		std::cout << _config.getRoot() + *it << std::endl;
+		body.open(_config.getRoot() + *it);
+		if (body.is_open() == true)
+			return true;
+	}
+	this->default_error_answer(404, fd);
+	return false;
 }

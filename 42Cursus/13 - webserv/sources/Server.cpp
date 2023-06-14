@@ -27,8 +27,8 @@ Server::~Server(void) {
 }
 
 void	Server::startListening(void) {
-	int 					poll_count;
-	struct pollfd			*socketArr;
+	int 			poll_count;
+	struct pollfd	*socketArr;
 
 	socketArr = _pfds.getSocketArr();
 	poll_count = poll(socketArr, _pfds.getCount(), 0);
@@ -90,20 +90,14 @@ void	Server::handleClient(int i) {
 		}
 		buf[nbytes] = '\0';
 		request += buf;
-		size_t diopo;
 		if (request.find("\r\n\r\n") != std::string::npos)
 			break ;
 	}
-	//std::cout << "rec = " << request << std::endl;
-	/*std::cout<< "\n REQUEST:\n ";
-	if (request != "")
-		std::cout << " NON VUOTA" << std::endl;
-	else
-		std::cout << " VUOTA!\n";*/
-	std::map<std::string, std::string> tok_http = this->parseRequest(request);
-	// for (std::map<std::string, std::string>::iterator it = tok_http.begin(); it != tok_http.end(); it++)
-	//  	std::cout << "\nfirst:" << it->first << " second:" << it->second << std::endl;
-	this->handleRequest(tok_http, socketArr[i].fd);
+	this->parseRequest(request);
+	for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
+		std::cout << "first:" << it->first << " second:" << it->second << std::endl;
+	if (this->checkRequest(socketArr[i].fd))
+		handleRequest(socketArr[i].fd);
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
 }
@@ -116,48 +110,6 @@ void	Server::displayServerConfig(void) {
 		std::cout << "Name: " << it->first << std::endl;
 		it->second.displayConfig();
 	}
-}
-
-std::map<std::string, std::string> Server::parseRequest(std::string request) {
-	std::size_t first = 0;
-	std::size_t find = 0;
-	std::size_t i = 0;
-
-	const char *prova = request.c_str();
-	std::map<std::string, std::string> map;
-	std::string line;
-
-	while (prova[i] != '\0') {
-		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
-			line = request.substr(first, i - first);
-			// std::cout << "firstline: " << line << std::endl;
-			std::size_t space = line.find(' ', 0);
-			std::size_t space2 = line.find(' ', space + 1);
-			map.insert(std::pair<std::string, std::string>("HTTP_method", line.substr(0, space)));
-			map.insert(std::pair<std::string, std::string>("URL", line.substr(space + 1, space2 - space - 1)));
-			map.insert(std::pair<std::string, std::string>("protocol_version", line.substr(space2 + 1, line.length())));
-			if (prova[i] != 4)
-				i++;
-			first = i + 1;
-			break ;
-		}
-		i++;
-	}
-	while (prova[i] != '\0') {
-		if ((prova[i] == '\r' && prova[i + 1] == '\n') || prova[i] == 4){
-			line = request.substr(first, i - first);
-			if (prova[i] != 4)
-				i++;
-			first = i + 1;
-		std::size_t mid = line.find(':', 0);
-		if (mid != std::string::npos && line[mid] == ':' && line[mid + 1] == ' ')
-			map.insert(std::pair<std::string, std::string>(line.substr(0, mid), line.substr(mid + 2 , line.length())));
-		else
-			map.insert(std::pair<std::string, std::string>(line.substr(0, line.length()), ""));
-		}
-		i++;
-	}
-	return map;
 }
 
 bool	Server::default_error_answer(int err, int fd) {

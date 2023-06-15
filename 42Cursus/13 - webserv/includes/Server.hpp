@@ -46,12 +46,12 @@ class Server {
 	
 		bool	checkRequest(int fd, Config &location);
 		void	parseRequest(std::string request);
-		void	handleRequest(int fd);
-		void	handleGET(int fd);
+		void	handleRequest(int fd, Config location);
+		void	handleGET(int fd, Config location);
 		void	handleDELETE(int fd);
 		bool	getBody(std::ifstream &body, int fd);
 		
-		bool	default_error_answer(int err, int fd);
+		void	default_error_answer(int err, int fd, Config location);
 };
 
 #endif

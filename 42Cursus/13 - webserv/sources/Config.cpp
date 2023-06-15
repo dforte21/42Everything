@@ -12,6 +12,12 @@ Config::Config(std::string &serverBody)
 	size_t		pos;
 	std::string	locationName;
 
+	_allowed_methods.insert(std::pair<std::string, bool>("GET", true));
+	_allowed_methods.insert(std::pair<std::string, bool>("POST", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("HEAD", true));
+	_allowed_methods.insert(std::pair<std::string, bool>("PUT", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("DELETE", false));
+
 	while ((pos = serverBody.find_first_of('\n')) != std::string::npos)
 	{
 		line = serverBody.substr(serverBody.find_first_not_of(" \t\n"), pos);

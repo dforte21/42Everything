@@ -4,22 +4,20 @@ bool	Server::checkRequest(int fd, Config &location) {
 	location = _locationMap["/"];
 	if (_locationMap.count(_requestMap["URL"]) == 0) {
 		std::string temp_request = _requestMap["URL"];
-		std::cout << "initial temp_request:" << temp_request << std::endl;
 		size_t pos = temp_request.size();
 		while ((pos = temp_request.rfind('/', pos)) != std::string::npos){
-			//pos--;
-			std::cout << "temp_request:" << temp_request << std::endl;
 			temp_request.resize(pos);
 			if (_locationMap.count(temp_request) > 0) {
 				location = _locationMap[temp_request];
 				break ;
 			}
 		}
-		std::cout << "final temp_request:" << temp_request << std::endl;
 	}
 	sBMap alllowed_methods = location.getAllowedMethods();
-	if (alllowed_methods[_requestMap["HTTP_method"]] == false)
-		return default_error_answer(405, fd);
+	if (alllowed_methods[_requestMap["HTTP_method"]] == false) {
+		default_error_answer(405, fd, location);
+		return false;
+	}
 	return true;
 }
 
@@ -62,7 +60,7 @@ void	Server::parseRequest(std::string request) {
 	}
 }
 
-void Server::handleRequest(int fd) {
+void Server::handleRequest(int fd, Config location) {
 	std::string	methods[5] = {"GET", "POST", "DELETE", "HEAD", "PUT"};
 	int	i;
 
@@ -73,14 +71,13 @@ void Server::handleRequest(int fd) {
 	switch(i)
 	{
 		case GET:
-			this->handleGET(fd);
+			this->handleGET(fd, location);
 			break ;
 		case DELETE:
 			this->handleDELETE(fd);
 			break;
-		default :
-			this->default_error_answer(404, fd);
-			return ;
+		default :	
+			return this->default_error_answer(405, fd, location);
 	}
 }
 
@@ -89,11 +86,11 @@ void	Server::handleDELETE(int fd) {
 	Config		toDeleteLocation = _locationMap[url];
 }
 
-void	Server::handleGET(int fd) {
+void	Server::handleGET(int fd, Config location) {
 	std::ifstream body;
 
     if (!getBody(body, fd))
-        return ;
+        return this->default_error_answer(404, fd, location);
 	std::ostringstream oss;
 	std::string b( (std::istreambuf_iterator<char>(body) ),
                        (std::istreambuf_iterator<char>()    ) );
@@ -126,6 +123,5 @@ bool Server::getBody(std::ifstream &body, int fd) {
 		if (body.is_open() == true)
 			return true;
 	}
-	this->default_error_answer(404, fd);
 	return false;
 }

@@ -99,7 +99,7 @@ void	Server::handleClient(int i) {
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
 	Config location;
 	if (this->checkRequest(socketArr[i].fd, location))
-		handleRequest(socketArr[i].fd);
+		handleRequest(socketArr[i].fd, location);
 	_requestMap.clear();
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
@@ -115,7 +115,7 @@ void	Server::displayServerConfig(void) {
 	}
 }
 
-bool	Server::default_error_answer(int err, int fd) {
+void	Server::default_error_answer(int err, int fd, Config location) {
 	sVec errpages = _config.getErrorPage();
 	std::ifstream file;
 
@@ -131,7 +131,7 @@ bool	Server::default_error_answer(int err, int fd) {
 				if (file.is_open())
 					break ;
 				file.close();
-				return default_error_answer(500, fd);
+				return default_error_answer(500, fd, location);
 			}
 
 		}
@@ -166,7 +166,20 @@ bool	Server::default_error_answer(int err, int fd) {
 	}
 
 	std::stringstream convert;
-	std::string res = "HTTP/1.1 " + tmpString + "\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";
+	std::string res = "HTTP/1.1 " + tmpString + "\r\n";
+
+	if (err == 405) {
+		res += "Allow: ";
+		sBMap allowed = location.getAllowedMethods();
+		for (sBMap::iterator it = allowed.begin(); it != allowed.end(); it++) {
+			if (it->second == true)
+				res += it->first + ", ";
+		}
+		res.resize(res.size() - 2);
+		res += "\n\r";
+	}
+	
+	res += "Server: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: ";
 
 	if (file.is_open()) {
 		convert << file.rdbuf();
@@ -179,11 +192,10 @@ bool	Server::default_error_answer(int err, int fd) {
 	else if (err != 100) {
 		std::string tmpBody = "<html><head><title>" + tmpString + "</title></head><body><p>" + tmpString + "</p></body></html>";
 		//std::string res = "HTTP/1.1 " + tmpString + "\r\nAllow: POST\r\nServer: webserv1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 133";
-		std::string defBody = "\r\n\r\n";
-		defBody.append(tmpBody);
-		res.append(defBody);
+		convert << tmpBody.length();
+		res.append(convert.str() + "\r\n\r\n" + tmpBody);
 	}
+	std::cout<< res << std::endl;
 	if (send(fd, res.c_str(), res.size(), 0) == -1)
 		std::cout << "Send error!\n";
-	return false;
 }

@@ -19,6 +19,7 @@ Cluster::Cluster(const char *filePath) {
 	{
 		Config	config(*it);
 		locationMap = config.getLocationMap();
+		locationMap["/"] = config;
 		Server	server(config, locationMap);
 		_serverVec.push_back(server);
 	}

@@ -33,6 +33,7 @@ class Config {
 	public:
 		Config(void);
 		Config(std::string &serverBody);
+		Config	&operator=(Config &rhs);
 		~Config(void);
 
 		int			doDirective(std::string &line);

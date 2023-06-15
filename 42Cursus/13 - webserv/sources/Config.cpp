@@ -32,6 +32,24 @@ Config::~Config(void) {
 	
 }
 
+Config	&Config::operator=(Config &rhs) {
+	if (this == &rhs)
+		return *this;
+
+	this->_root = rhs._root;
+	this->_index = rhs._index;
+	this->_error_page = rhs._error_page;
+	this->_client_max_body_size = rhs._client_max_body_size;
+	this->_allowed_methods = rhs._allowed_methods;
+	this->_autoindex = rhs._autoindex;
+	this->_try_files = rhs._try_files;
+	this->_cgi_pass = rhs._cgi_pass;
+	this->_extension_cgi = rhs._extension_cgi;
+	this->_return = rhs._return;
+
+	return *this;
+}
+
 int	Config::doDirective(std::string &line) {
 	std::string		directive;
 	int				i;

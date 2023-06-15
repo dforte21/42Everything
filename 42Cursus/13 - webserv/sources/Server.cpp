@@ -96,8 +96,10 @@ void	Server::handleClient(int i) {
 	this->parseRequest(request);
 	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
-	if (this->checkRequest(socketArr[i].fd))
+	Config location;
+	if (this->checkRequest(socketArr[i].fd, location))
 		handleRequest(socketArr[i].fd);
+	_requestMap.clear();
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
 }

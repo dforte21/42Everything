@@ -35,7 +35,7 @@ class Server {
 		
 		void	displayServerConfig(void);
 	
-		bool	checkRequest(int fd);
+		bool	checkRequest(int fd, Config &location);
 		void	parseRequest(std::string request);
 		void	handleRequest(int fd);
 		void	handleGET(int fd);

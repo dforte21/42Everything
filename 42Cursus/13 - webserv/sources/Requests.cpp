@@ -1,7 +1,23 @@
 #include "../includes/Server.hpp"
 
-bool	Server::checkRequest(int fd) {
-	sBMap alllowed_methods = _config.getAllowedMethods();
+bool	Server::checkRequest(int fd, Config &location) {
+	location = _locationMap["/"];
+	if (_locationMap.count(_requestMap["URL"]) == 0) {
+		std::string temp_request = _requestMap["URL"];
+		std::cout << "initial temp_request:" << temp_request << std::endl;
+		size_t pos = temp_request.size();
+		while ((pos = temp_request.rfind('/', pos)) != std::string::npos){
+			//pos--;
+			std::cout << "temp_request:" << temp_request << std::endl;
+			temp_request.resize(pos);
+			if (_locationMap.count(temp_request) > 0) {
+				location = _locationMap[temp_request];
+				break ;
+			}
+		}
+		std::cout << "final temp_request:" << temp_request << std::endl;
+	}
+	sBMap alllowed_methods = location.getAllowedMethods();
 	if (alllowed_methods[_requestMap["HTTP_method"]] == false)
 		return default_error_answer(405, fd);
 	return true;

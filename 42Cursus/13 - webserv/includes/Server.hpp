@@ -49,7 +49,7 @@ class Server {
 		void	handleRequest(int fd, Config location);
 		void	handleGET(int fd, Config location);
 		void	handleDELETE(int fd);
-		bool	getBody(std::ifstream &body, int fd);
+		bool	getBody(std::ifstream &body, Config location);
 		
 		void	default_error_answer(int err, int fd, Config location);
 };

@@ -1,17 +1,24 @@
 #include "../includes/Server.hpp"
 
 bool	Server::checkRequest(int fd, Config &location) {
-	location = _locationMap["/"];
-	if (_locationMap.count(_requestMap["URL"]) == 0) {
-		std::string temp_request = _requestMap["URL"];
+	//location = _locationMap["/"];
+	std::string temp_request = _requestMap["URL"];
+	if (_locationMap.count(temp_request) == 0) {
 		size_t pos = temp_request.size();
 		while ((pos = temp_request.rfind('/', pos)) != std::string::npos){
 			temp_request.resize(pos);
 			if (_locationMap.count(temp_request) > 0) {
 				location = _locationMap[temp_request];
+				location._location_name = temp_request;
 				break ;
 			}
+			location = _locationMap["/"];
+			location._location_name = "/";
 		}
+	}
+	else {
+		location = _locationMap[temp_request];
+		location._location_name = temp_request;
 	}
 	sBMap alllowed_methods = location.getAllowedMethods();
 	if (alllowed_methods[_requestMap["HTTP_method"]] == false) {
@@ -67,7 +74,7 @@ void Server::handleRequest(int fd, Config location) {
 	for (i = 0; i < 5; i++)
 		if (methods[i] == _requestMap["HTTP_method"])
 			break ;
-	std::cout << methods[i] << std::endl;
+	//std::cout << methods[i] << std::endl;
 	switch(i)
 	{
 		case GET:
@@ -89,8 +96,11 @@ void	Server::handleDELETE(int fd) {
 void	Server::handleGET(int fd, Config location) {
 	std::ifstream body;
 
-    if (!getBody(body, fd))
+	std::cout<< "handleGET" << std::endl;
+	std::cout<< "location name:" << location._location_name << std::endl;
+    if (!getBody(body, location))
         return this->default_error_answer(404, fd, location);
+	std::cout<< "non va in errore\n";
 	std::ostringstream oss;
 	std::string b( (std::istreambuf_iterator<char>(body) ),
                        (std::istreambuf_iterator<char>()    ) );
@@ -111,15 +121,42 @@ void	Server::handleGET(int fd, Config location) {
 // 		std::cout << "Send error!\n";
 }
 
-bool Server::getBody(std::ifstream &body, int fd) {
-	sVec	url;
+bool Server::getBody(std::ifstream &body, Config location) {
+	std::string resource_path = _requestMap["URL"];
+	/*body.open(resource_path);
+	if (body.is_open() == true)
+			return true;
+	else
+		body.close();*/
+	std::string root = location.getRoot();
 
-	url.push_back(_requestMap["URL"]);
-	if (_requestMap["URL"] == "/")
-		url = _config.getIndex();
-	for (sVec::iterator it = url.begin(); it != url.end(); it++)
+	if (root.at(root.size() - 1) != '/')
+		root += "/";
+	if (location._location_name == "/") {
+		resource_path = root;
+	}
+	else {
+		size_t pos = resource_path.find(location._location_name);
+
+		resource_path.replace(pos, location._location_name.size(), root);
+		pos = resource_path.find("//");
+		if (pos != std::string::npos)
+			resource_path.erase(pos, 1);
+	}
+	std::cout<<"resource path:"<<resource_path<<std::endl;
+	if (resource_path.at(resource_path.size() - 1) != '/') { //questo è un controllo stupido per vedere se è una cartella
+		body.open(resource_path);
+		if (body.is_open() == true)
+				return true;
+		else
+			body.close();
+	}
+	std::cout<<"ciao2"<<std::endl;
+	sVec	indexes = _config.getIndex();
+	for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
 	{
-		body.open(_config.getRoot() + "/" + *it);
+		std::cout<< "tentativo: " << resource_path + *it << std::endl;
+		body.open(resource_path + *it);
 		if (body.is_open() == true)
 			return true;
 	}

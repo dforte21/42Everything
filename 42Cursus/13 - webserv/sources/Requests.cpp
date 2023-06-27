@@ -96,15 +96,15 @@ void	Server::handleDELETE(int fd) {
 
 void	Server::handleGET(int fd, Config location) {
 	std::ifstream body;
-
+	int status;
 	std::cout<< "handleGET" << std::endl;
 	std::cout<< "location name:" << location._location_name << std::endl;
-	if (!getBody(body, location))
-		return this->default_error_answer(404, fd, location);
+	if ((status = getBody(body, location)) != 0)
+		return default_error_answer(status, fd, location);
 	std::cout<< "non va in errore\n";
-	std::ostringstream oss;
 	std::string b( (std::istreambuf_iterator<char>(body) ),
                        (std::istreambuf_iterator<char>()    ) );
+	std::ostringstream oss;
 	oss << "HTTP/1.1 200 OK\r\n";
     oss << "Content-Type: text/html\r\n";
     oss << "Content-Length: " << b.size() << "\r\n";
@@ -122,7 +122,7 @@ void	Server::handleGET(int fd, Config location) {
 // 		std::cout << "Send error!\n";
 }
 
-bool Server::getBody(std::ifstream &body, Config location) {
+int Server::getBody(std::ifstream &body, Config location) {
 	std::string resource_path = _requestMap["URL"];
 	/*body.open(resource_path);
 	if (body.is_open() == true)
@@ -145,21 +145,34 @@ bool Server::getBody(std::ifstream &body, Config location) {
 			resource_path.erase(pos, 1);
 	}
 	std::cout<<"resource path:"<<resource_path<<std::endl;
-	if (resource_path.at(resource_path.size() - 1) != '/') { //questo è un controllo stupido per vedere se è una cartella
-		body.open(resource_path.c_str());
-		if (body.is_open() == true)
-				return true;
-		else
-			body.close();
-	}
-	std::cout<<"ciao2"<<std::endl;
 	sVec	indexes = location.getIndex();
 	for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
 	{
 		std::cout<< "tentativo: " << resource_path + *it << std::endl;
 		body.open((resource_path + *it).c_str());
 		if (body.is_open() == true)
-			return true;
+			return 0;
+		body.close();
 	}
+	std::cout<<"ciao2"<<std::endl;
+	if (!isDirectory(resource_path)) {
+		body.open(resource_path.c_str());
+		if (body.is_open() == true)
+				return 0;
+		else {
+			body.close();
+			return 404;
+		}
+	}
+	else{ std::cout<<"else return 400"<< std::endl;
+		return 404;}
+	std::cout<<"final return"<< std::endl;
+	return 404;
+}
+
+bool isDirectory(const std::string& path) {
+	struct stat fileStat;
+	if (stat(path.c_str(), &fileStat) == 0)
+		return S_ISDIR(fileStat.st_mode);
 	return false;
 }

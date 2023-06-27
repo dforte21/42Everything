@@ -24,6 +24,9 @@ fclean:	clean
 
 re:		fclean all
 
+vai: re
+	@./$(NAME)
+
 dre:	fclean debug
 
-.PHONY:	all clean fclean re debug dre
+.PHONY:	all clean fclean re vai debug dre

@@ -5,7 +5,8 @@ Server::Server(Config &config, sCMap &locationMap) : _config(config), _locationM
 	int					listener;
 
 	listener = socket(AF_INET, SOCK_STREAM, 0);
-	fcntl(listener, F_SETFL, O_NONBLOCK); //questo é il non bloccante
+	int flags = fcntl(listener, F_GETFL, 0);
+	fcntl(listener, F_SETFL, flags | O_NONBLOCK); //questo é il non bloccante
 	if (listener < 0)
 		throw std::runtime_error("Unable to create socket");
 	addr.sin_family = AF_INET;
@@ -77,7 +78,9 @@ void	Server::handleClient(int i) {
 	socketArr = _pfds.getSocketArr();
 	while (1)
 	{
+							std::cout<<"giro"<<std::endl;
 		nbytes = recv(socketArr[i].fd, buf, 255, 0);
+							std::cout<<"giro2"<<std::endl;
 		if (nbytes == 0)
 			break ;
 		else if (nbytes < 0)
@@ -93,7 +96,7 @@ void	Server::handleClient(int i) {
 		if (request.find("\r\n\r\n") != std::string::npos)
 			break ;
 	}
-	//std::cout << request << std::endl;
+	std::cout << request << std::endl;
 	this->parseRequest(request);
 	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
@@ -150,6 +153,7 @@ void	Server::default_error_answer(int err, int fd, Config location) {
 		case 204: tmpString = "204 No content"; break ;
 		case 205: tmpString = "205 Reset Content"; break ;
 		case 206: tmpString = "206 Partial Content"; break ;
+		case 301: tmpString = "301 Moved Permanently"; break ;
 		case 400: tmpString = "400 Bad Request"; break ;
 		case 401: tmpString = "401 Unauthorized"; break ;
 		case 402: tmpString = "402 Payment Required"; break ;

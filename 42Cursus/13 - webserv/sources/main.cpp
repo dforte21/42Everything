@@ -1,6 +1,7 @@
 #include "../includes/Cluster.hpp"
 
 int main(int argc, char *argv[]){
+	(void)argc;
 	try {
 		Cluster	cluster(argv[1]);
 	}

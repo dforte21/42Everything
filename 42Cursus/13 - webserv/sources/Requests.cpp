@@ -30,7 +30,6 @@ bool	Server::checkRequest(int fd, Config &location) {
 
 void	Server::parseRequest(std::string request) {
 	std::size_t first = 0;
-	std::size_t find = 0;
 	std::size_t i = 0;
 
 	const char *prova = request.c_str();
@@ -91,6 +90,8 @@ void Server::handleRequest(int fd, Config location) {
 void	Server::handleDELETE(int fd) {
 	std::string url = _requestMap["URL"];
 	Config		toDeleteLocation = _locationMap[url];
+
+	(void)fd;
 }
 
 void	Server::handleGET(int fd, Config location) {
@@ -98,8 +99,8 @@ void	Server::handleGET(int fd, Config location) {
 
 	std::cout<< "handleGET" << std::endl;
 	std::cout<< "location name:" << location._location_name << std::endl;
-    if (!getBody(body, location))
-        return this->default_error_answer(404, fd, location);
+	if (!getBody(body, location))
+		return this->default_error_answer(404, fd, location);
 	std::cout<< "non va in errore\n";
 	std::ostringstream oss;
 	std::string b( (std::istreambuf_iterator<char>(body) ),
@@ -145,18 +146,18 @@ bool Server::getBody(std::ifstream &body, Config location) {
 	}
 	std::cout<<"resource path:"<<resource_path<<std::endl;
 	if (resource_path.at(resource_path.size() - 1) != '/') { //questo è un controllo stupido per vedere se è una cartella
-		body.open(resource_path);
+		body.open(resource_path.c_str());
 		if (body.is_open() == true)
 				return true;
 		else
 			body.close();
 	}
 	std::cout<<"ciao2"<<std::endl;
-	sVec	indexes = _config.getIndex();
+	sVec	indexes = location.getIndex();
 	for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
 	{
 		std::cout<< "tentativo: " << resource_path + *it << std::endl;
-		body.open(resource_path + *it);
+		body.open((resource_path + *it).c_str());
 		if (body.is_open() == true)
 			return true;
 	}

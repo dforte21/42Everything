@@ -16,7 +16,10 @@ uint16_t	Config::setListen(std::string &configStr) {
 	line = configStr.substr(pos, end - pos);
 	if(line.find_first_not_of("1234567890") != std::string::npos)
 		throw badConfigFile();
-	myInt = std::stoi(line, 0, 10);
+	std::istringstream tmp(line.substr(0,10));
+	if(!(tmp >> myInt))
+		throw badConfigFile();
+	//myInt = std::stoi(line, 0, 10);
 	if (myInt > static_cast<int>(UINT16_MAX) || myInt <= 0)
     	throw badConfigFile();
 	return static_cast<uint16_t>(myInt);
@@ -126,7 +129,10 @@ int	Config::setClientMaxBodySize(std::string &configStr) {
 		line.replace(pos, 1, 3, '0');
 	if (line.find_first_not_of("0123456789Kk") != std::string::npos)
 		throw badConfigFile();
-	myInt = std::stoi(line, 0, 10);
+	std::istringstream tmp(line.substr(0,10));
+	if(!(tmp >> myInt))
+		throw badConfigFile();
+	//myInt = std::stoi(line, 0, 10);
 	if (myInt < 0)
 		throw badConfigFile();
 	return myInt;
@@ -273,7 +279,10 @@ iSPair	Config::setReturn(std::string &configStr) {
 	end = line.find_first_of(" \t");
 	if (line.substr(0, end).find_first_not_of("0123456789") != std::string::npos)
 		throw badConfigFile();
-	status_code = std::stoi(line.substr(0, end));
+	std::istringstream tmp(line.substr(0,end));
+	if(!(tmp >> status_code))
+		throw badConfigFile();
+	//status_code = std::stoi(line.substr(0, end));
 	line.erase(0, end);
 	pos = line.find_first_not_of(" \t\n");
 	if (pos == std::string::npos)

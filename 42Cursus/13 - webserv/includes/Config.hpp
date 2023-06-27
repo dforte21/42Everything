@@ -6,6 +6,8 @@
 # include <map>
 # include <cstdlib>
 # include <utility>
+# include <stdint.h>
+# include <sstream>
 
 typedef	std::vector<std::string> sVec;
 typedef	std::map<std::string, bool> sBMap;

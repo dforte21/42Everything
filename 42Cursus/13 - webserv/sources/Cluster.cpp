@@ -42,7 +42,7 @@ sVec	Cluster::divideByServer(std::string &fileContent) {
 		throw badConfigFile();
 	else if (fileContent.find_first_not_of(" \t\n", (fileContent.find("server") + 6)) < fileContent.find_first_of("{"))
 		throw badConfigFile();
-	for (int begin = fileContent.find_first_of("{"); begin != std::string::npos; begin = fileContent.find_first_of("{", begin + bodyLen))
+	for (size_t begin = fileContent.find_first_of("{"); begin != std::string::npos; begin = fileContent.find_first_of("{", begin + bodyLen))
 	{
 		bodyLen = 0;
 		for (int bracketsCount = 0; begin + bodyLen < fileContent.length();)

@@ -37,7 +37,7 @@ void	Server::startListening(void) {
 	if (poll_count == 0)
 		return ;
 	std::cout << socketArr[0].fd << " poll count " << poll_count << "\n";
-	for(int i = 0; i < _pfds.getCount(); i++)
+	for(size_t i = 0; i < _pfds.getCount(); i++)
 	{
 		if (socketArr[i].revents & POLLIN)
 		{
@@ -127,7 +127,7 @@ void	Server::default_error_answer(int err, int fd, Config location) {
 
 		for (sVec::iterator it = errpages.begin(); it != errpages.end(); it++) {
 			if ((*it) == error) {
-				file.open(root + (*it));
+				file.open((root + (*it)).c_str());
 				if (file.is_open())
 					break ;
 				file.close();

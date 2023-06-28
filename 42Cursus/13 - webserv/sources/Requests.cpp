@@ -97,7 +97,9 @@ void	Server::handleDELETE(int fd) {
 void	Server::handleGET(int fd, Config location) {
 	std::ifstream body;
 	int status;
-	std::cout<< "handleGET" << std::endl;
+	std::cout<< "handleGET "<< _requestMap["URL"] << std::endl;
+	if (_requestMap["URL"] == "/favicon.ico")
+		return getIcon(body, fd, location);
 	std::cout<< "location name:" << location._location_name << std::endl;
 	if ((status = getBody(body, location)) != 0)
 		return default_error_answer(status, fd, location);
@@ -111,7 +113,7 @@ void	Server::handleGET(int fd, Config location) {
     // oss << "Connection: keep-alive\r\n";
     oss << "\r\n";
     oss << b;
-	oss << "\r\n\n\r";
+	//oss << "\r\n\n\r"; //forse non va messo, sembra che il tester dia un errore
 	std::string response(oss.str());
 
 	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
@@ -124,11 +126,6 @@ void	Server::handleGET(int fd, Config location) {
 
 int Server::getBody(std::ifstream &body, Config location) {
 	std::string resource_path = _requestMap["URL"];
-	/*body.open(resource_path);
-	if (body.is_open() == true)
-			return true;
-	else
-		body.close();*/
 	std::string root = location.getRoot();
 
 	if (root.at(root.size() - 1) != '/')
@@ -137,13 +134,25 @@ int Server::getBody(std::ifstream &body, Config location) {
 		resource_path = root;
 	}
 	else {
+		std::cout<<"resource_path prima:"<<resource_path<<std::endl;
 		size_t pos = resource_path.find(location._location_name);
 
 		resource_path.replace(pos, location._location_name.size(), root);
 		pos = resource_path.find("//");
+		std::cout << "find pos:"<< pos<<" resource.size:"<< resource_path.size()<<std::endl;
 		if (pos != std::string::npos)
 			resource_path.erase(pos, 1);
+		std::cout<<"resource_path at size -1:"<<resource_path.at(resource_path.size() - 1) <<std::endl;
 	}
+	if (!isDirectory(resource_path)) {
+		body.open(resource_path.c_str());
+		if (body.is_open() == true){std::cout<<"no dir open file"<<std::endl;
+				return 0;}
+		else
+			body.close();
+	}
+	if (resource_path.at(resource_path.size() - 1) != '/')
+		resource_path.push_back('/');
 	std::cout<<"resource path:"<<resource_path<<std::endl;
 	sVec	indexes = location.getIndex();
 	for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
@@ -154,20 +163,27 @@ int Server::getBody(std::ifstream &body, Config location) {
 			return 0;
 		body.close();
 	}
-	std::cout<<"ciao2"<<std::endl;
-	if (!isDirectory(resource_path)) {
-		body.open(resource_path.c_str());
-		if (body.is_open() == true)
-				return 0;
-		else {
-			body.close();
-			return 404;
-		}
-	}
-	else{ std::cout<<"else return 400"<< std::endl;
-		return 404;}
+
 	std::cout<<"final return"<< std::endl;
 	return 404;
+}
+
+void Server::getIcon(std::ifstream &body, int fd, Config location) {
+	body.open("fake_site/choco.png");
+	if (body.is_open() == false)
+		return default_error_answer(404, fd, location);
+	std::string b( (std::istreambuf_iterator<char>(body) ),
+					(std::istreambuf_iterator<char>()) );
+	std::ostringstream oss;
+	oss << "HTTP/1.1 200 OK\r\n";
+	oss << "Content-Type: image/png\r\n";
+	oss << "Content-Length: " << b.size() << "\r\n";
+	oss << "\r\n";
+	oss << b;
+	//oss << "\r\n\n\r";
+	std::string response(oss.str());
+	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
+		std::cout << "Send error!\n";
 }
 
 bool isDirectory(const std::string& path) {

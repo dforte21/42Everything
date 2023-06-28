@@ -153,7 +153,6 @@ void	Server::default_error_answer(int err, int fd, Config location) {
 		case 204: tmpString = "204 No content"; break ;
 		case 205: tmpString = "205 Reset Content"; break ;
 		case 206: tmpString = "206 Partial Content"; break ;
-		case 301: tmpString = "301 Moved Permanently"; break ;
 		case 400: tmpString = "400 Bad Request"; break ;
 		case 401: tmpString = "401 Unauthorized"; break ;
 		case 402: tmpString = "402 Payment Required"; break ;

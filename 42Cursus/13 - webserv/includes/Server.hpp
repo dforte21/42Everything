@@ -43,7 +43,7 @@ class Server {
 		void	handleGET(int fd, Config location);
 		void	handleDELETE(int fd);
 		int		getBody(std::ifstream &body, Config location);
-		void	getIcon(std::ifstream &body, int fd, Config location);
+		bool	getIcon(std::ifstream &body);
 		
 		void	default_error_answer(int err, int fd, Config location);
 

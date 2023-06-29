@@ -79,6 +79,9 @@ void Server::handleRequest(int fd, Config location) {
 		case GET:
 			this->handleGET(fd, location);
 			break ;
+		//case PUT:
+		//	this->handlePUT(fd, location);
+		//	break ;
 		case DELETE:
 			this->handleDELETE(fd);
 			break;
@@ -97,18 +100,24 @@ void	Server::handleDELETE(int fd) {
 void	Server::handleGET(int fd, Config location) {
 	std::ifstream body;
 	int status;
+	std::ostringstream oss;
+
+	oss << "HTTP/1.1 200 OK\r\n";
 	std::cout<< "handleGET "<< _requestMap["URL"] << std::endl;
-	if (_requestMap["URL"] == "/favicon.ico")
-		return getIcon(body, fd, location);
 	std::cout<< "location name:" << location._location_name << std::endl;
-	if ((status = getBody(body, location)) != 0)
-		return default_error_answer(status, fd, location);
+	if (_requestMap["URL"] == "/favicon.ico") {
+		if(!getIcon(body))
+			return default_error_answer(404, fd, location);
+		oss << "Content-Type: image/png\r\n";
+	}
+	else { 
+		if ((status = getBody(body, location)) != 0)
+			return default_error_answer(status, fd, location);
+    	oss << "Content-Type: text/html\r\n";
+	}
 	std::cout<< "non va in errore\n";
 	std::string b( (std::istreambuf_iterator<char>(body) ),
                        (std::istreambuf_iterator<char>()    ) );
-	std::ostringstream oss;
-	oss << "HTTP/1.1 200 OK\r\n";
-    oss << "Content-Type: text/html\r\n";
     oss << "Content-Length: " << b.size() << "\r\n";
     // oss << "Connection: keep-alive\r\n";
     oss << "\r\n";
@@ -168,22 +177,12 @@ int Server::getBody(std::ifstream &body, Config location) {
 	return 404;
 }
 
-void Server::getIcon(std::ifstream &body, int fd, Config location) {
+bool Server::getIcon(std::ifstream &body) {
 	body.open("fake_site/choco.png");
-	if (body.is_open() == false)
-		return default_error_answer(404, fd, location);
-	std::string b( (std::istreambuf_iterator<char>(body) ),
-					(std::istreambuf_iterator<char>()) );
-	std::ostringstream oss;
-	oss << "HTTP/1.1 200 OK\r\n";
-	oss << "Content-Type: image/png\r\n";
-	oss << "Content-Length: " << b.size() << "\r\n";
-	oss << "\r\n";
-	oss << b;
-	//oss << "\r\n\n\r";
-	std::string response(oss.str());
-	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
-		std::cout << "Send error!\n";
+	if (body.is_open())
+		return true;
+	body.close();
+	return false;
 }
 
 bool isDirectory(const std::string& path) {

@@ -5,7 +5,7 @@ Config::Config() {
 }
 
 Config::Config(std::string &serverBody)
-	: _listen(8080), _root("none"), _client_max_body_size(0),
+	: _listen(8080), _client_max_body_size(0),
 		_autoindex(false), _cgi_pass("none") {
 	std::string	line;
 	std::string	directive;
@@ -35,17 +35,33 @@ Config::~Config(void) {
 Config	&Config::operator=(Config &rhs) {
 	if (this == &rhs)
 		return *this;
-
-	this->_root = rhs._root;
-	this->_index = rhs._index;
-	this->_error_page = rhs._error_page;
-	this->_client_max_body_size = rhs._client_max_body_size;
-	this->_allowed_methods = rhs._allowed_methods;
-	this->_autoindex = rhs._autoindex;
-	this->_try_files = rhs._try_files;
-	this->_cgi_pass = rhs._cgi_pass;
-	this->_extension_cgi = rhs._extension_cgi;
-	this->_return = rhs._return;
+	
+	if (this->_listen == 8080)
+		this->_listen = rhs.getListen();
+	if (this->_server_name.empty())
+		this->_server_name = rhs.getServerName();
+	if (this->_root.empty())
+		this->_root = rhs.getRoot();
+	if (this->_index.empty())
+		this->_index = rhs.getIndex();
+	if (this->_error_page.empty())
+		this->_error_page = rhs.getErrorPage();
+	if (this->_client_max_body_size == 0)
+		this->_client_max_body_size = rhs.getClientMaxBodySize();
+	if (this->_allowed_methods["GET"] == false && this->_allowed_methods["POST"] == false &&
+			this->_allowed_methods["HEAD"] == false && this->_allowed_methods["PUT"] == false &&
+				this->_allowed_methods["DELETE"] == false)
+		this->_allowed_methods = rhs.getAllowedMethods();
+	if (this->_autoindex == false)
+		this->_autoindex = rhs.getAutoindex();
+	if (this->_try_files.empty())
+		this->_try_files = rhs.getTryFiles();
+	if (this->_cgi_pass.empty())
+		this->_cgi_pass = rhs.getCgiPass();
+	if (this->_extension_cgi.empty())
+		this->_extension_cgi = rhs.getExtensionCgi();
+	this->_return = rhs.getReturn();
+	this->_locationMap = rhs.getLocationMap();
 
 	return *this;
 }
@@ -132,6 +148,7 @@ void	Config::addLocation(std::string &serverBody) {
 	end = serverBody.find_first_of("}");
 	locationBody = serverBody.substr(pos, end);
 	Config locationConfig(locationBody);
+	locationConfig = *this;
 	_locationMap.insert(std::pair<std::string, Config>(locationName, locationConfig));
 	serverBody.erase(0, end);
 }

@@ -19,15 +19,12 @@ Cluster::Cluster(const char *filePath) {
 	{
 		Config	config(*it);
 		locationMap = config.getLocationMap();
-		locationMap["/"] = config;
 		Server	server(config, locationMap);
 		_serverVec.push_back(server);
 	}
 	while (1)
-	{
 		for (std::vector<Server>::iterator it = _serverVec.begin(); it != _serverVec.end(); it++)
 			it->startListening();
-	}
 }
 
 Cluster::~Cluster(void) {

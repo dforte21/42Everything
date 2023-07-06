@@ -5,8 +5,7 @@ Config::Config() {
 }
 
 Config::Config(std::string &serverBody)
-	: _listen(8080), _client_max_body_size(0),
-		_autoindex(false), _cgi_pass("none") {
+	: _listen(8080), _client_max_body_size(0) {
 	std::string	line;
 	std::string	directive;
 	size_t		pos;
@@ -28,6 +27,22 @@ Config::Config(std::string &serverBody)
 	}
 }
 
+Config::Config(std::string &locationBody, Config &mainConfig) {
+	*this = mainConfig;
+
+	std::string	line;
+	std::string	directive;
+	size_t		pos;
+	std::string	locationName;
+
+	while ((pos = locationBody.find_first_of('\n')) != std::string::npos)
+	{
+		line = locationBody.substr(locationBody.find_first_not_of(" \t\n"), pos);
+		this->doDirective(line);
+		locationBody.erase(0, pos + 1);
+	}
+}
+
 Config::~Config(void) {
 	
 }
@@ -36,30 +51,17 @@ Config	&Config::operator=(Config &rhs) {
 	if (this == &rhs)
 		return *this;
 	
-	if (this->_listen == 8080)
-		this->_listen = rhs.getListen();
-	if (this->_server_name.empty())
-		this->_server_name = rhs.getServerName();
-	if (this->_root.empty())
-		this->_root = rhs.getRoot();
-	if (this->_index.empty())
-		this->_index = rhs.getIndex();
-	if (this->_error_page.empty())
-		this->_error_page = rhs.getErrorPage();
-	if (this->_client_max_body_size == 0)
-		this->_client_max_body_size = rhs.getClientMaxBodySize();
-	if (this->_allowed_methods["GET"] == false && this->_allowed_methods["POST"] == false &&
-			this->_allowed_methods["HEAD"] == false && this->_allowed_methods["PUT"] == false &&
-				this->_allowed_methods["DELETE"] == false)
-		this->_allowed_methods = rhs.getAllowedMethods();
-	if (this->_autoindex == false)
-		this->_autoindex = rhs.getAutoindex();
-	if (this->_try_files.empty())
-		this->_try_files = rhs.getTryFiles();
-	if (this->_cgi_pass.empty())
-		this->_cgi_pass = rhs.getCgiPass();
-	if (this->_extension_cgi.empty())
-		this->_extension_cgi = rhs.getExtensionCgi();
+	this->_listen = rhs.getListen();
+	this->_server_name = rhs.getServerName();
+	this->_root = rhs.getRoot();
+	this->_index = rhs.getIndex();
+	this->_error_page = rhs.getErrorPage();
+	this->_client_max_body_size = rhs.getClientMaxBodySize();
+	this->_allowed_methods = rhs.getAllowedMethods();
+	this->_autoindex = rhs.getAutoindex();
+	this->_try_files = rhs.getTryFiles();
+	this->_cgi_pass = rhs.getCgiPass();
+	this->_extension_cgi = rhs.getExtensionCgi();
 	this->_return = rhs.getReturn();
 	this->_locationMap = rhs.getLocationMap();
 
@@ -147,8 +149,7 @@ void	Config::addLocation(std::string &serverBody) {
 	pos = end + 1;
 	end = serverBody.find_first_of("}");
 	locationBody = serverBody.substr(pos, end);
-	Config locationConfig(locationBody);
-	locationConfig = *this;
+	Config locationConfig(locationBody, *this);
 	_locationMap.insert(std::pair<std::string, Config>(locationName, locationConfig));
 	serverBody.erase(0, end);
 }

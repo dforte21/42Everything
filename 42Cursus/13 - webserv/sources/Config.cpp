@@ -1,12 +1,19 @@
 #include "../includes/Config.hpp"
 
-Config::Config() {
+Config::Config()
+	: _listen(8080), _client_max_body_size(0),
+		_autoindex(false) {
 
+	_allowed_methods.insert(std::pair<std::string, bool>("GET", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("POST", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("HEAD", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("PUT", false));
+	_allowed_methods.insert(std::pair<std::string, bool>("DELETE", false));
 }
 
 Config::Config(std::string &serverBody)
 	: _listen(8080), _client_max_body_size(0),
-		_autoindex(false), _cgi_pass("none") {
+		_autoindex(false) {
 	std::string	line;
 	std::string	directive;
 	size_t		pos;
@@ -36,10 +43,8 @@ Config	&Config::operator=(Config &rhs) {
 	if (this == &rhs)
 		return *this;
 	
-	if (this->_listen == 8080)
-		this->_listen = rhs.getListen();
-	if (this->_server_name.empty())
-		this->_server_name = rhs.getServerName();
+	this->_listen = rhs.getListen();
+	this->_server_name = rhs.getServerName();
 	if (this->_root.empty())
 		this->_root = rhs.getRoot();
 	if (this->_index.empty())

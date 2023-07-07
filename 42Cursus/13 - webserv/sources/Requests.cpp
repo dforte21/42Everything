@@ -66,7 +66,7 @@ void	Server::parseRequest(std::string request) {
 	}
 }
 
-void Server::handleRequest(int fd, Config location) {
+void Server::handleRequest(int fd, Config &location) {
 	std::string	methods[5] = {"GET", "POST", "DELETE", "HEAD", "PUT"};
 	int	i;
 
@@ -97,7 +97,7 @@ void	Server::handleDELETE(int fd) {
 	(void)fd;
 }
 
-void	Server::handleGET(int fd, Config location) {
+void	Server::handleGET(int fd, Config &location) {
 	std::ifstream body;
 	int status;
 	std::ostringstream oss;
@@ -133,12 +133,19 @@ void	Server::handleGET(int fd, Config location) {
 // 		std::cout << "Send error!\n";
 }
 
+void	Server::handlePUT(int fd, Config &location) {
+	std::cout<<fd<<"handle PUT "<<location._location_name<<std::endl;
+	/*if (_requestMap["Tranfer-Encoding"] == "chunked")
+		handleChunked();*/
+
+}
+
 int Server::getBody(std::ifstream &body, Config location) {
 	std::string resource_path = _requestMap["URL"];
 	std::string root = location.getRoot();
 
-	if (root.at(root.size() - 1) != '/')
-		root += "/";
+	/*if (root.at(root.size() - 1) != '/')
+		root += "/";*/
 	if (location._location_name == "/") {
 		resource_path = root;
 	}
@@ -153,26 +160,28 @@ int Server::getBody(std::ifstream &body, Config location) {
 			resource_path.erase(pos, 1);
 		std::cout<<"resource_path at size -1:"<<resource_path.at(resource_path.size() - 1) <<std::endl;
 	}
-	if (!isDirectory(resource_path)) {
+	std::cout<<"check try files $uri"<< this->checkTryFiles("$uri")<<std::endl;
+	if (!isDirectory(resource_path) && this->checkTryFiles("$uri")) {
 		body.open(resource_path.c_str());
 		if (body.is_open() == true){std::cout<<"no dir open file"<<std::endl;
 				return 0;}
 		else
 			body.close();
 	}
-	if (resource_path.at(resource_path.size() - 1) != '/')
-		resource_path.push_back('/');
-	std::cout<<"resource path:"<<resource_path<<std::endl;
-	sVec	indexes = location.getIndex();
-	for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
-	{
-		std::cout<< "tentativo: " << resource_path + *it << std::endl;
-		body.open((resource_path + *it).c_str());
-		if (body.is_open() == true)
-			return 0;
-		body.close();
+	if (this->checkTryFiles("$uri/")) {
+		if (resource_path.at(resource_path.size() - 1) != '/')
+			resource_path.push_back('/');
+		std::cout<<"resource path:"<<resource_path<<std::endl;
+		sVec	indexes = location.getIndex();
+		for (sVec::iterator it = indexes.begin(); it != indexes.end(); it++)
+		{
+			std::cout<< "tentativo: " << resource_path + *it << std::endl;
+			body.open((resource_path + *it).c_str());
+			if (body.is_open() == true)
+				return 0;
+			body.close();
+		}
 	}
-
 	std::cout<<"final return"<< std::endl;
 	return 404;
 }
@@ -189,5 +198,17 @@ bool isDirectory(const std::string& path) {
 	struct stat fileStat;
 	if (stat(path.c_str(), &fileStat) == 0)
 		return S_ISDIR(fileStat.st_mode);
+	return false;
+}
+
+bool	Server::checkTryFiles(std::string check) {
+	sVec try_files = _config.getTryFiles();
+	std::cout<<"check:"<<check<<"size"<<try_files.size()<<std::endl;
+	for (std::vector<std::string>::iterator it = try_files.begin(); it != try_files.end(); it++) {
+		std::cout<<"it:"<<(*it)<<std::endl;
+		if ((*it) == check)
+			return true;
+	}
+	std::cout<<"esco:"<<check<<std::endl;
 	return false;
 }

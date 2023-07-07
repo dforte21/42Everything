@@ -39,13 +39,15 @@ class Server {
 		void	handleClient(int i);
 		bool	checkRequest(int fd, Config &location);
 		void	parseRequest(std::string request);
-		void	handleRequest(int fd, Config location);
-		void	handleGET(int fd, Config location);
+		void	handleRequest(int fd, Config &location);
+		void	handleGET(int fd, Config &location);
 		void	handleDELETE(int fd);
+		void	handlePUT(int fd, Config &location);
 		int		getBody(std::ifstream &body, Config location);
 		bool	getIcon(std::ifstream &body);
+		bool	checkTryFiles(std::string check);
 		
-		void	default_error_answer(int err, int fd, Config location);
+		void	default_error_answer(int err, int fd, Config &location);
 
 	public:
 		Server(Config &config, sCMap &locationMap);

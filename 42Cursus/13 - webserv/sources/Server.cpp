@@ -102,8 +102,12 @@ void	Server::handleClient(int i) {
 	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
 	Config location;
-	if (this->checkRequest(socketArr[i].fd, location))
+	if (this->checkRequest(socketArr[i].fd, location)) {
+			std::cout<<"INIZIO "<<location._location_name<<std::endl;
+			location.displayConfig();
+			std::cout<<"FINE"<<std::endl;	
 		handleRequest(socketArr[i].fd, location);
+	}
 	_requestMap.clear();
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);
@@ -119,7 +123,7 @@ void	Server::displayServerConfig(void) {
 	}
 }
 
-void	Server::default_error_answer(int err, int fd, Config location) {
+void	Server::default_error_answer(int err, int fd, Config &location) {
 	sVec errpages = _config.getErrorPage();
 	std::ifstream file;
 

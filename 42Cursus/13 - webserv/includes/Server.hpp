@@ -43,9 +43,11 @@ class Server {
 		void	handleGET(int fd, Config &location);
 		void	handleDELETE(int fd);
 		void	handlePUT(int fd, Config &location);
-		int		getBody(std::ifstream &body, Config location);
+		void	handleChunked(int fd,Config &location);
+		size_t	getHexSize_E_Content(std::string &line, std::stringstream &content);
+		int		getBody(std::ifstream &body, Config &location);
 		bool	getIcon(std::ifstream &body);
-		bool	checkTryFiles(std::string check);
+		bool	checkTryFiles(std::string check, Config &location);
 		
 		void	default_error_answer(int err, int fd, Config &location);
 

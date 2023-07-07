@@ -103,9 +103,9 @@ void	Server::handleClient(int i) {
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;
 	Config location;
 	if (this->checkRequest(socketArr[i].fd, location)) {
-			std::cout<<"INIZIO "<<location._location_name<<std::endl;
+/*			std::cout<<"INIZIO "<<location._location_name<<std::endl;
 			location.displayConfig();
-			std::cout<<"FINE"<<std::endl;	
+			std::cout<<"FINE"<<std::endl;*/	
 		handleRequest(socketArr[i].fd, location);
 	}
 	_requestMap.clear();

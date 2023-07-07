@@ -37,6 +37,7 @@ class Config {
 		
 		Config(void);
 		Config(std::string &serverBody);
+		Config(std::string &locationBody, Config &mainConfig);
 		Config	&operator=(Config &rhs);
 		~Config(void);
 

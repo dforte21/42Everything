@@ -132,7 +132,6 @@ int	Config::setClientMaxBodySize(std::string &configStr) {
 	std::istringstream tmp(line.substr(0,10));
 	if(!(tmp >> myInt))
 		throw badConfigFile();
-	//myInt = std::stoi(line, 0, 10);
 	if (myInt < 0)
 		throw badConfigFile();
 	return myInt;
@@ -157,14 +156,15 @@ sBMap	Config::setAllowedMethods(std::string &configStr) {
 	if (pos >= end)
 		throw badConfigFile();
 	line = configStr.substr(pos, end - pos);
-	for (pos = 0; pos != std::string::npos; pos = line.find_first_not_of(" \t"))
+	pos = 0;
+	while (end != std::string::npos)
 	{
 		end = line.find_first_of(" \t", pos);
 		if (allowed_methods.find(line.substr(pos, end)) != allowed_methods.end())
 			allowed_methods[line.substr(pos, end)] = true;
 		else
 			throw badConfigFile();
-		line.erase(pos, end);
+		line.erase(pos, end + 1);
 	}
 	return allowed_methods;
 }

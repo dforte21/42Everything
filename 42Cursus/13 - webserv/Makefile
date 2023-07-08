@@ -21,6 +21,7 @@ clean:
 fclean:	clean
 		rm -rf $(NAME)
 		rm -rf Debug/$(NAME)
+		rm -rf fake_site/file_should_exist_after
 
 re:		fclean all
 

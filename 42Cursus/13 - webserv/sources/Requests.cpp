@@ -21,6 +21,7 @@ bool	Server::checkRequest(int fd, Config &location) {
 	}
 	sBMap alllowed_methods = location.getAllowedMethods();
 	if (alllowed_methods[_requestMap["HTTP_method"]] == false) {
+		std::cout<< "esco qua"<<std::endl;
 		default_error_answer(405, fd, location);
 		return false;
 	}
@@ -87,6 +88,9 @@ void Server::handleRequest(int fd, Config &location) {
 		case PUT:
 			this->handlePUT(fd, location);
 			break ;
+		case POST:
+			this->handlePUT(fd, location);
+			break ;
 		case DELETE:
 			this->handleDELETE(fd);
 			break;
@@ -94,7 +98,10 @@ void Server::handleRequest(int fd, Config &location) {
 			return this->default_error_answer(405, fd, location);
 	}
 }
+void	Server::handlePOST(int fd, Config &location) {
+	std::cout <<"handle POST "<< fd << " location " << location._location_name << std::endl;
 
+}
 void	Server::handleDELETE(int fd) {
 	std::string url = _requestMap["URL"];
 	Config		toDeleteLocation = _locationMap[url];
@@ -183,7 +190,7 @@ void Server::handleChunked(int fd, Config &location) {
 		std::ofstream file(filepath.c_str(), std::ios::out | std::ios::trunc);
 		//std::cout<< "tentativo prima: " << filepath << std::endl;
 		if (file.is_open()) {
-			file << content.str();
+			file << content.rdbuf();
 			file.close();
 			return default_error_answer(201, fd, location);
 		}
@@ -199,7 +206,7 @@ void Server::handleChunked(int fd, Config &location) {
 			//std::cout<< "tentativo: " << filepath + *it << " it:"<<*it<< std::endl;
 			file.open((filepath + *it).c_str());
 			if (file.is_open() == true){
-				file << content.str();
+				file << content.rdbuf();
 				file.close();
 				return default_error_answer(201, fd, location);
 			}

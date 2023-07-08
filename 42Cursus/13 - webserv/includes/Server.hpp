@@ -45,6 +45,7 @@ class Server {
 		void	handlePUT(int fd, Config &location);
 		void	handleChunked(int fd,Config &location);
 		size_t	getHexSize_E_Content(std::string &line, std::stringstream &content);
+		void	handlePOST(int fd, Config &location);
 		int		getBody(std::ifstream &body, Config &location);
 		bool	getIcon(std::ifstream &body);
 		bool	checkTryFiles(std::string check, Config &location);

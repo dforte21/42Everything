@@ -12,6 +12,23 @@
 typedef	std::vector<std::string> sVec;
 typedef	std::map<std::string, bool> sBMap;
 typedef	std::pair<int, std::string> iSPair;
+typedef std::map<int, std::string>	iSMap;
+
+enum Directives {
+	LISTEN,
+	SERVER_NAME,
+	ROOT,
+	INDEX,
+	ERROR_PAGE, 
+	CLIENT_MAX_BODY_SIZE,
+	ALLOWED_METHODS,
+	LOCATION,
+	AUTOINDEX,
+	TRY_FILES,
+	CGI_PASS,
+	EXTENSION_CGI,
+	RETURN
+};
 
 class Config {
 	typedef	std::map<std::string, Config> sCMap;
@@ -21,7 +38,7 @@ class Config {
 		sVec		_server_name;
 		std::string	_root;
 		sVec		_index;
-		sVec		_error_page;
+		iSMap		_error_page;
 		int			_client_max_body_size;
 		sBMap		_allowed_methods;
 		bool		_autoindex;
@@ -45,24 +62,24 @@ class Config {
 		void		addLocation(std::string &serverBody);
 		void		displayConfig(void) const;
 
-		uint16_t	setListen(std::string &configStr);
-		sVec		setServerName(std::string &configStr);
-		std::string	setRoot(std::string &configStr);
-		sVec		setIndex(std::string &configStr);
-		sVec		setErrorPage(std::string &configStr);
-		int			setClientMaxBodySize(std::string &configStr);
-		sBMap		setAllowedMethods(std::string &configStr);
-		bool		setAutoindex(std::string &configStr);
-		sVec		setTryFiles(std::string &configStr);
-		std::string	setCgiPass(std::string &configStr);
-		sVec		setExtensionCgi(std::string &configStr);
-		iSPair		setReturn(std::string &configStr);
+		void	setListen(std::string &configStr);
+		void	setServerName(std::string &configStr);
+		void	setRoot(std::string &configStr);
+		void	setIndex(std::string &configStr);
+		void	setErrorPage(std::string &configStr);
+		void	setClientMaxBodySize(std::string &configStr);
+		void	setAllowedMethods(std::string &configStr);
+		void	setAutoindex(std::string &configStr);
+		void	setTryFiles(std::string &configStr);
+		void	setCgiPass(std::string &configStr);
+		void	setExtensionCgi(std::string &configStr);
+		void	setReturn(std::string &configStr);
 
 		uint16_t	getListen(void) const;
 		sVec		getServerName(void) const;
 		std::string	getRoot(void) const;
 		sVec		getIndex(void) const;
-		sVec		getErrorPage(void) const;
+		iSMap		getErrorPage(void) const;
 		int			getClientMaxBodySize(void) const;
 		sBMap		getAllowedMethods(void) const;
 		bool		getAutoindex(void) const;

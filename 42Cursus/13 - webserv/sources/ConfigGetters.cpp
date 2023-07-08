@@ -16,7 +16,7 @@ sVec		Config::getIndex(void) const {
 	return _index;
 }
 
-sVec		Config::getErrorPage(void) const {
+iSMap		Config::getErrorPage(void) const {
 	return _error_page;
 }
 

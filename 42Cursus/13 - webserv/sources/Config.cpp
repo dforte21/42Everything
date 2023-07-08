@@ -92,43 +92,43 @@ int	Config::doDirective(std::string &line) {
 	}
 	switch(i)
 	{
-		case 0 :
-			_listen = this->setListen(line);
+		case LISTEN :
+			this->setListen(line);
 			break ;
-		case 1 :
-			_server_name = this->setServerName(line);
+		case SERVER_NAME :
+			this->setServerName(line);
 			break ;
-		case 2 :
-			_root = this->setRoot(line);
+		case ROOT :
+			this->setRoot(line);
 			break ;
-		case 3 :
-			_index = this->setIndex(line);
+		case INDEX :
+			this->setIndex(line);
 			break ;
-		case 4 :
-			_error_page = this->setErrorPage(line);
+		case ERROR_PAGE :
+			this->setErrorPage(line);
 			break ;
-		case 5 :
-			_client_max_body_size = this->setClientMaxBodySize(line);
+		case CLIENT_MAX_BODY_SIZE :
+			this->setClientMaxBodySize(line);
 			break ;
-		case 6 :
-			_allowed_methods = this->setAllowedMethods(line);
+		case ALLOWED_METHODS :
+			this->setAllowedMethods(line);
 			break ;
-		case 7 :
+		case LOCATION :
 			return 1;
-		case 8 :
-			_autoindex = this->setAutoindex(line);
+		case AUTOINDEX :
+			this->setAutoindex(line);
 			break ;
-		case 9 :
-			_try_files = this->setTryFiles(line);
+		case TRY_FILES :
+			this->setTryFiles(line);
 			break ;
-		case 10 :
-			_cgi_pass = this->setCgiPass(line);
+		case CGI_PASS :
+			this->setCgiPass(line);
 			break ;
-		case 11 :
-			_extension_cgi = this->setExtensionCgi(line);
+		case EXTENSION_CGI :
+			this->setExtensionCgi(line);
 			break ;
-		case 12 :
-			_return = this->setReturn(line);
+		case RETURN :
+			this->setReturn(line);
 			break ;
 		default :
 			if (directive.find_first_not_of("{}\n") != std::string::npos)
@@ -165,6 +165,7 @@ void	Config::displayConfig(void) const {
 	sVec	vec;
 	std::map<std::string, bool> map;
 	iSPair	pair;
+	iSMap	errorMap;
 
 	std::cout << "listen: " << this->getListen() << std::endl;
 	std::cout << "server_name: ";
@@ -179,9 +180,9 @@ void	Config::displayConfig(void) const {
 		std::cout << *it << ' ';
 	std::cout << std::endl;
 	std::cout << "error_page: ";
-	vec = this->getErrorPage();
-	for(sVec::iterator it = vec.begin(); it != vec.end(); it++)
-		std::cout << *it << ' ';
+	errorMap = this->getErrorPage();
+	for(iSMap::iterator it = errorMap.begin(); it != errorMap.end(); it++)
+		std::cout << it->first << "=" << it->second << ", ";
 	std::cout << std::endl;
 	std::cout << "client_max_body_size: " << this->getClientMaxBodySize() << std::endl;
 	std::cout << "allowed_methods: ";

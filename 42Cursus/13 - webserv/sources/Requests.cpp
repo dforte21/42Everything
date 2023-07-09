@@ -5,7 +5,28 @@ bool	Server::checkRequest(int fd, Config &location) {
 	location._location_name = "/";
 	std::string temp_request = _requestMap["URL"];
 	if (_locationMap.count(temp_request) == 0) {
-		size_t pos = temp_request.size();
+		for (sCMap::iterator it = _locationMap.begin(); it != _locationMap.end(); it++) {
+			if (it->first == "/")
+				continue ;
+			if (temp_request.find(it->first.c_str(), 0, it->first.length()) == 0) {
+				location = _locationMap[it->first];
+				location._location_name = it->first;
+			}
+		}
+		if (location._location_name == "/") {
+			for (sCMap::iterator it = _locationMap.begin(); it != _locationMap.end(); it++) {
+				if (it->first.at(0) == '~' && it->first.size() >= 3 && it->first.at(1) == ' ' && it->first.find_first_not_of(' ', 1) != std::string::npos) {
+					std::string end = it->first.substr(it->first.find_first_not_of(' ', 1));
+					if (this->checkExtensionCgi(end, location) && temp_request.size() >= end.size() && temp_request.substr(temp_request.size() - end.size() - 1) == end) {
+						location = _locationMap[it->first];
+						location._location_name = it->first;
+						break ;
+					}
+				}
+			}
+		}
+	}
+		/*size_t pos = temp_request.size();
 		while ((pos = temp_request.rfind('/', pos)) != std::string::npos){
 			temp_request.resize(pos);
 			if (_locationMap.count(temp_request) > 0) {
@@ -14,7 +35,7 @@ bool	Server::checkRequest(int fd, Config &location) {
 				break ;
 			}
 		}
-	}
+	}*/
 	else {
 		location = _locationMap[temp_request];
 		location._location_name = temp_request;
@@ -139,14 +160,16 @@ void	Server::handleGET(int fd, Config &location) {
 
 	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
 		std::cout << "Send error!\n";
-// 	std::cout<< "send fd:" << fd << std::endl;
-// 	std::cout << "root " << _config.getRoot() << " index: " << _config.getIndex().at(0) << std::endl;
-// 	if (send(fd, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!", 79, MSG_NOSIGNAL) == -1)
-// 		std::cout << "Send error!\n";
 }
 
 void	Server::handlePUT(int fd, Config &location) {
-	//std::cout<<fd<<"handle PUT "<<location._location_name<<std::endl<<"LAST:"<<_requestMap["Last"]<<std::endl;
+	if (_requestMap["Last"] == "")
+		{
+			char buf[256];
+			short nbytes =recv(fd, buf, 255, 0);
+			buf[nbytes] = '\0';
+		}
+	std::cout<<fd<<"handle PUT "<<location._location_name<<std::endl<<"LAST:"<<_requestMap["Last"]<<std::endl;
 	if (_requestMap["Transfer-Encoding"] == "chunked")
 		handleChunked(fd, location);
 
@@ -297,5 +320,15 @@ bool	Server::checkTryFiles(std::string check, Config &location) {
 			return true;
 	}
 	std::cout<<"esco:"<<check<<std::endl;
+	return false;
+}
+
+bool Server::checkExtensionCgi(std::string end, Config &location) {
+	sVec exts_cgi = location.getExtensionCgi();
+
+	for (sVec::iterator it = exts_cgi.begin(); it != exts_cgi.end(); it++) {
+		if (*it == end)
+			return true;
+	}
 	return false;
 }

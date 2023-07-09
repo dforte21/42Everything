@@ -49,7 +49,7 @@ class Server {
 		int		getBody(std::ifstream &body, Config &location);
 		bool	getIcon(std::ifstream &body);
 		bool	checkTryFiles(std::string check, Config &location);
-		
+		bool	checkExtensionCgi(std::string end, Config &location);
 		void	default_error_answer(int err, int fd, Config &location);
 
 	public:

@@ -80,6 +80,7 @@ class Config {
 		std::string	getRoot(void) const;
 		sVec		getIndex(void) const;
 		iSMap		getErrorPage(void) const;
+		std::string	getErrorPage(int err);
 		int			getClientMaxBodySize(void) const;
 		sBMap		getAllowedMethods(void) const;
 		bool		getAutoindex(void) const;

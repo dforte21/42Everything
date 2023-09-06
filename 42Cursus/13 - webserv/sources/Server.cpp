@@ -97,7 +97,7 @@ void	Server::handleClient(int i) {
 			break ;
 	}
 	this->parseRequest(request);
-	if (_requestMap["URL"] != "/favicon.ico")
+	if (_requestMap["URI"] != "/favicon.ico")
 		std::cout << request << std::endl;
 	// for (std::map<std::string, std::string>::iterator it = _requestMap.begin(); it != _requestMap.end(); it++)
 	// 	std::cout << "first:" << it->first << " second:" << it->second << std::endl;

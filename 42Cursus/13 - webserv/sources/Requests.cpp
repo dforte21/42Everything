@@ -3,7 +3,7 @@
 bool	Server::checkRequest(int fd, Config &location) {
 	location = _locationMap["/"];
 	location._location_name = "/";
-	std::string temp_request = _requestMap["URL"];
+	std::string temp_request = _requestMap["URI"];
 	if (_locationMap.count(temp_request) == 0) {
 		for (sCMap::iterator it = _locationMap.begin(); it != _locationMap.end(); it++) {
 			if (it->first == "/")
@@ -15,8 +15,10 @@ bool	Server::checkRequest(int fd, Config &location) {
 		}
 		if (location._location_name == "/") {
 			for (sCMap::iterator it = _locationMap.begin(); it != _locationMap.end(); it++) {
+				std::cout<<"try_location: "<< it->first << std::endl;
 				if (it->first.at(0) == '~' && it->first.size() >= 3 && it->first.at(1) == ' ' && it->first.find_first_not_of(' ', 1) != std::string::npos) {
 					std::string end = it->first.substr(it->first.find_first_not_of(' ', 1));
+					std::cout<<"end: "<< end<<std::endl;
 					if (this->checkExtensionCgi(end, location) && temp_request.size() >= end.size() && temp_request.substr(temp_request.size() - end.size() - 1) == end) {
 						location = _locationMap[it->first];
 						location._location_name = it->first;
@@ -62,7 +64,7 @@ void	Server::parseRequest(std::string request) {
 			std::size_t space = line.find(' ', 0);
 			std::size_t space2 = line.find(' ', space + 1);
 			_requestMap.insert(std::make_pair("HTTP_method", line.substr(0, space)));
-			_requestMap.insert(std::make_pair("URL", line.substr(space + 1, space2 - space - 1)));
+			_requestMap.insert(std::make_pair("URI", line.substr(space + 1, space2 - space - 1)));
 			_requestMap.insert(std::make_pair("protocol_version", line.substr(space2 + 1, line.length())));
 			if (prova[i] != 4)
 				i++;
@@ -110,7 +112,7 @@ void Server::handleRequest(int fd, Config &location) {
 			this->handlePUT(fd, location);
 			break ;
 		case POST:
-			this->handlePUT(fd, location);
+			this->handlePOST(fd, location);
 			break ;
 		case DELETE:
 			this->handleDELETE(fd);
@@ -119,13 +121,10 @@ void Server::handleRequest(int fd, Config &location) {
 			return this->default_error_answer(405, fd, location);
 	}
 }
-void	Server::handlePOST(int fd, Config &location) {
-	std::cout <<"handle POST "<< fd << " location " << location._location_name << std::endl;
 
-}
 void	Server::handleDELETE(int fd) {
-	std::string url = _requestMap["URL"];
-	Config		toDeleteLocation = _locationMap[url];
+	std::string uri = _requestMap["URI"];
+	Config		toDeleteLocation = _locationMap[uri];
 
 	(void)fd;
 }
@@ -136,9 +135,9 @@ void	Server::handleGET(int fd, Config &location) {
 	std::ostringstream oss;
 
 	oss << "HTTP/1.1 200 OK\r\n";
-	std::cout<< "handleGET "<< _requestMap["URL"] << std::endl;
+	std::cout<< "handleGET "<< _requestMap["URI"] << std::endl;
 	std::cout<< "location name:" << location._location_name << std::endl;
-	if (_requestMap["URL"] == "/favicon.ico") {
+	if (_requestMap["URI"] == "/favicon.ico") {
 		if(!getIcon(body))
 			return default_error_answer(404, fd, location);
 		oss << "Content-Type: image/png\r\n";
@@ -163,19 +162,13 @@ void	Server::handleGET(int fd, Config &location) {
 }
 
 void	Server::handlePUT(int fd, Config &location) {
-	if (_requestMap["Last"] == "")
-		{
-			char buf[256];
-			short nbytes =recv(fd, buf, 255, 0);
-			buf[nbytes] = '\0';
-		}
 	std::cout<<fd<<"handle PUT "<<location._location_name<<std::endl<<"LAST:"<<_requestMap["Last"]<<std::endl;
 	if (_requestMap["Transfer-Encoding"] == "chunked")
-		handleChunked(fd, location);
+		handlePUTChunked(fd, location);
 
 }
 
-void Server::handleChunked(int fd, Config &location) {
+void Server::handlePUTChunked(int fd, Config &location) {
 	std::string line = _requestMap["Last"];
 	if (line == "") {
 		char buf[256];
@@ -183,31 +176,29 @@ void Server::handleChunked(int fd, Config &location) {
 		buf[nbytes] = '\0';
 		line += buf;
 	}
-		//std::cout<<"handlechunk "<< fd <<location._location_name<< " last "<<line<<std::endl;
-		//std::cout<<"passo1"<<std::endl;
-		std::stringstream content;
-		std::size_t chunkSize = getHexSize_E_Content(line, content);
-	while (content.str().size() < chunkSize && chunkSize != 1000) {
-		char buf[256];
-		//std::cout<<"passo2"<<std::endl;
-		
-		short nbytes = recv(fd, buf, 255, 0);
-		buf[nbytes] = '\0';
-		if (content.str().size() + nbytes > chunkSize) {
-			std::string temp(buf);
-			chunkSize += getHexSize_E_Content(temp, content);
+	std::stringstream content;
+	while (getChunk(line, fd) == true) {
+		if (content.str().size() + line.size() > location.getClientMaxBodySize() && location.getClientMaxBodySize() != 0)
+			return default_error_answer(413, fd, location);
+		if (line.rfind("\r\n")){
+			line.pop_back();
+			line.pop_back();
 		}
-		else
-			content << buf;
-		//std::cout<<"buff: "<< buf<< "content size: "<<content.str().size() << "nbytes "<< nbytes<<"chuck size "<<chunkSize<< std::endl;
-		if (content.str().size() >= chunkSize)
-			break ;
+		content << line;
+		line.clear();
+		char buf[256];
+		short nbytes = recv(fd, buf, 255, 0);
+		if (nbytes == 0) {
+			std::cout<<"recv mi da 0 esco"<<std::endl;
+			return ;
+		}
+		buf[nbytes] = '\0';
+		line += buf;
+		std::cout<<"size "<<line.size() <<" line da mandare a getChunk"<<std::endl;
 	}
 		//std::cout << "size "<<chunkSize<<std::endl<< "content:"<<content.str()<<std::endl<<" content size "<<content.str().size()<<std::endl;
 	std::string filepath(location.getRoot());
-	//std::cout<<"filepath dopo getroot "<< filepath<<std::endl;
-	//std::cout<<"passo3"<<std::endl;
-	line = _requestMap["URL"];
+	line = _requestMap["URI"];
 	filepath += line.substr(line.find(location._location_name) + location._location_name.size());
 	if (checkTryFiles("$uri", location)) {
 		std::ofstream file(filepath.c_str(), std::ios::out | std::ios::trunc);
@@ -238,20 +229,91 @@ void Server::handleChunked(int fd, Config &location) {
 	}
 	std::cout<<"error"<<std::endl;
 	default_error_answer(404, fd, location);
-
 }
 
-size_t	Server::getHexSize_E_Content(std::string &line, std::stringstream &content) {
+bool Server::getChunk(std::string &line, int fd) {
+	std::cout<<"ENTRO line:"<<line<<std::endl;
 	std::size_t pos = line.find("\r\n");
 	std::stringstream c(line.substr(0, pos));
 	std::size_t chunkSize = 0;
 	c >> std::hex >> chunkSize;
-	content << line.substr(pos + 2);
-	return (chunkSize);
+	if (chunkSize == 0) {
+		std::cout<<"esco per size 0 "<<std::endl;
+		return false;
+	}
+	std::cout<<"line before "<<line<<std::endl;
+	line.erase(0, pos + 2);
+	std::cout<<"line after  "<<line<<" chunk size "<<chunkSize<<std::endl;
+	while (line.size() < chunkSize) {
+		size_t bufsize = chunkSize - line.size() + 3;
+		std::cout<<"bufsize "<<bufsize<< " chunkSize "<< chunkSize << " content size "<< line.size()<<std::endl;
+		char buf[bufsize];
+		short nbytes = recv(fd, buf, bufsize - 1, 0);
+		buf[nbytes] = '\0';
+		std::cout<<"line size before "<<line.size()<<std::endl;
+		line += buf;
+		std::cout<<"line size after "<<line.size()<<std::endl;
+	}
+	return true;
 }
 
+//short Server::getRequestContent(int fd, std::string line, std::stringstream &content, int maxBodySize) {
+//	std::size_t pos = line.find("\r\n");
+//	std::stringstream c(line.substr(0, pos));
+//	std::size_t chunkSize = 0;
+//	c >> std::hex >> chunkSize;
+//	content << line.substr(pos + 2);
+//
+//	while (content.str().size() < chunkSize) {
+//		size_t bufsize = chunkSize - content.str().size() + 3;
+//		std::cout<<"bufsize "<<bufsize<< " chunkSize "<< chunkSize << " content size "<< content.str().size()<<std::endl;
+//		char buf[bufsize];
+//		short nbytes = recv(fd, buf, bufsize - 1, 0);
+//		buf[nbytes] = '\0';
+//		content << buf;
+//			while (chunkSize > content.str().size() ) {
+//				size_t bsize = chunkSize - content.str().size() + 3;
+//				std::cout<<"bsize "<<bsize<< " chunkSize "<< chunkSize << " content size "<< content.str().size()<<std::endl;
+//				char b[bsize];
+//				short n = recv(fd, b, bsize - 1, 0);
+//				b[n] = '\0';
+//				content << b;
+//			}
+//		std::cout<<"received size: "<<content.str().size()<<std::endl;
+//			/*std::string temp(content.str().substr(content.str().size() - 3));*/
+//		std::string temp(buf);
+//		/*if (temp.find("\r\n") == std::string::npos)
+//			break;
+//		std::cout<<"ha trovato \\r\\n "<<std::endl;
+//		temp.clear();*/
+//		while (temp.find("\r\n") == std::string::npos) {
+//			unsigned char c;
+//			if (recv(fd, &c, sizeof(unsigned char), 0) <= 0){
+//				std::cout<<"recv non ha niente"<<std::endl;
+//				return 204;
+//			}
+//			temp += c;
+//			std::cout<<"new hex chunk "<< temp<<std::endl;
+//		}
+//		temp.pop_back();
+//		temp.pop_back();
+//		std::cout<<"new hex chunk popped "<< temp<<std::endl;
+//		std::stringstream converter(temp);
+//		std::size_t newChunk;
+//		converter >> std::hex >> newChunk;
+//		std::cout<<"new chunk converted "<< newChunk<<std::endl;
+//		if (newChunk == 0)
+//			break ;
+//		chunkSize += newChunk;
+//		if (chunkSize > maxBodySize && maxBodySize != 0)
+//			return 413;
+//		default_error_answer(100, fd, _config);
+//	}
+//	return 0;
+//}
+
 int Server::getBody(std::ifstream &body, Config &location) {
-	std::string resource_path = _requestMap["URL"];
+	std::string resource_path = _requestMap["URI"];
 	std::string root = location.getRoot();
 
 	/*if (root.at(root.size() - 1) != '/')
@@ -274,6 +336,7 @@ int Server::getBody(std::ifstream &body, Config &location) {
 	if (!isDirectory(resource_path) && this->checkTryFiles("$uri", location)) {
 		body.open(resource_path.c_str());
 		if (body.is_open() == true){std::cout<<"no dir open file"<<std::endl;
+		_requestMap.insert(std::make_pair("URI_TRANSLATED", resource_path));
 				return 0;}
 		else
 			body.close();
@@ -287,8 +350,9 @@ int Server::getBody(std::ifstream &body, Config &location) {
 		{
 			std::cout<< "tentativo: " << resource_path + *it << std::endl;
 			body.open((resource_path + *it).c_str());
-			if (body.is_open() == true)
-				return 0;
+			if (body.is_open() == true) {
+				_requestMap.insert(std::make_pair("URI_TRANSLATED", resource_path + *it));
+				return 0;}
 			body.close();
 		}
 	}
@@ -325,10 +389,12 @@ bool	Server::checkTryFiles(std::string check, Config &location) {
 
 bool Server::checkExtensionCgi(std::string end, Config &location) {
 	sVec exts_cgi = location.getExtensionCgi();
-
+	std::cout<<"entro check extension cgi, size vector: "<< exts_cgi.size() <<std::endl;
 	for (sVec::iterator it = exts_cgi.begin(); it != exts_cgi.end(); it++) {
+		std::cout<<"ext: "<< *it << "end: " << end<<std::endl;
 		if (*it == end)
 			return true;
 	}
+	std::cout<<"ritorno false"<<std::endl;
 	return false;
 }

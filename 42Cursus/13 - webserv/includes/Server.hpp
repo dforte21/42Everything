@@ -13,6 +13,8 @@
 # include <string>
 # include <sstream>
 # include <sys/stat.h>
+# include <sys/wait.h>
+# include <string.h>
 
 typedef std::map<std::string, Config>		sCMap;
 typedef std::map<std::string, std::string>	sSMap;
@@ -43,9 +45,12 @@ class Server {
 		void	handleGET(int fd, Config &location);
 		void	handleDELETE(int fd);
 		void	handlePUT(int fd, Config &location);
-		void	handleChunked(int fd,Config &location);
-		size_t	getHexSize_E_Content(std::string &line, std::stringstream &content);
+		void	handlePUTChunked(int fd,Config &location);
+		bool	getChunk(std::string &line, int fd);
+		//short	getRequestContent(int fd, std::string line, std::stringstream &content, int maxBodySize);
 		void	handlePOST(int fd, Config &location);
+		std::string	executeCGI(Config &location, std::stringstream &content);
+		char	**getEnvCgi(Config &location);
 		int		getBody(std::ifstream &body, Config &location);
 		bool	getIcon(std::ifstream &body);
 		bool	checkTryFiles(std::string check, Config &location);

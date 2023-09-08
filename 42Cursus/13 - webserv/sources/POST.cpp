@@ -29,7 +29,8 @@ void	Server::handlePOST(int fd, Config &location) {
 			line += buf;
 			std::cout<<"size "<<line.size() <<" line da mandare a getChunk"<<std::endl;
 		}
-		std::string response_body = executeCGI(location, content);
+		std::string response_body;
+		//response_body = executeCGI(location, content);
 		std::cout<<"response body "<<response_body<<std::endl;
 		std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + std::to_string(response_body.size()) + "\r\n\r\n";
 		response += response_body + "\r\n";

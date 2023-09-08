@@ -102,7 +102,7 @@ void Server::handleRequest(int fd, Config &location) {
 	for (i = 0; i < 5; i++)
 		if (methods[i] == _requestMap["HTTP_method"])
 			break ;
-	//std::cout << methods[i] << std::endl;
+	std::cout << methods[i] << std::endl;
 	switch(i)
 	{
 		case GET:
@@ -156,9 +156,10 @@ void	Server::handleGET(int fd, Config &location) {
     oss << b;
 	//oss << "\r\n\n\r"; //forse non va messo, sembra che il tester dia un errore
 	std::string response(oss.str());
-
+	//std::cout << response << std::endl;
 	if (send(fd, response.c_str(), response.size(), MSG_NOSIGNAL) == -1)
 		std::cout << "Send error!\n";
+	std::cout<<"esco da handle get"<< std::endl;
 }
 
 void	Server::handlePUT(int fd, Config &location) {

@@ -1,8 +1,9 @@
 #include "../includes/Pfds.hpp"
 
 Pfds::Pfds(void)
-	: _socketArr(NULL), _size(0), _count(0) {
+	: _socketArr(NULL), _size(5), _count(0) {
 
+		_socketArr = (struct pollfd *) malloc (sizeof(struct pollfd) * (_size));
 	}
 
 Pfds::~Pfds() {

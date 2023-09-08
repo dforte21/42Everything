@@ -25,7 +25,7 @@ fclean:	clean
 
 re:		fclean all
 
-vai: re
+vai: all
 	@./$(NAME)
 
 vaii: all

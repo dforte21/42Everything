@@ -105,9 +105,10 @@ void	Server::handleClient(int i) {
 	if (this->checkRequest(socketArr[i].fd, location)) {
 /*			std::cout<<"INIZIO "<<location._location_name<<std::endl;
 			location.displayConfig();
-			std::cout<<"FINE"<<std::endl;*/	
+			std::cout<<"FINE"<<std::endl;*/
 		handleRequest(socketArr[i].fd, location);
 	}
+	std::cout<< "Ho chiuso il cazzo dui sockete"<<socketArr[i].fd<<std::endl;
 	_requestMap.clear();
 	close(socketArr[i].fd);
 	_pfds.delFromPfds(i);

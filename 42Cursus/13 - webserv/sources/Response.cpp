@@ -135,21 +135,12 @@ void	Response::handlePut( void ) {
 }
 
 void Response::handleDelete( void ) {
-	std::string resource = _request->getUri();
-	resource.replace(resource.find(_location.getLocationName()), _location.getLocationName().size(), _location.getRoot());
-	std::cout << resource << std::endl;
-	if (std::remove(resource.c_str()) == 0){
-		std::string res = "HTTP/1.1 200 OK\r\n\r\n";
-		send(_socket, res.c_str(), res.size(), 0);
-		_status = "NOT";
-		return ;
-	}
-	else {
-		std::string res = "HTTP/1.1 403 Forbidden\r\n\r\n";
-		send(_socket, res.c_str(), res.size(), 0);
-		_status = "NOT";
-		return ;
-	}
+
+
+	if (std::remove(_uri.c_str()) == 0)
+		_status = "200 OK";
+	else
+		throw Error(this, FORBIDDEN);
 }
 
 void Response::autoindexPage( void ){
